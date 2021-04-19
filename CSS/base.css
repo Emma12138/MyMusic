@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    min-width: 920px;
+    color: #000;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: poppin,Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif;
+    background-color: #fafafa;
+}
+/* 字体声明 */
+@font-face {
+    font-family: 'iconfont';
+    src: url(../fonts/iconfont.eot);
+    src: url(../fonts/iconfont.eot?#iefix) format('embedded-opentype'),
+        url(../fonts/iconfont.woff2) format('woff2'),
+        url(../fonts/iconfont.woff) format('woff'),
+        url(../fonts/iconfont.ttf) format('truetype'),
+        url(../fonts/iconfont.svg#iconfont) format('svg');
+}
+/* 版心 */
+.w {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 20px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+em,
+i {
+    font-style:normal
+}
+ul,
+ol {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    font-size: 14px;
+    color: #000;
+}
+a:hover {
+    color: #31C27c;
+}
+input {
+    border: 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    outline: none;
+    resize: none;
+}
+button {
+    cursor: pointer;
+    outline: none;
+    border: 0;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            list-style: none;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        div {
+            max-width: 50px;
+            background-color: green;
+            transition: all .2s;
+            margin-left: 500px;
+        }
+
+        body {
+            height: 1200px;
+        }
+
+        .cover {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            max-width: 1200px;
+            z-index: 999;
+            width: 1200px;
+            height: 100%;
+            margin-left: 0;
+            background-color: rgba(0, 0, 0, .3);
+        }
+
+        img {
+            margin-left: -500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>呵呵</div>
+    <img src="" alt="">
+    <script>
+
+
+        let div = document.querySelector('div');
+        let img = document.querySelector('img');
+        div.onclick = function () {
+            img.src = 'https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1'
+        }
+
+    </script>
+</body>
+
+</html>
