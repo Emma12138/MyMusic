@@ -88,46 +88,5 @@ window.onload = function () {
         (mvSlider.children[0].offsetWidth + parseInt(window.getComputedStyle(mvSlider.children[0], null).marginRight)) / mvSlider.offsetWidth
     );
 
-    // 返回顶部
-    let topButton = document.querySelector('.sidebar_top');
-    topButton.addEventListener('click', function () {
-        scroll();
-    })
-    displayBackTop(topButton, document.querySelector('.header').offsetHeight);
-
-    // 图片懒加载
-    let imgArr = document.querySelectorAll('img');
-    imgArr = [...imgArr];
-    window.addEventListener('scroll', function () {
-        throttle(lazyLoad(imgArr), 500)();
-    })
-
-    let ev = new Event('scroll');
-    window.dispatchEvent(ev);
-
-    // 登录
-    // 点击导航栏登录按钮唤起登录界面
-    let loginBtn = document.querySelector('.header_login a');
-    let login = document.querySelector('.login');
-    // 遮罩
-    let cover = new Create('cover', document.body);
-    loginBtn.onclick = function () {
-        cover.init();
-        // 弹窗
-        login.style.display = 'block';
-        // 隐藏滚动条
-        document.body.style.overflowY = 'hidden';
-    }
-    // 关闭登录界面
-    let closeBtn = document.querySelector('.login_close');
-    closeBtn.onclick = function () {
-        // 关闭登录界面
-        login.style.display = 'none';
-        // 关闭遮罩
-        cover.close();
-        // 显示滚动条
-        document.body.style.overflowY = '';
-    }
-
 
 }

@@ -18,6 +18,7 @@
     <script src="JS/constructor.js"></script>
     <script src="JS/fn.js"></script>
     <script src="JS/index.js"></script>
+    <script src="JS/common.js"></script>
 </head>
 
 <body>
@@ -52,29 +53,29 @@
                     <input type="text" placeholder="搜索音乐、MV、歌单、用户">
                     <button></button>
                     <div class="header_search_detail">
-                        <div class="search_detaile_wrapper">
+                        <div class="search_detail_wrapper">
                             <div class="search_hot">
-                                <a href="#" class="search_hot-item">
+                                <a href="#" class="search_hot_item">
                                     <span class="search_hot_number">1</span>
                                     <h5 class="search_hot_name">我们的歌</h5>
                                     <em class="search_hot_count">76.6万</em>
                                 </a>
-                                <a href="#" class="search_hot-item">
+                                <a href="#" class="search_hot_item">
                                     <span class="search_hot_number">2</span>
                                     <h5 class="search_hot_name">冰雪奇缘2</h5>
                                     <em class="search_hot_count">76.6万</em>
                                 </a>
-                                <a href="#" class="search_hot-item">
+                                <a href="#" class="search_hot_item">
                                     <span class="search_hot_number">3</span>
                                     <h5 class="search_hot_name">张杰</h5>
                                     <em class="search_hot_count">76.6万</em>
                                 </a>
-                                <a href="#" class="search_hot-item">
+                                <a href="#" class="search_hot_item">
                                     <span class="search_hot_number">4</span>
                                     <h5 class="search_hot_name">桥边姑娘</h5>
                                     <em class="search_hot_count">76.6万</em>
                                 </a>
-                                <a href="#" class="search_hot-item">
+                                <a href="#" class="search_hot_item">
                                     <span class="search_hot_number">5</span>
                                     <h5 class="search_hot_name">星辰大海</h5>
                                     <em class="search_hot_count">76.6万</em>
@@ -85,30 +86,76 @@
                                     搜索历史
                                     <em class="search_history_delete"></em>
                                 </h5>
-                                <a href="#" class="search_history_item">我们的歌</a>
-                                <a href="#" class="search_history_item">冰雪奇缘2</a>
+                                <div class="search_history_item_wrapper">
+                                    <!-- <a href="#" class="search_history_item">我们的歌
+                                        <em class="search_history_item_close"></em>
+                                    </a>
+                                    <a href="#" class="search_history_item">冰雪奇缘2</a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header_search_result">
+                        <div class="search_result_wrapper">
+                            <div class="search_result_song">
+                                <h4 class="search_result_title">单曲</h4>
+                                <div class="search_result_item_wrapper">
+                                    <a href="javascript:;" class="search_result_item">
+                                        <h5 class="search_result_info_name">
+                                            <span class="search_key">我</span>们的歌
+                                        </h5>
+                                        <div class="search_result_info_singer">- 朱一龙</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="search_result_singer">
+                                <h4 class="search_result_title">歌手</h4>
+                                <div class="search_result_item_wrapper"></div>
+                                <a href="javascript:;" class="search_result_item">
+                                    <!-- <div class="search_result_info_name">
+                                        <span class="search_key">朱</span>一龙
+                                    </div> -->
+                                </a>
+                            </div>
+                            <div class="search_result_album">
+                                <h4 class="search_result_title">专辑</h4>
+                                <div class="search_result_item_wrapper">
+                                    <!-- <h5 class="search_result_info_name">
+                                        <span class="search_key">我</span>们的歌
+                                    </h5>
+                                    <div class="search_result_info_singer">- 朱一龙朱一龙朱一龙朱一龙</div> -->
+                                </div>
+                            </div>
+                            <div class="search_result_list">
+                                <h4 class="search_result_title">歌单</h4>
+                                <div class="search_result_item_wrapper">
+                                    <!-- <div class="search_result_info_name">
+                                        <span class="search_key">朱</span>一龙朱一龙朱一龙朱一龙朱一龙
+                                    </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="header_login">
-                    <a href="#">登录</a>
+                    <a href="javascript:;">登录</a>
+                    <img src="" alt="" class="login_avatar">
                 </div>
                 <div class="header_VIP">
-                    <a href="#">开通VIP</a>
+                    <a href="javascript:;">开通VIP</a>
                     <div class="header_VIP_detail">
                         <div class="VIP_detail_wrapper">
-                            <a href="#">开通绿钻豪华版</a>
-                            <a href="#">开通付费包</a>
+                            <a href="javascript:;">开通绿钻豪华版</a>
+                            <a href="javascript:;">开通付费包</a>
                         </div>
                     </div>
                 </div>
                 <div class="header_pay">
-                    <a href="#">充值</a>
+                    <a href="javascript:;">充值</a>
                     <div class="header_pay_detail">
                         <div class="pay_detail_wrapper">
-                            <a href="#">购买乐币</a>
-                            <a href="#">充值饭票</a>
+                            <a href="javascript:;">购买乐币</a>
+                            <a href="javascript:;">充值饭票</a>
                         </div>
                     </div>
                 </div>
@@ -116,15 +163,15 @@
         </div>
         <div class="index_nav_wrapper">
             <ol class="index_nav w">
-                <li class="index_nav_item"><a href="#" class="a_current">首页</a></li>
-                <li class="index_nav_item"><a href="#">歌手</a></li>
-                <li class="index_nav_item"><a href="#">新碟</a></li>
-                <li class="index_nav_item"><a href="#">排行榜</a></li>
-                <li class="index_nav_item"><a href="#">分类歌单</a></li>
-                <li class="index_nav_item"><a href="#">电台</a></li>
-                <li class="index_nav_item"><a href="#">MV</a></li>
-                <li class="index_nav_item"><a href="#">数字专辑</a></li>
-                <li class="index_nav_item"><a href="#">票务</a></li>
+                <li class="index_nav_item"><a href="javascript:;" class="a_current">首页</a></li>
+                <li class="index_nav_item"><a href="javascript:;">歌手</a></li>
+                <li class="index_nav_item"><a href="javascript:;">新碟</a></li>
+                <li class="index_nav_item"><a href="javascript:;">排行榜</a></li>
+                <li class="index_nav_item"><a href="javascript:;">分类歌单</a></li>
+                <li class="index_nav_item"><a href="javascript:;">电台</a></li>
+                <li class="index_nav_item"><a href="javascript:;">MV</a></li>
+                <li class="index_nav_item"><a href="javascript:;">数字专辑</a></li>
+                <li class="index_nav_item"><a href="javascript:;">票务</a></li>
             </ol>
         </div>
     </header>
@@ -135,124 +182,124 @@
             <div class="w">
                 <h2></h2>
                 <div class="main_nav">
-                    <a href="#" class="main_nav_current">为你推荐</a>
-                    <a href="#">网络歌曲</a>
-                    <a href="#">九月推荐</a>
-                    <a href="#">伤感</a>
-                    <a href="#">官方歌单</a>
-                    <a href="#">情感</a>
+                    <a href="javascript:;" class="main_nav_current">为你推荐</a>
+                    <a href="javascript:;">网络歌曲</a>
+                    <a href="javascript:;">九月推荐</a>
+                    <a href="javascript:;">伤感</a>
+                    <a href="javascript:;">官方歌单</a>
+                    <a href="javascript:;">情感</a>
                 </div>
                 <div class="main_list_slider">
                     <ul class="main_list_slider_list">
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">〖爆燃BGM〗引领队友走向胜利</a>
+                                <a href="javascript:;">〖爆燃BGM〗引领队友走向胜利</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/EZ37MRAQkJvfDZ4iaWS0tXb19IXhGP29M4HWwbHVFF1M2ZEQJLCzZxQ/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">「精选Live」唱进内心深处</a>
+                                <a href="javascript:;">「精选Live」唱进内心深处</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/nPcibwDibz6CDBibxJLpEtJZE13HL2pTzDQblkkTD0AiaiaStgfU0J2R6yA/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">睡眠轻音 │ 声随风舞，清欢入梦</a>
+                                <a href="javascript:;">睡眠轻音 │ 声随风舞，清欢入梦</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/ohiaZqwFXiaibc0QWF9hPuyDNpNCCGurZ19YJddSRFq5WSXgRDhGOa2WQ/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">【宝藏男音】 捕获你的小心脏 ♡</a>
+                                <a href="javascript:;">【宝藏男音】 捕获你的小心脏 ♡</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/ib6EsMhApgr893ia0JLThaTpw8N9NJxOnHhnWEzmlHJbTWHNhnSh9OaA/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">中文说唱| 说唱一直在路上</a>
+                                <a href="javascript:;">中文说唱| 说唱一直在路上</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                     </ul>
                     <ul class="main_list_slider_list">
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/DmbQX06icPEb92T3viaQiaI0Z6rRwaY0VjtKYzJAibqSvQSTVsEsm7mJkQ/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">〖爆燃BGM〗引领队友走向胜利</a>
+                                <a href="javascript:;">〖爆燃BGM〗引领队友走向胜利</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/WSz0qITQv4XSaHcEQicPa00EUZyD20WQUTrO3FldBtPYh6U6WMqdAFQ/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">「精选Live」唱进内心深处</a>
+                                <a href="javascript:;">「精选Live」唱进内心深处</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/ANIWLicL9sLKUD0jT1eBUAa9aO41rTUTnjwAsgwlr2LTricc3VbThnwg/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">睡眠轻音 │ 声随风舞，清欢入梦</a>
+                                <a href="javascript:;">睡眠轻音 │ 声随风舞，清欢入梦</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/M1w0TZyE4TeOibpyF04y7iah1TxIuoYIQ0nnIyNIRkicXezEoIboxgajw/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">【宝藏男音】 捕获你的小心脏 ♡</a>
+                                <a href="javascript:;">【宝藏男音】 捕获你的小心脏 ♡</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/h0k81P7fjE2oDLEyKUohdYub7tciaoNDLtibXHOFNqeHWWaMzLZsJianw/300?n=1"
                                     class="main_list_pic">
                             </a>
                             <h5 class="main_list_title">
-                                <a href="#">中文说唱| 说唱一直在路上</a>
+                                <a href="javascript:;">中文说唱| 说唱一直在路上</a>
                             </h5>
                             <span class="main_list_info">播放量：2300.8万</span>
                         </li>
@@ -271,215 +318,215 @@
             <div class="w">
                 <h2></h2>
                 <div class="main_nav">
-                    <a href="#" class="main_song_playAll"><i></i>播放全部</a>
-                    <a href="#" class="main_nav_current">最新</a>
-                    <a href="#">内地</a>
-                    <a href="#">港台</a>
-                    <a href="#">欧美</a>
-                    <a href="#">韩国</a>
-                    <a href="#">日本</a>
+                    <a href="javascript:;" class="main_song_playAll"><i></i>播放全部</a>
+                    <a href="javascript:;" class="main_nav_current">最新</a>
+                    <a href="javascript:;">内地</a>
+                    <a href="javascript:;">港台</a>
+                    <a href="javascript:;">欧美</a>
+                    <a href="javascript:;">韩国</a>
+                    <a href="javascript:;">日本</a>
                 </div>
                 <div class="main_song_slider">
                     <ul class="main_song_slider_list">
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                     </ul>
                     <ul class="main_song_slider_list">
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                         <li>
-                            <a href="#" class="main_song_pic">
+                            <a href="javascript:;" class="main_song_pic">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://qpic.y.qq.com/music_cover/8X18GF1Yb7uV6ragKSHLl0icHC3mBACkuiajY3Sf1wG63MDwicLia0PNkg/300?n=1">
                             </a>
                             <div class="main_song_info">
-                                <a href="#" class="main_song_title">What's Wrong With Me</a>
-                                <a href="#" class="main_song_singer">熊猫堂ProducePandas</a>
+                                <a href="javascript:;" class="main_song_title">What's Wrong With Me</a>
+                                <a href="javascript:;" class="main_song_singer">熊猫堂ProducePandas</a>
                             </div>
-                            <div href="#" class="main_song_time">04:39</div>
+                            <div href="javascript:;" class="main_song_time">04:39</div>
                         </li>
                     </ul>
                 </div>
@@ -497,36 +544,36 @@
                 <h2></h2>
                 <div class="main_rec_slider">
                     <div class="main_rec_slider_wrapper">
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="https://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3867169.gif?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
                         </a>
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="http://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3861559.jpg?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
                         </a>
                     </div>
                     <div class="main_rec_slider_wrapper">
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="http://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3884271.jpg?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
                         </a>
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="http://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3879056.jpg?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
                         </a>
                     </div>
                     <div class="main_rec_slider_wrapper">
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="http://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3884219.jpg?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
                         </a>
-                        <a href="#">
+                        <a href="javascript:;">
                             <img src="http://y.gtimg.cn/mediastyle/global/img/mv_300.png?max_age=31536000"
                                 data-src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/3879833.jpg?max_age=2592000"
                                 alt="" class="main_rec_slider_pic">
@@ -549,87 +596,87 @@
                 <h2>
                 </h2>
                 <div class="main_nav">
-                    <a href="#" class="main_nav_current">内地</a>
-                    <a href="#">港台</a>
-                    <a href="#">欧美</a>
-                    <a href="#">韩国</a>
-                    <a href="#">日本</a>
-                    <a href="#">其他</a>
-                    <a href="#" class="main_more">更多</a>
+                    <a href="javascript:;" class="main_nav_current">内地</a>
+                    <a href="javascript:;">港台</a>
+                    <a href="javascript:;">欧美</a>
+                    <a href="javascript:;">韩国</a>
+                    <a href="javascript:;">日本</a>
+                    <a href="javascript:;">其他</a>
+                    <a href="javascript:;" class="main_more">更多</a>
                 </div>
                 <div class="main_album_slider">
                     <ul class="main_album_slider_list">
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="javascript:;">
                                 <img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                                     data-src="https://y.gtimg.cn/music/photo_new/T002R300x300M000002LgDc82SrCYY_1.jpg?max_age=2592000"
                                     alt="" class="main_album_pic">
                             </a>
-                            <h5 class="main_album_title"><a href="#">他和她的故事</a></h5>
-                            <span class="main_album_singer"><a href="#">刘雪婧</a></span>
+                            <h5 class="main_album_title"><a href="javascript:;">他和她的故事</a></h5>
+                            <span class="main_album_singer"><a href="javascript:;">刘雪婧</a></span>
                         </li>
                         <li>
                             <a href="#">
@@ -1333,7 +1380,7 @@
         <a href="javascript:;" class="sidebar_player"></a>
     </aside>
     <!-- 遮罩 -->
-    <!-- <div class="cover"></div> -->
+    <aside class="cover"></aside>
     <!-- 登录 -->
     <aside class="login">
         <a href="javascript:;" class="login_close">×</a>
@@ -1349,7 +1396,7 @@
             </div>
             <form action="" method="" class="login_body_content">
                 <input type="text" name="phone" placeholder="账号">
-                <input type="password" name="password" id="" placeholder="密码">
+                <input type="password" name="password" id="" placeholder="密码" autocomplete="on">
                 <input type="button" value="GO">
             </form>
             <div class="login_body_forget">
@@ -1359,30 +1406,6 @@
             </div>
         </div>
     </aside>
-
-
-    <script>
-        // let login = document.querySelector('.login input[type="submit"]');
-        let login = document.querySelector('.login form');
-        let phone = login.children[0];
-        let psw = login.children[1];
-        let btn = login.children[2];
-        // let login = document.querySelector('.login input[type="submit"]');
-        btn.onclick = function () {
-            let param = '';
-            param = 'phone=' + phone.value + '&password=' + psw.value;
-            // console.log(param);
-
-            let xhr = new XMLHttpRequest();
-            xhr.open('post', 'http://localhost:3000/login/cellphone');
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.send(param);
-            xhr.onload = function () {
-                console.log(xhr.responseText);
-            }
-        }
-
-    </script>
 </body>
 
 </html>

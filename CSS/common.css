@@ -113,7 +113,7 @@ div[class^="main_"]:hover i[class="arrow_r"] {
 /* 客户端下拉菜单 */
 .header_nav_item_client:hover .header_nav_client_detail {
     opacity: 1;
-    height: 154px;
+    height: 148px;
 }
 .header_nav_item_client {
     position: relative;
@@ -122,7 +122,7 @@ div[class^="main_"]:hover i[class="arrow_r"] {
     position: absolute;
     top: 68px;
     left: 20px;
-    z-index: 999;
+    z-index: 1001;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -225,8 +225,7 @@ button {
 .header_search button:hover::before {
     background-position: 0 -60px;
 }
-
-/* 搜索下拉菜单 */
+/* 热搜下拉菜单 */
 .header_search input:focus ~ .header_search_detail{
     max-height: 800px;
 }
@@ -234,14 +233,14 @@ button {
     position: absolute;
     top: 36px;
     left: -1px;
-    z-index: 999;
+    z-index: 1000;
     width: 226px;
     max-height: 0;
     background-color: #fff;
     overflow: hidden;
     transition: max-height .6s .2s;
 }
-.search_detaile_wrapper {
+.search_detail_wrapper {
     border: 1px solid #c9c9c9;
 }
 .search_hot {
@@ -249,16 +248,16 @@ button {
     flex-direction: column;
     margin-top: 5px;
 }
-.search_hot-item {
+.search_hot_item {
     display: flex;
     gap: 12px;
     padding: 0 10px;
     line-height: 36px;
 }
-.search_hot-item:hover {
+.search_hot_item:hover {
     background-color: #31c27c;
 }
-.search_hot-item:hover> * {
+.search_hot_item:hover> * {
     color: #fff;
 }
 .search_hot_number {
@@ -275,8 +274,6 @@ button {
 }
 /* 搜索历史 */
 .search_history {
-    display: flex;
-    flex-direction: column;
     margin: 10px 0;
 }
 .search_history_title {
@@ -297,16 +294,21 @@ button {
 .search_history_delete:hover {
     background-position: -20px -60px;
 }
+.search_history_item_wrapper {
+    display: flex;
+    flex-direction: column;
+}
 .search_history_item {
     padding: 0 10px;
     color: #333;
     line-height: 36px;
+    cursor: pointer;
 }
 .search_history_item:hover {
     background-color: #31c27c;
     color: #fff;
 }
-.search_history_item::after {
+.search_history_item .search_history_item_close {
     float: right;
     content: "";
     width: 20px;
@@ -315,10 +317,101 @@ button {
     background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3&v=85678e8f28c7b4bcad5c209b21b7e3b3) no-repeat -37px -200px;
 }
 
+/* 搜索下拉菜单 */
+.header_search_result {
+    position: absolute;
+    top: 36px;
+    left: -1px;
+    z-index: 1000;
+    width: 226px;
+    max-height: 0;
+    background-color: #fff;
+    overflow: hidden;
+    transition: max-height .6s .2s;
+}
+.search_result_wrapper {
+    padding-bottom: 7px;
+    border: 1px solid #c9c9c9;
+}
+.search_result_wrapper>div[class^="search_result_"] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 172px;
+    margin-top: 7px;
+    overflow-y: hidden;
+    display: none;
+}
+.search_result_wrapper>div[class^="search_result_"]::after {
+    position: absolute;
+    top: 2px;
+    left: 13px;
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3) -20px -218px;
+}
+.header_search_result .search_result_wrapper .search_result_singer::after {
+   background-position-y: -238px;
+}
+.header_search_result .search_result_wrapper .search_result_album::after {
+    background-position: -40px 2px;
+}
+.header_search_result .search_result_wrapper .search_result_list::after {
+    background-position: 0 -217px;
+}
+.search_result_title {
+    padding: 0 40px;
+    margin-bottom: 7px;
+    font-weight: 400;
+    color: #999;
+}
+.search_result_item {
+    display: flex;
+    padding: 0 10px 0 40px;
+    font-size: 14px;
+    line-height: 36px;
+}
+.search_result_item:hover {
+    background-color: #31c27c;
+}
+.search_result_item:hover> * {
+    color: #fff;
+}
+.search_result_info_name { 
+    max-width: 100%;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+.search_result_info_singer {
+    color: #999;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.search_result_item .search_key {
+    color: #31C27c;
+}
+.search_result_item:hover .search_key {
+    color: #fff;
+}
+
 .header_login {
     font-size: 16px;
     line-height: 90px;
     cursor: pointer;
+}
+.login_avatar {
+    display: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    vertical-align: middle;
 }
 .header_VIP {
     position: relative;
@@ -468,6 +561,9 @@ button {
 }
 .index_nav_current {
     background-color: #31c27c;
+}
+.index_nav_current:hover a {
+    color: #fff;
 }
 body .index_nav_current a {
     color: #fff;
@@ -676,12 +772,9 @@ body .index_nav_current a {
     background-position: -180px 0px;
 }
 
-/* 弹窗样式 */
-/* .popup {
-
-} */
 /* 遮罩 */
 .cover {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -767,4 +860,10 @@ body .index_nav_current a {
 }
 .login_body_forget a {
     font-size: 12px;
+}
+
+/* 加载动画 */
+.search_loading {
+    grid-row: 1 / span 10;
+    place-self: center;
 }

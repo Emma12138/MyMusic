@@ -1,0 +1,407 @@
+.search_hd {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 247px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/bg_search.jpg);
+}
+.search_hd .w:first-child {
+    max-width: 100%;
+}
+.search_hd .search_input {
+    position: relative;
+    left: 50%;
+    z-index: 999;
+    width: 690px;
+    height: 50px;
+    padding-left: 15px;
+    background-color: #fff;
+    transition: width .6s;
+    transform: translateX(-50%);
+}
+.search_hd .search_input input {
+    width: 640px;
+    height: 50px;
+    transition: width .6s;
+}
+.search_hd .search_input button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 100%;
+    background-color: #fff;
+}
+.search_hd .search_input button::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8…) 0px -40px;
+    transform: translate(-50%,-50%);
+}
+.search_hd .search_input button:hover::before {
+    background-position: 0 -60px;
+}
+
+/* 搜索历史 */
+.search_input input:focus ~ .main_search_detail{
+    max-height: 800px;
+}
+.main_search_detail {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    z-index: 999;
+    width: 100%;
+    max-height: 0;
+    background-color: #fff;
+    overflow: hidden;
+    transition: max-height .6s .2s;
+}
+.main_search_detail_wrapper {
+    border: 1px solid #c9c9c9;
+}
+.main_search_history {
+    margin: 20px 0;
+}
+.main_search_history_title {
+    padding: 0 10px;
+    margin-bottom: 7px;
+    font-weight: 400;
+    color: #999;
+    font-size: 14px;
+}
+.main_search_history_delete {
+    float: right;
+    width: 20px;
+    height: 18px;
+    margin-top: 4px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3&v=85678e8f28c7b4bcad5c209b21b7e3b3) no-repeat -100px 0;
+    cursor: pointer;
+}
+.main_search_history_delete:hover {
+    background-position: -20px -60px;
+}
+.main_search_history_item_wrapper {
+    display: flex;
+    flex-direction: column;
+}
+.main_search_history_item {
+    padding: 0 10px;
+    color: #333;
+    line-height: 36px;
+    cursor: pointer;
+}
+.main_search_history_item:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.main_search_history_item .main_search_history_item_close {
+    float: right;
+    content: "";
+    width: 20px;
+    height: 18px;
+    margin-top: 10px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3&v=85678e8f28c7b4bcad5c209b21b7e3b3) no-repeat -37px -200px;
+    cursor: pointer;
+}
+
+/* 搜索下拉菜单 */
+.main_search_result {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    z-index: 1000;
+    width: 100%;
+    max-height: 0;
+    background-color: #fff;
+    overflow: hidden;
+    transition: max-height .6s .2s;
+}
+.main_search_result_wrapper {
+    border: 1px solid #c9c9c9;
+}
+.main_search_result_wrapper>div[class^="main_search_result_"] {
+    position: relative;
+    display: flex;
+    max-height: 181px;
+    overflow-y: hidden;
+    display: none;
+}
+.main_search_result_wrapper>div[class^="main_search_result_"]::after {
+    position: absolute;
+    top: 9px;
+    left: 13px;
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3) -20px -218px;
+}
+.main_search_result .main_search_result_wrapper .main_search_result_singer::after {
+   background-position-y: -238px;
+}
+.main_search_result .main_search_result_wrapper .main_search_result_album::after {
+    background-position: -40px 2px;
+}
+.main_search_result .main_search_result_wrapper .main_search_result_list::after {
+    background-position: 0 -217px;
+}
+.main_search_result_title {
+    width: 88px;
+    padding: 7px 20px 0 40px;
+    margin-bottom: 7px;
+    font-weight: 400;
+    color: #999;
+}
+.main_search_result_item {
+    display: flex;
+    padding: 0 10px 0 40px;
+    font-size: 14px;
+    line-height: 36px;
+}
+.main_search_result_item:hover {
+    background-color: #31c27c;
+}
+.main_search_result_item_wrapper {
+    width: 600px;
+    border-left: 1px solid #c9c9c9;
+    border-bottom: 1px solid rgba(242, 242, 242);
+}
+.main_search_result_item:hover> * {
+    color: #fff;
+}
+.main_search_result_info_name { 
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    line-height: 36px;
+}
+.main_search_result_info_singer {
+    color: #999;
+    line-height: 36px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.main_search_result_item .main_search_key {
+    color: #31C27c;
+}
+.main_search_result_item:hover .main_search_key {
+    color: #fff;
+}
+
+/* 置顶时 */
+.search_hd_top .search_input {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 1200px;
+    height: 67px;
+    padding-left: 0;
+}
+.search_hd_top .search_input input {
+    width: 90%;
+    height: 67px;
+    padding-left: 20px;
+    font-size: 18px;
+}
+.search_hd_top .search_input button {
+    width: 67px;
+    height: 67px;
+    background-color: #31c27c;
+}
+.search_hd_top .search_input button::before {
+    width: 23px;
+    height: 23px;
+    background-position: 0 -260px;
+}
+.search_hd_top .search_input button:hover {
+    background-color: rgba(44, 175, 111);
+}
+.search_hd_top .search_input button:hover::before {
+    background-position: 0 -260px;
+}
+.search_hd_top .search_input_cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 67px;
+    z-index: 999;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgb(0,0,0,.3);
+}
+/* 热门搜索 */
+.search_hd .main_search_hot {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: #fff;
+}
+.search_hd .main_search_hot_body {
+    display: flex;
+    gap: 20px;
+}
+.search_hd .main_search_hot_body a {
+    color: #fff;
+}
+.search_hd .main_search_hot_body a:hover {
+    color: #31C27c;
+}
+/* 搜索内容 */
+.search_bd_nav {
+    display: flex;
+    gap: 55px;
+}
+.search_bd_nav a {
+    line-height: 55px;
+}
+/* 单曲 */
+.search_bd_song .search_bd_song_btn {
+    display: flex;
+    gap: 5px;
+    margin: 40px 0 20px;
+}
+.search_bd_song .search_bd_song_btn a {
+    position: relative;
+    padding: 0 20px 0 40px;
+    border: 1px solid #c9c9c9;
+    border-radius: 2px;
+    line-height: 38px;
+}
+.search_bd_song .search_bd_song_btn a:hover {
+    background-color: rgba(237, 237, 237);
+    color: #000;
+}
+.search_bd_song .search_bd_song_btn a::before {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    display: inline-block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3) -20px 0px;
+    transform: translateY(-50%);
+}
+.search_bd_song .search_bd_song_btn a:first-child::before {
+    background-position: -60px -220px;
+}
+.search_bd_song .search_bd_song_btn a:nth-child(3)::before {
+    background-position: -40px -220px;
+}
+.search_bd_song .search_bd_song_btn a:nth-child(4)::before {
+    background-position-x: -120px;
+}
+.search_bd_song .search_bd_song_title {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 50px;
+    padding: 0 20px 0 15px;
+    color: #999;
+    line-height: 50px;
+}
+.search_bd_song .search_bd_song_content {
+    display: grid;
+    /* grid-template-rows: repeat(30,50px); */
+    min-height: 400px;
+    padding: 0 20px 0 15px;
+    margin-bottom: 50px;
+    
+}
+.search_bd_song .search_bd_song_content> * {
+    line-height: 50px;
+}
+.search_bd_song .search_bd_song_content>div:nth-child(odd) {
+    background-color: rgba(0,0,0,.01);
+}
+.search_bd_song_content_row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 50px;
+}
+.search_bd_song_content_row> * {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.search_bd_song_content_row .search_bd_song_content_song {
+    position: relative;
+}
+.search_bd_song_content_row .search_bd_song_text {
+    max-width: 80%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden
+}
+.search_bd_song_content_row:hover .search_bd_song_text {
+    max-width: 40%;
+}
+.search_bd_song_content_row:hover .mod_list_menu {
+    display: block;
+}
+.search_bd_song_content_song .mod_list_menu {
+    display: none;
+    position: absolute;
+    top: 7px;
+    right: 20px;
+    z-index: 1;
+}
+.search_bd_song_content_song .mod_list_menu li {
+    float: left;
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_list_menu.png?max_age=2592000&v=c7d35bfe7f255b43324a028598ea64a8);
+}
+.search_bd_song_content_song .mod_list_menu li:nth-child(2) {
+    background-position: 0 -80px;
+}
+.search_bd_song_content_song .mod_list_menu li:nth-child(3) {
+    background-position: 0 -120px;
+}
+.search_bd_song_content_song .mod_list_menu li:nth-child(4) {
+    background-position: 0 -40px;
+}
+.search_bd_song_content_song .mod_list_menu li:hover {
+    background-position-x: -40px;
+}
+.search_bd_song_content_row .search_bd_song_content_time {
+    color: #999;
+}
+/* 分页按钮 */
+.search_bd_page {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+.search_bd_page li {
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+    border-radius: 50%;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+.search_bd_page li:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.search_bd_page li[class="page_current"] {
+    background-color: #31c27c;
+    color: #fff;
+    cursor: default;
+}
+.search_bd_page li[class="page_ellipsis"] {
+    width: 15px;
+    height: 15px;
+    margin-right: 2px;
+    cursor: default;
+}
+.search_bd_page li[class="page_ellipsis"]:hover {
+    background-color: #fff;
+    color: #000;
+}

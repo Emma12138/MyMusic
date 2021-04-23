@@ -43,30 +43,29 @@ SliderButton.prototype.switch = function (index) {
     arr[index].className = 'main_slider_switch_current';
 }
 
-// 遮罩
-// function Create(className) {
-//     this.className = className;
-// }
-// Create.prototype.create = function () {
-//     let div = document.createElement('div');
-//     div.className = this.className;
-//     document.body.appendChild(div);
-// }
-// Create.prototype.close = function () {
-//     thisstyle.display = 'none';
-// }
-
 // 建立新元素，返回的对象中含有操作该新元素的方法
-function Create(className, parent) {
-    this.parent = parent;
+function Create(tag, className, innerHTML, parent, attribute, value) {
+
+    this.tag = tag;
     this.className = className;
+    this.innerHTML = innerHTML;
+    this.parent = parent;
+    this.attribute = attribute;
+    this.value = value;
 }
 Create.prototype.init = function () {
-    let div = document.createElement('div');
-    div.className = this.className;
-    this.node = div;
-    this.parent.appendChild(div);
+    let element = document.createElement(this.tag);
+    element.className = this.className;
+    element.setAttribute(this.attribute, this.value);
+
+    this.node = element;
+    this.parent.appendChild(element);
 }
-Create.prototype.close = function () {
-    this.node.parentNode.removeChild(this.node);
+Create.prototype.close = function (Bool) {
+    if (Bool) {
+        this.node.parentNode.removeChild(this.node);
+    } else {
+        display(this.node, false);
+    }
+
 }
