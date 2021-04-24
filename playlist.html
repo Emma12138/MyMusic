@@ -14,11 +14,11 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="CSS/base.css">
     <link rel="stylesheet" href="CSS/common.css">
-    <link rel="stylesheet" href="CSS/user.css">
+    <link rel="stylesheet" href="CSS/playlist.css">
     <script src="JS/constructor.js"></script>
     <script src="JS/fn.js"></script>
     <script src="JS/common.js"></script>
-    <script src="JS/user.js"></script>
+    <script src="JS/playlist.js"></script>
 </head>
 
 <body>
@@ -34,8 +34,8 @@
                     </h1>
                 </div>
                 <ul class="header_nav">
-                    <li class="header_nav_item"><a href="#">音乐馆</a></li>
-                    <li class="header_nav_item index_nav_current"><a href="#" class="a_current">我的音乐</a></li>
+                    <li class="header_nav_item index_nav_current"><a href="#" class="a_current">音乐馆</a></li>
+                    <li class="header_nav_item"><a href="#">我的音乐</a></li>
                     <li class="header_nav_item header_nav_item_client">
                         <a href="#">客户端</a>
                         <img src="http://y.gtimg.cn/mediastyle/yqq/extra/mark_1.png" class="header_nav_special">
@@ -163,7 +163,7 @@
         </div>
         <div class="index_nav_wrapper">
             <ol class="index_nav w">
-                <li class="index_nav_item"><a href="javascript:;" class="a_current">首页</a></li>
+                <li class="index_nav_item"><a href="javascript:;">首页</a></li>
                 <li class="index_nav_item"><a href="javascript:;">歌手</a></li>
                 <li class="index_nav_item"><a href="javascript:;">新碟</a></li>
                 <li class="index_nav_item"><a href="javascript:;">排行榜</a></li>
@@ -176,69 +176,121 @@
         </div>
     </header>
     <section class="main">
-        <div class="user_hd">
+        <div class="playlist_hd">
             <div class="w">
-                <div class="user_pic">
-                    <img src="" alt="">
+                <div class="playlist_pic">
+                    <img src="https://qpic.y.qq.com/music_cover/uXtIBAxaiaVfmdYhOibK1Dg3mfeZZqNDjoiaC8VBIfcyZgBjXXyzVyjww/300?n=1"
+                        alt="">
                 </div>
-                <p class="user_name">平成.</p>
-                <div class="user_info">
-                    <a href="javascript:;" class="user_info_follow">
-                        <em class="user_info_follow_count">8</em>
-                        关注
-                    </a>
-                    <div class="user_info_line"></div>
-                    <a href="javascript:;" class="user_info_fans">
-                        <em class="user_info_fans_count">1</em>
-                        粉丝
-                    </a>
+                <div class="playlist_hd_content">
+                    <h3 class="playlist_title">一条小团团OvO的「游戏歌单」</h3>
+                    <p class="playlist_name">K先生的猫</p>
+                    <div class="playlist_tag">标签：背景音乐</div>
+                    <div class="playlist_play_count">播放量：1131.8万</div>
+                    <div class="playlist_like_count">收藏量：8.2万</div>
+                    <div class="playlist_btn">
+                        <a href="javascript:;">播放全部</a>
+                        <a href="javascript:;">收藏</a>
+                        <a href="javascript:;">评论(306)</a>
+                        <a href="javascript:;">更多</a>
+                    </div>
                 </div>
-                <nav class="user_nav">
-                    <a href="javascript:;" class="user_nav_current">我喜欢</a>
-                    <a href="javascript:;">我的已购</a>
-                    <a href="javascript:;">我创建的歌单</a>
-                    <a href="javascript:;">关注</a>
-                    <a href="javascript:;">粉丝</a>
-                    <a href="javascript:;">我上传的视频</a>
-                </nav>
             </div>
         </div>
-        <div class="user_bd">
+        <div class="playlist_bd">
             <div class="w">
-                <div class="user_bd_nav">
-                    <a href="javascript:;" class="a_current">歌曲 340</a>
-                    <a href="javascript:;">歌单 13</a>
-                    <a href="javascript:;">专辑 21</a>
-                    <a href="javascript:;">视频 0</a>
-                </div>
-                <div class="user_bd_song">
-                    <div class="user_bd_song_btn">
-                        <a href="javascript:;">播放全部</a>
-                        <a href="javascript:;">添加到</a>
-                        <a href="javascript:;">下载</a>
-                        <a href="javascript:;">批量操作</a>
-                    </div>
-                    <div class="user_bd_song_title">
+                <div class="playlist_bd_song">
+                    <div class="playlist_bd_song_title">
                         <span>歌曲</span>
                         <span>歌手</span>
                         <span>专辑</span>
                         <span>时长</span>
                     </div>
-                    <div class="user_bd_song_content_wrapper">
-
+                    <div class="playlist_bd_song_content_wrapper">
                         <aside class="search_loading">
                             <img src="https://y.gtimg.cn/mediastyle/yqq/img/loading.gif?max_age=2592000&v=4d882ab54383b136b0cae1f7c93ab74a"
                                 alt="">
                         </aside>
                     </div>
                 </div>
+                <div class="playlist_bd_info">
+                    <h3 class="playlist_bd_info_title">简介</h3>
+                    <p class="playlist_bd_info_content">这里收集了团团的游戏BGM～赶紧跟上抖腿的节奏8</p>
+                </div>
             </div>
-            <ol class="user_bd_page">
+            <ol class="playlist_bd_page">
                 <!-- <li class="page_current">1</li>
                         <li>2</li>
                         <li>3</li> -->
             </ol>
         </div>
+        <div class="comment">
+            <div class="w">
+                <div class="comment_content">
+                    <h3 class="comment_title">评论&nbsp;
+                        <em class="comment_title_info">共305条评论</em>
+                    </h3>
+                    <div class="comment_input">
+                        <textarea name="" id="" cols="30" rows="10" placeholder="期待你的神评论......"></textarea>
+                        <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+                        <a href="javascript:;" class="comment_face"></a>
+                        <button class="comment_post">发表评论</button>
+                    </div>
+                    <div class="comment_bd">
+                        <div class="comment_bd_good_wrapper">
+                            <h4 class="comment_bd_title">精彩评论</h4>
+                            <!-- <ul class="comment_bd_content">
+                                <li class="comment_bd_item comment_feedback">
+                                    <img src="https://thirdqq.qlogo.cn/g?b=sdk&k=TsHCBncxCxTKFZE7TgbQQQ&s=140&t=1618414298"
+                                        class="comment_bd_pic">
+                                    <div class="comment_bd_info">
+                                        <h5 class="comment_bd_name">王同学</h5>
+                                        <p class="comment_bd_text">千万不要点我这个赞，否则你会遭三劫 1作业消失 2父母长命百岁 3喜欢的人向你表白</p>
+                                        <i class="comment_bd_time">2019年12月31日 06:27</i>
+                                    </div>
+                                    <a href="javascript:;" class="comment_bd_praise">3656</a>
+                                    <a href="javascript:;" class="comment_bd_commentHim"></a>
+                                    <div class="comment_input">
+                                        <textarea name="" id="" cols="30" rows="10" placeholder="回复@平成."></textarea>
+                                        <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+                                        <a href="javascript:;" class="comment_face"></a>
+                                        <button class="comment_post">回复</button>
+                                        <button class="comment_cancel">取消</button>
+                                    </div>
+                                </li>
+                            </ul> -->
+                        </div>
+                        <div class="comment_bd_new_wrapper">
+                            <h4 class="comment_bd_title">最新评论</h4>
+                            <!-- <ul class="comment_bd_content">
+                                <li class="comment_bd_item comment_feedback">
+                                    <img src="https://thirdqq.qlogo.cn/g?b=sdk&k=TsHCBncxCxTKFZE7TgbQQQ&s=140&t=1618414298"
+                                        class="comment_bd_pic">
+                                    <div class="comment_bd_info">
+                                        <h5 class="comment_bd_name">王同学</h5>
+                                        <p class="comment_bd_text">千万不要点我这个赞，否则你会遭三劫 1作业消失 2父母长命百岁 3喜欢的人向你表白</p>
+                                        <p class="comment_reply">
+                                            有人问我“为什么总听英文歌，你能听懂吗，会唱吗”其实每个人都有自己的欣赏方式和品味，虽然不知道意思。但是听到那种曲调，那个嗓音，那种氛围，我想这就是音乐的魅力吧
+                                        </p>
+                                        <i class="comment_bd_time">2019年12月31日 06:27</i>
+                                        <a href="javascript:;" class="comment_bd_praise">3656</a>
+                                        <a href="javascript:;" class="comment_bd_commentHim"></a>
+                                    </div>
+                                    <div class="comment_input">
+                                        <textarea name="" id="" cols="30" rows="10" placeholder="回复@平成."></textarea>
+                                        <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+                                        <a href="javascript:;" class="comment_face"></a>
+                                        <button class="comment_post">回复</button>
+                                        <button class="comment_cancel">取消</button>
+                                    </div>
+                                </li>
+                            </ul> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- 用于收缩 -->
+                <div class="wrapper"></div>
+            </div>
         </div>
     </section>
     <!-- 页脚 -->

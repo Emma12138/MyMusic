@@ -295,7 +295,7 @@ window.addEventListener('load', function () {
                 closeBtn.click();
 
                 // 跳转到用户个人页面
-                window.location.href = `file:///C:/Users/Emma/Desktop/study/CSS/MyMusic/user.html#id=${response.profile.userId}`;
+                window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html#id=${response.profile.userId}`;
             },
             error: function () { }
         })

@@ -58,7 +58,7 @@ window.addEventListener('load', function () {
             success: function (data) {
 
                 playlistData = data.playlist;// 数组
-                console.log(JSON.stringify(playlistData, null, 4));
+                // console.log(JSON.stringify(playlistData, null, 4));
                 // loadUser(data.profile);
 
                 // 渲染我喜欢的音乐
@@ -109,6 +109,7 @@ window.addEventListener('load', function () {
 
     // 渲染我喜欢的音乐
     function renderMyLike(data) {// data 是数组
+        // console.log(data)
         for (let i = 30; i < data.length + 30; i += 30) {
             let div = document.createElement('div');
             div.className = 'user_bd_song_content';
@@ -146,7 +147,7 @@ window.addEventListener('load', function () {
         // 去掉加载动画
         myLikeBd.removeChild(myLikeBd.children[0])
         // 展示第一页
-        display(myLikeBd.children[0], 'grid')
+        display(myLikeBd.children[0], 'grid');
 
         // 为添加和删除按钮绑定事件
         let addBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');
@@ -203,6 +204,8 @@ window.addEventListener('load', function () {
             }
         })
     }
+
+
     // 添加或删除歌曲到歌单
     // 添加歌曲到歌单
     function clickAdd(sid, callback) {
@@ -293,7 +296,6 @@ window.addEventListener('load', function () {
         let lists = document.querySelector('.user_bd_playlist_content');
         lists.innerHTML = playlistData.map(value => {
             if (value.creator.userId === parseInt(userId)) {
-                console.log(1)
                 return `<li class="user_bd_playlist_item" src-pid=${value.id}>
                     <img src="${value.coverImgUrl}" alt="">
                     <p class="user_bd_playlist_item_name">${value.name}</p>
@@ -301,16 +303,14 @@ window.addEventListener('load', function () {
             </li>`
             }
         }).join('');
-    }
-    // 显示信息弹窗
-    function msgPop(text) {
-        let msg = document.querySelector('.msgpop');
-        msg.innerHTML = text;
-        msg.style.opacity = '1';
-        let timer = setTimeout(function () {
-            msg.style.opacity = '0';
-            clearTimeout(timer);
-            timer = null;
-        }, 2000);
+
+        // 点击后跳转到歌单详情页面
+        let items = lists.children;
+        console.log(items);
+        for (let i = 0; i < items.length; i++) {
+            items[i].onclick = function () {
+                window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html#id=${this.getAttribute('src-pid')}`
+            }
+        }
     }
 })

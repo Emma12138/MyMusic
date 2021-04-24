@@ -1,0 +1,258 @@
+.highlight {
+    color: #31c27c;
+}
+body {
+    height: 2000px;
+}
+
+.playlist_hd {
+    height: 250px;
+    margin: 30px 0 30px 0;
+}
+.playlist_hd .playlist_pic {
+    float: left;
+    margin-right: 55px;
+}
+.playlist_hd .playlist_pic img {
+    width: 250px; 
+    height: 250px; 
+    vertical-align: middle;
+}
+.playlist_hd .playlist_hd_content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.playlist_hd .playlist_title  {
+    font-weight: 400;
+    font-size: 31px;
+    color: #000;
+}
+.playlist_hd .playlist_name {
+    position: relative;
+    padding-left: 22px;
+    font-size: 16px;
+    color: #333;
+}
+.playlist_hd .playlist_name::before {
+    position: absolute;
+    top: 5px;
+    left: 0px;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3) -20px -240px;
+}
+/* 按钮 */
+.playlist_hd_content .playlist_btn {
+    display: flex;
+    gap: 5px;
+}
+.playlist_hd_content .playlist_btn a {
+    position: relative;
+    padding: 0 20px 0 40px;
+    border: 1px solid #c9c9c9;
+    border-radius: 2px;
+    line-height: 38px;
+}
+.playlist_hd_content .playlist_btn a:first-child {
+    background-color: #31c27c;
+    color: #fff;
+}
+.playlist_hd_content .playlist_btn a:hover {
+    background-color: rgba(237, 237, 237);
+    color: #000;
+}
+.playlist_hd_content .playlist_btn a:first-child:hover {
+    background-color: rgba(44, 175, 111);
+}
+.playlist_hd_content .playlist_btn a::before {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    display: inline-block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3) -60px 0px;
+    transform: translateY(-50%);
+}
+.playlist_hd_content .playlist_btn a:first-child::before {
+    background-position: -80px -220px;
+}
+.playlist_hd_content .playlist_btn a:nth-child(3)::before {
+    background-position: -140px -120px;
+}
+.playlist_hd_content .playlist_btn a:nth-child(4)::before {
+    background-position: -20px -80px;
+}
+
+
+/* 主体部分 */
+.playlist_bd .w {
+    display: flex;
+    gap: 80px;
+}
+.playlist_bd_song {
+    flex-basis: 857px;
+}
+.playlist_bd_song .playlist_bd_song_title {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 50px;
+    padding: 0 20px 0 15px;
+    color: #999;
+    line-height: 50px;
+}
+.playlist_bd_song .playlist_bd_song_content_wrapper {
+    display: grid;
+    margin-bottom: 50px;
+    min-height: 400px;
+}
+.playlist_bd_song .playlist_bd_song_content {
+    padding: 0 20px 0 15px;
+    
+}
+.playlist_bd_song .playlist_bd_song_content> * {
+    line-height: 50px;
+}
+.playlist_bd_song .playlist_bd_song_content>div:nth-child(odd) {
+    background-color: rgba(0,0,0,.01);
+}
+.main .playlist_bd_song .musicDis * {
+    color: #999;
+}
+.playlist_bd_song_content_row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 50px;
+}
+
+.playlist_bd_song_content_row> * {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.playlist_bd_song_content_row .playlist_bd_song_content_song {
+    position: relative;
+}
+.playlist_bd_song_content_row .playlist_bd_song_text {
+    max-width: 80%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden
+}
+.playlist_bd_song_content_row:hover .playlist_bd_song_text {
+    max-width: 40%;
+}
+.playlist_bd_song_content_row:hover .mod_list_menu {
+    display: block;
+}
+.playlist_bd_song_content_song .mod_list_menu {
+    display: none;
+    position: absolute;
+    top: 7px;
+    right: 20px;
+    z-index: 1;
+}
+.playlist_bd_song_content_song .mod_list_menu li {
+    float: left;
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+    background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_list_menu.png?max_age=2592000&v=c7d35bfe7f255b43324a028598ea64a8);
+}
+.playlist_bd_song_content_song .mod_list_menu li:nth-child(2) {
+    background-position: 0 -80px;
+}
+.playlist_bd_song_content_song .mod_list_menu li:nth-child(3) {
+    background-position: 0 -120px;
+}
+.playlist_bd_song_content_song .mod_list_menu li:nth-child(4) {
+    background-position: 0 -40px;
+}
+.playlist_bd_song_content_song .mod_list_menu li:hover {
+    background-position-x: -40px;
+}
+.playlist_bd_song_content_row .playlist_bd_song_content_time {
+    color: #999;
+}
+/* 简介 */
+.playlist_bd .playlist_bd_info {
+    flex: 0 0 290px;
+}
+.playlist_bd .playlist_bd_info .playlist_bd_info_title {
+    margin-bottom: 10px;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+
+/* 加载动画 */
+.playlist_bd_song_content .playlist_loading {
+    grid-row: 1 / span 10;
+    place-self: center;
+}
+
+/* 添加歌曲到歌单弹窗 */
+.addsong_playlist {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    width: 330px;
+    height: 250px;
+    padding-top: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #666;
+    font-size: 16px;
+    overflow-y: auto;
+    box-shadow: 0 0 4px rgb(0,0,0,.3);
+    transform: translate(-50%,-50%);
+}
+.addsong_playlist .addsong_playlist_title {
+    padding: 0 10px;
+    margin-bottom: 7px;
+    font-weight: 400;
+    color: #999;
+    font-size: 20px;
+}
+.addsong_playlist_close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_new {
+    padding: 0 10px;
+    color: #333;
+    line-height: 36px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_new:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.addsong_playlist ol {
+    display: flex;
+    flex-direction: column;
+}
+.addsong_playlist .addsong_playlist_item {
+    padding: 0 10px;
+    color: #333;
+    line-height: 36px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_playlist_item:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.addsong_playlist .addsong_playlist_msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 26px;
+    transform: translate(-50%,-50%);
+}
+

@@ -359,21 +359,3 @@
     font-size: 26px;
     transform: translate(-50%,-50%);
 }
-/* 信息弹窗 */
-.msgpop {
-    position: fixed;
-    top: 80%;
-    left: 50%;
-    z-index: 1200;
-    min-width: 250px;
-    padding: 10px 20px 10px;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: 20px;
-    line-height: 36px;
-    text-align: center;
-    box-shadow: 0 0 4px rgb(0,0,0,.3);
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity .8s;
-}

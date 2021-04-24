@@ -37,9 +37,11 @@ function scroll(target = 0) {
     let obj = document.documentElement || document.body;
     clearInterval(obj.timer);
     obj.timer = setInterval(function () {
-        let step = obj.scrollTop / 10;
+        let step = obj.scrollTop / 15;
+        step = Math.ceil(step);
         obj.scrollTop = obj.scrollTop - step;
-        if (obj.scrollTop == target) {
+        // console.log(obj.scrollTop)
+        if (obj.scrollTop <= target) {
             clearInterval(obj.timer);
             obj.timer = null;
         }
@@ -164,7 +166,7 @@ function highLight(text, keywords) {
 
 }
 
-// 将时间戳转化为 xx:xx 形式
+// 将时间转化为 xx:xx 形式
 function getTime(num) {
     num = Math.round(num / 1000);
     let min = Math.floor(num / 60);
@@ -173,6 +175,25 @@ function getTime(num) {
     s = s < 10 ? '0' + s : s;
     let str = min + ':' + s;
     return str;
+    // let min = num.getMinutes();
+    // min = min < 10 ? '0' + min : min;
+    // let s = num.getSeconds();
+    // s = s < 10 ? '0' + s : s;
+    // return min + ':' + s;
+}
+// 将时间转化为 年月日 形式
+function getYearTime(num) {
+    let time = new Date(num);
+    let year = time.getFullYear();
+    let mon = time.getMonth() + 1;
+    mon = mon < 10 ? '0' + mon : mon;
+    let day = time.getDate();
+    day = day < 10 ? '0' + day : day;
+    let h = time.getHours();
+    h = h < 10 ? '0' + h : h;
+    let min = time.getMinutes();
+    min = min < 10 ? '0' + min : min;
+    return `${year}年${mon}月${day}日 ${h}:${min}`;
 }
 
 // 储存搜索历史
@@ -216,7 +237,7 @@ function clickSearchResult(keywords, input) {
     storHis(hisData, keywords);
 
     // 跳转
-    window.location.href = `file:///C:/Users/Emma/Desktop/study/CSS/MyMusic/search.html#keywords=${keywords}`;
+    window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html#keywords=${keywords}`;
     if (window.location.href.includes('search.html')) {
         window.location.reload(true);
     }
@@ -268,4 +289,20 @@ function changePage(index, items) {
 
     items[index].className = 'page_current';
 
+}
+function getComment() {
+
+}
+
+// 显示信息弹窗
+function msgPop(text) {
+    let msg = document.querySelector('.msgpop');
+    msg.innerHTML = text;
+    msg.style.height = '50px';
+    msg.style.opacity = '1';
+    let timer = setTimeout(function () {
+        msg.style.opacity = '0';
+        clearTimeout(timer);
+        timer = null;
+    }, 1500);
 }
