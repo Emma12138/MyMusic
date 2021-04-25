@@ -4,19 +4,59 @@ window.onload = function () {
 
     document.body.style.zoom = 1;
 
+    // 获取参数：关键词、用户id
+    let searchKey;
+    let userId;
+    let param = window.location.hash;// #keywords=xxx  /  #userId=xxxxxx&keywords=xxx
+    function makeParams(param) {
+        if (param.includes('&')) {
+            userId = undefined;
+        } else {
+            userId = parseInt(param.substr(param.indexOf('userId=') + 7, param.indexOf('&keywords=')));
+        }
+        searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9));
+    }
+    makeParams(param);
+
+    // 登录
+    if (userId) {
+        ajax({
+            // async: false,
+            url: 'http://localhost:3000/user/detail',
+            data: {
+                uid: userId
+            },
+            success: function (data) {
+                // 加载用户基本信息
+                loadUser(data.profile);
+            }
+        })
+        function loadUser(data) {
+            // 更新头像
+            let headerAvatar = document.querySelector('.login_avatar');
+            let loginBtn = headerAvatar.previousElementSibling;
+            let userPic = document.querySelector('.user_pic img');
+            let avatarUrl = data.avatarUrl;
+            headerAvatar.src = avatarUrl;
+            userPic.src = avatarUrl;
+            display(headerAvatar);
+            display(loginBtn, false);
+
+        }
+    }
+
+
+
     // 热门搜索
     ajax({
         url: 'http://localhost:3000/search/hot/detail',
-        header: {
-            'xhrFields': '{ withCredentials: true }'
-        },
         success(data) {
             let mainSearchHot = document.querySelectorAll('.main_search_hot_body a');
 
             for (let i = 0; i < mainSearchHot.length; i++) {
                 mainSearchHot[i].innerHTML = data.data[i].searchWord;
 
-                // 点击时发起搜索
+                // 点击热门搜索的关键词时发起搜索
                 mainSearchHot[i].addEventListener('click', function () {
 
                     clickSearchResult(this.innerHTML, mainSearchInput);
@@ -51,12 +91,10 @@ window.onload = function () {
     // 若页面初始化后也调用
     window.dispatchEvent(new Event('scroll'));
 
+
     // 中部搜索框搜索
     let mainSearchInput = document.querySelector('.search_input input');
     let mainSearchItems = mainSearchResult.querySelectorAll('.main_search_result_item_wrapper');
-    // 
-    let param = window.location.hash;
-    let searchKey = param.substr(param.indexOf('keywords=') + 9);
 
     mainSearchInput.value = decodeURIComponent(searchKey);
 
@@ -152,21 +190,22 @@ window.onload = function () {
                     album.innerHTML = `${data.result.albums.map((value, index) => {
                         if (index < 4) {
                             let reg = new RegExp(mainSearchInput.value, 'gi');
+                            console.log(reg.test(value.artist.name))
                             return `<a href="javascript:;" class="main_search_result_item">
                                           <div class="main_search_result_info_name">
     
                                   ${reg.test(value.name) ? value.name.split(reg).join(`<span class="main_search_key">${mainSearchInput.value}</span>`) : value.name}
          
-                                         </div>
+                                        </div>
                                          <div class="main_search_result_info_singer">&nbsp;-&nbsp;
     
-                                         ${value.artist.name}
+                                         ${reg.test(value.artist.name) ? value.artist.name.split(reg).join(`<span class="main_search_key">${mainSearchInput.value}</span>`) : value.artist.name}
                 
-                                                </div>
+                                        </div>
                                  </a>`
                         }
                     }).join('')}`;
-                    display(album.parentNode);
+                    display(album.parentNode, 'flex');
                 } else {
                     display(album.parentNode, false);
                 }
@@ -177,7 +216,7 @@ window.onload = function () {
                 for (let i = 0; i < items.length; i++) {
                     items[i].addEventListener('click', function () {
 
-                        clickSearchResult(this.children[0].text,
+                        clickSearchResult(this.children[0].textContent,
                             mainSearchInput);
                     })
                 }
@@ -189,6 +228,7 @@ window.onload = function () {
         })
     })
     )
+
 
     // 搜索历史
     // localstor.clear();
@@ -241,6 +281,8 @@ window.onload = function () {
         mainSearchInput.focus();
     }
 
+
+
     // 点击搜索按钮进入搜索页，更新搜索历史
     let mainSearchBtn = document.querySelector('.search_input button')
     mainSearchBtn.onclick = function () {
@@ -264,6 +306,8 @@ window.onload = function () {
             mainSearchBtn.click();
         }
     })
+
+
 
     // 搜索结果
     let searchBd = document.querySelector('.search_bd_song_content');
@@ -294,44 +338,60 @@ window.onload = function () {
 
     // 若请求发送成功，渲染数据
     function searchSuccess(data, bool = false) {
+
         // 如果是第一次渲染搜索结果
         if (bool) {
             // 动态创建分页按钮，并绑定事件
             // 创建分页按钮并绑定事件
             createPage(document.querySelector('.search_bd_page'), data.result.songCount, function () {
-                // 更换样式
-                changePage(this.index, document.querySelectorAll('.search_bd_page li'))
+                if (this.className !== 'page_current') {
+                    // 更换样式
+                    changePage(this.index, document.querySelectorAll('.search_bd_page li'))
 
-                // 展示加载动画
-                searchBd.innerHTML = load;
+                    // 展示加载动画
+                    searchBd.innerHTML = load;
 
-                // 加载新的搜索结果
-                ajax({
-                    type: 'get',
-                    url: 'http://localhost:3000/search',
-                    header: {
-                        'xhrFields': '{ withCredentials: true }'
-                    },
-                    data: {
-                        keywords: searchKey,
-                        limit: 30,
-                        offset: this.index * 30
-                    },
-                    success: function (data) {
-                        searchSuccess(data);
-                    }
-                })
+                    // 加载新的搜索结果
+                    ajax({
+                        type: 'get',
+                        url: 'http://localhost:3000/search',
+                        header: {
+                            'xhrFields': '{ withCredentials: true }'
+                        },
+                        data: {
+                            keywords: searchKey,
+                            limit: 30,
+                            offset: this.index * 30
+                        },
+                        success: function (data) {
+                            searchSuccess(data);
+                        }
+                    })
+
+                    // 优化页面滚动效果
+                    document.querySelector('.search_bd_song_content').style.minHeight = '1500px';
+                    scroll(document.querySelector('.search_bd_song_title').offsetTop - document.querySelector('.search_input_cover').offsetHeight, function () {
+                        document.querySelector('.search_bd_song_content').style.minHeight = '';
+                    });
+                }
+
             }, function () {
                 changePage(0, document.querySelectorAll('.search_bd_page li'));
             })
         }
 
+
         data = data.result.songs;
 
         searchBd.innerHTML = data.map(value => {
+            let reg = new RegExp(searchKey, 'gi');
             return `<div class="search_bd_song_content_row">
             <a href="javascript:;" class="search_bd_song_content_song">
-                <p class="search_bd_song_text" src-songid="${value.id}">${value.name}</p>
+                <p class="search_bd_song_text" src-songid="${value.id}">
+
+                ${reg.test(value.name) ? value.name.split(reg).join(`<span class="search_key">${searchKey}</span>`) : value.name}
+                
+                </p>
                 <ul class="mod_list_menu">
                     <li href="javascript:;"></li>
                     <li href="javascript:;"></li>
@@ -342,43 +402,22 @@ window.onload = function () {
             <div class="search_bd_song_content_singer">
 
             ${value.artists.map(value => {
-                return `<a href="javascript:;" src-singerid="${value.id}">${value.name}</a>`
+
+                return `<a href="javascript:;" src-singerid="${value.id}">${reg.test(value.name) ? `${value.name.split(reg).join(`<span class="search_key">${searchKey}</span>`)}` : value.name}</a>`
             }).join('&nbsp;/&nbsp;')}
 
             </div>
-            <a href="javascript:;" class="search_bd_song_content_album" src-albumid="${value.album.id}">${value.album.name}</a>
+            <a href="javascript:;" class="search_bd_song_content_album" src-albumid="${value.album.id}">
+
+            ${reg.test(value.album.name) ? value.album.name.split(reg).join(`<span class="search_key">${searchKey}</span>`) : value.album.name}
+
+            </a>
             <span class="search_bd_song_content_time">${getTime(value.duration)}</span>
         </div>`
         }).join('');
 
+
     }
 
-    // 创建分页按钮并绑定事件
-    // createPage(document.querySelector('.search_bd_page'), data.result.songCount, function () {
-    //     // 更换样式
-    //     changePage(i, document.querySelectorAll('.search_bd_page li'))
-
-    //     // 展示加载动画
-    //     searchBd.innerHTML = load;
-
-    //     // 加载新的搜索结果
-    //     ajax({
-    //         type: 'get',
-    //         url: 'http://localhost:3000/search',
-    //         header: {
-    //             'xhrFields': '{ withCredentials: true }'
-    //         },
-    //         data: {
-    //             keywords: searchKey,
-    //             limit: 30,
-    //             offset: i * 30
-    //         },
-    //         success: function (data) {
-    //             searchSuccess(data);
-    //         }
-    //     })
-    // }, function () {
-    //     changePage(0, document.querySelectorAll('.search_bd_page li'));
-    // })
-
 }
+

@@ -1,5 +1,6 @@
 window.addEventListener('load', function () {
 
+
     // 导航栏热搜
     ajax({
         url: 'http://localhost:3000/search/hot/detail',
@@ -25,9 +26,9 @@ window.addEventListener('load', function () {
     let searchItems = searchResult.querySelectorAll('.search_result_item_wrapper');
     //
     let searchKey = window.location.hash.substr(10);
-    // if (searchKey !== '') {
-    searchInput.value = decodeURIComponent(searchKey);
-    // }
+    if (searchKey !== '') {
+        searchInput.value = decodeURIComponent(searchKey);
+    }
     searchInput.addEventListener('blur', function () {
         // 记录搜索框是否得到焦点，用于判断按下回车键是否发起搜索
         searchInput.isFocus = false;
@@ -122,11 +123,11 @@ window.addEventListener('load', function () {
                               ${reg.test(value.name) ? value.name.split(reg).join(`<span class="search_key">${searchInput.value}</span>`) : value.name}
      
                                      </div>
-                                     <div class="search_result_info_singer">&nbsp;-&nbsp;
+                                    <div class="search_result_info_singer">&nbsp;-&nbsp;
 
-                                     ${value.artist.name}
+                                    ${reg.test(value.artist.name) ? value.artist.name.split(reg).join(`<span class="search_key">${searchInput.value}</span>`) : value.artist.name}
             
-                                            </div>
+                                    </div>
                              </a>`
                         }
                     }).join('')}`;
@@ -244,19 +245,30 @@ window.addEventListener('load', function () {
     window.dispatchEvent(ev);
 
     // 登录
+
+    // 如果本地存储中有用户信息，自动登录
+    let userData;
+    if (window.localStorage.user) {
+        userData = JSON.parse(window.localStorage.getItem('user'));
+
+        // 更新头像
+        loadAvatar(userData.profile.avatarUrl);
+    }
+
     // 点击导航栏登录按钮唤起登录界面
     let loginBtn = document.querySelector('.header_login a');
     let login = document.querySelector('.login');
     // 遮罩
     let cover = document.querySelector('.cover');
 
-    loginBtn.onclick = function () {
+    loginBtn.addEventListener('click', function () {
         // 遮罩
         display(cover);
         display(login)
         // 隐藏滚动条
         document.body.style.overflowY = 'hidden';
-    }
+    })
+
     // 关闭登录界面
     let closeBtn = document.querySelector('.login_close');
     closeBtn.onclick = function () {
@@ -286,18 +298,38 @@ window.addEventListener('load', function () {
                 phone: '13543902389',
                 password: encodeURIComponent('661254')
             },
-            success: function (response) {
+            success: function (data) {
                 // 更新头像
                 let avatar = document.querySelector('.login_avatar');
-                avatar.src = response.profile.avatarUrl;
+                avatar.src = data.profile.avatarUrl;
                 display(avatar);
                 display(loginBtn, false);
                 closeBtn.click();
 
-                // 跳转到用户个人页面
-                window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html#id=${response.profile.userId}`;
+                // 用户信息存储到 localstorage
+                window.localStorage.setItem('user', JSON.stringify(data))
+
+                // // 跳转到用户个人页面
+                // window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html#id=${data.profile.userId}`;
             },
             error: function () { }
         })
+    }
+
+    // 点击音乐馆跳转到首页
+    document.querySelector('.header_nav li:nth-child(1)').onclick = function () {
+
+        window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/index.html`;
+    }
+
+    // 点击我的音乐跳转到个人界面
+    document.querySelector('.header_nav li:nth-child(2)').onclick = function () {
+        if (userData) {
+            let userId = userData.profile.userId;
+            // 跳转到用户个人页面
+            window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html#id=${userId}`;
+        } else {
+            loginBtn.click();
+        }
     }
 })

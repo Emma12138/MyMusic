@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        input {
+        div {
             width: 100px;
             height: 100px;
             background-color: red;
@@ -16,17 +16,7 @@
 </head>
 
 <body>
-    <input></input>
-    <script>
-        let input = document.querySelector('input');
-        input.oninput = function () {
-            console.log(1);
-        }
-        let ne = input.cloneNode(true);
-        ne.oninput = input.oninput;
-        document.body.appendChild(ne);
-    </script>
-    <textarea name="" id="" cols="30" rows="10">呵呵呵</textarea>
+    <div></div>
     <script>
         let playlist = [
             {
@@ -16246,6 +16236,51 @@
                 }
             ]
         };
+    </script>
+    <script>
+        function debounce(fn, delay = 500) {
+            let timer;
+            let flag = true;
+            return function () {
+                if (flag) {
+                    flag = false;
+                    // console.log(flag);
+                    fn.apply(this, arguments);
+                    return;
+                }
+
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(() => {
+                    fn.apply(this, arguments);
+                    timer = null;
+                    flag = true;
+                }, delay);
+            }
+        }
+        let div = document.querySelector('div');
+        function fn(a) {
+            console.log(a);
+        }
+        let fn3 = debounce(fn);
+        div.onclick = function () {
+            fn3(1);
+        }
+
+
+        // function f1() {
+        //     var a = 1;
+        //     return function () {
+        //         console.log(a)
+        //         a = 2;
+        //     }
+        // }
+        // let ff = f1();
+        // ff()
+        // ff()
+        // ff()
+        // ff()
     </script>
 </body>
 

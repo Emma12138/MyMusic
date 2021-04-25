@@ -65,6 +65,7 @@ body {
 }
 .playlist_hd_content .playlist_btn a:first-child:hover {
     background-color: rgba(44, 175, 111);
+    color: #fff;
 }
 .playlist_hd_content .playlist_btn a::before {
     position: absolute;
@@ -93,6 +94,9 @@ body {
     display: flex;
     gap: 80px;
 }
+.playlist_bd .w:first-child {
+    min-height: 400px;
+}
 .playlist_bd_song {
     flex-basis: 857px;
 }
@@ -106,7 +110,7 @@ body {
 .playlist_bd_song .playlist_bd_song_content_wrapper {
     display: grid;
     margin-bottom: 50px;
-    min-height: 400px;
+    /* min-height: 400px; */
 }
 .playlist_bd_song .playlist_bd_song_content {
     padding: 0 20px 0 15px;
@@ -124,6 +128,8 @@ body {
 .playlist_bd_song_content_row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 50px;
+    gap: 13px;
+    max-height: 50px;
 }
 
 .playlist_bd_song_content_row> * {
@@ -166,8 +172,11 @@ body {
 .playlist_bd_song_content_song .mod_list_menu li:nth-child(3) {
     background-position: 0 -120px;
 }
-.playlist_bd_song_content_song .mod_list_menu li:nth-child(4) {
+.playlist_bd_song_content_song .mod_list_menu li[class="mod_list_menu_share"] {
     background-position: 0 -40px;
+}
+.playlist_bd_song_content_song .mod_list_menu li[class="mod_list_menu_del"] {
+    background-position: 0 -160px;
 }
 .playlist_bd_song_content_song .mod_list_menu li:hover {
     background-position-x: -40px;
@@ -187,9 +196,9 @@ body {
 
 
 /* 加载动画 */
-.playlist_bd_song_content .playlist_loading {
-    grid-row: 1 / span 10;
-    place-self: center;
+.playlist_bd_song .search_loading {
+    /* margin: 0 auto; */
+    text-align: center;
 }
 
 /* 添加歌曲到歌单弹窗 */

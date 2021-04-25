@@ -394,7 +394,7 @@ button {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.search_result_item .search_key {
+.search_key {
     color: #31C27c;
 }
 .search_result_item:hover .search_key {
@@ -892,6 +892,7 @@ body .index_nav_current a {
     display: flex;
     justify-content: center;
     margin-bottom: 50px;
+    width: 70%;
 }
 .playlist_bd_page li {
     width: 30px;
@@ -939,10 +940,6 @@ body .index_nav_current a {
 .comment .comment_title {
     font-weight: 400;
     font-size: 24px;
-}
-.comment .comment_title  .comment_title_info {
-    color: #999;
-    font-size: 14px;
 }
 .comment .comment_input {
     position: relative;

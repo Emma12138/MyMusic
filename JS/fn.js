@@ -33,20 +33,32 @@ function throttle(fn, delay = 500) {
     }
 }
 
-function scroll(target = 0) {
+function scroll(target = 0, callback) {
     let obj = document.documentElement || document.body;
     clearInterval(obj.timer);
     obj.timer = setInterval(function () {
-        let step = obj.scrollTop / 15;
-        step = Math.ceil(step);
-        obj.scrollTop = obj.scrollTop - step;
-        // console.log(obj.scrollTop)
-        if (obj.scrollTop <= target) {
+        let step = (obj.scrollTop - target) / 15;
+        step = step > 0 ? Math.ceil(step) : Math.floor(step);
+        obj.scrollTop = obj.scrollTop - step
+        if (obj.scrollTop <= target + 1 && obj.scrollTop >= target - 1) {
             clearInterval(obj.timer);
             obj.timer = null;
+            callback && callback();
         }
     }, 10);
+
+    const cancelSCroll = function () {
+        let obj = document.documentElement || document.body;
+        if (obj.timer) {
+            clearInterval(obj.timer);
+            obj.timer = null;
+            callback && callback();
+            window.removeEventListener('mousewheel', cancelSCroll);
+        }
+    }
+    window.addEventListener('mousewheel', cancelSCroll);
 }
+
 
 function displayBackTop(obj, target = 0) {
     obj.style.display = 'none';
@@ -175,11 +187,6 @@ function getTime(num) {
     s = s < 10 ? '0' + s : s;
     let str = min + ':' + s;
     return str;
-    // let min = num.getMinutes();
-    // min = min < 10 ? '0' + min : min;
-    // let s = num.getSeconds();
-    // s = s < 10 ? '0' + s : s;
-    // return min + ':' + s;
 }
 // 将时间转化为 年月日 形式
 function getYearTime(num) {
@@ -305,4 +312,97 @@ function msgPop(text) {
         clearTimeout(timer);
         timer = null;
     }, 1500);
+}
+
+
+
+// 添加歌曲到歌单
+function clickAdd(userid, sid, pid, playlistData) {
+    // 显示弹窗
+    createPlaylist(userid, playlistData, pid, function () {
+
+        let pid = parseInt(this.getAttribute('pid'));// 要存放的歌单的id
+        ajax({
+            url: 'http://localhost:3000/playlist/tracks',
+            data: {
+                op: 'add',
+                pid: pid,
+                tracks: sid
+            },
+            success: function () {
+                msgPop('添加成功！');
+                // callback && callback();
+                // 关闭弹窗
+                document.querySelector('.addsong_playlist_close').click();
+            },
+            error: function (data) {
+                console.log(data)
+            }
+        })
+    });
+}
+
+// 创建"收藏到我的歌单"弹窗
+function createPlaylist(userId, playlistData, pid, fn) {
+    let addSong = document.querySelector('.addsong_playlist');
+    let addSongOl = addSong.lastElementChild;
+    let close = addSong.querySelector('.addsong_playlist_close');
+    // 显示我创建的所有歌单
+    playlistData.forEach(value => {
+        // let userId = param.substr(param.indexOf('id=') + 3);
+        // 如果是该用户创建的而不是该用户收藏的歌单
+        if (value.creator.userId === userId && value.id !== pid) {
+
+            let li = document.createElement('li');
+            li.className = 'addsong_playlist_item';
+            li.innerHTML = value.name;
+            li.setAttribute('pid', value.id);
+            li.addEventListener('click', fn)
+
+            addSongOl.appendChild(li);
+        }
+    })
+    // 关闭按钮
+    close.addEventListener('click', function () {
+        display(addSong, false);
+        addSongOl.innerHTML = '';
+    })
+    display(addSong);
+}
+
+// 从歌单中删除歌曲
+function clickDel(pid, sid, that, callback) {
+    ajax({
+        url: 'http://localhost:3000/playlist/tracks',
+        data: {
+            op: 'del',
+            pid: pid,
+            tracks: sid
+        },
+        success: function () {
+            // 关闭弹窗
+            msgPop('删除成功！');
+            callback && callback(that);
+        },
+        error: function (data) {
+            console.log(data)
+        }
+    })
+}
+
+// 让最新评论数加1
+function getCommentCount(commentTitle) {
+    let str = commentTitle.innerHTML.substr(5);
+    let num = parseInt(str);
+    num++;
+    commentTitle.innerHTML = `最新评论(${num})`;
+}
+
+// 更新头像
+function loadAvatar(data) {
+    let avatar = document.querySelector('.login_avatar');
+    let loginBtn = document.querySelector('.header_login a');
+    avatar.src = data;
+    display(avatar);
+    display(loginBtn, false);
 }
