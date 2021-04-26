@@ -25,10 +25,12 @@ window.addEventListener('load', function () {
     let searchInput = document.querySelector('.header_search input');
     let searchItems = searchResult.querySelectorAll('.search_result_item_wrapper');
     //
-    let searchKey = window.location.hash.substr(10);
-    if (searchKey !== '') {
+    // 如果当前在搜索结果页面
+    if (window.location.hash.includes('search.html')) {
+        let searchKey = window.location.hash.substr(10);
         searchInput.value = decodeURIComponent(searchKey);
     }
+
     searchInput.addEventListener('blur', function () {
         // 记录搜索框是否得到焦点，用于判断按下回车键是否发起搜索
         searchInput.isFocus = false;
@@ -136,12 +138,43 @@ window.addEventListener('load', function () {
                     display(album.parentNode, false);
                 }
 
+
+                // 歌单
+                if (data.result.playlists) {
+                    list.innerHTML = `${data.result.playlists.map((value, index) => {
+                        if (index < 4) {
+                            let reg = new RegExp(searchInput.value, 'gi');
+                            return `<a href="javascript:;" class="search_result_item" src-id=${value.id}>
+                                          <div class="search_result_info_name">
+    
+                                  ${reg.test(value.name) ? value.name.split(reg).join(`<span class="search_key">${searchInput.value}</span>`) : value.name}
+         
+                                        </div>
+                                 </a>`
+                        }
+                    }).join('')}`;
+                    display(list.parentNode, 'flex');
+                } else {
+                    display(list.parentNode, false);
+                }
+
+
                 // 跳转页面
+                // 点击歌单的搜索结果进入歌单详情页面
+                let plItems = list.children;
+                for (let i = 0; i < plItems.length; i++) {
+                    plItems[i].addEventListener('click', function () {
+                        let id = this.getAttribute('src-id');
+                        clickSearchResult(this.children[0].textContent,
+                            searchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html#pid=${id}&type=2`);
+                    })
+                }
+
                 let items = document.querySelectorAll('.search_result_item');
                 for (let i = 0; i < items.length; i++) {
                     items[i].addEventListener('click', function () {
-                        clickSearchResult(this.children[0].textContent,
-                            searchInput);
+                        // clickSearchResult(this.children[0].textContent,
+                        //     searchInput);
                     })
                 }
 
@@ -165,8 +198,9 @@ window.addEventListener('load', function () {
     searchInput.addEventListener('focus', function () {
         let hisData = JSON.parse(window.localStorage.history);
 
-        his.innerHTML = hisData.map(value => {
-            if (value !== '') {
+        // 最多展示5条
+        his.innerHTML = hisData.map((value, index) => {
+            if (value !== '' && index < 5) {
                 return `<a class="search_history_item">${value}
              <em class="search_history_item_close"></em>
              </a>`
@@ -185,6 +219,7 @@ window.addEventListener('load', function () {
                 }
             })
         }
+
 
         // 点击关闭按钮删除搜索历史
         let hisClose = his.querySelectorAll('.search_history_item_close');

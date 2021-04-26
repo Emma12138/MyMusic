@@ -6,9 +6,9 @@
 body {
     min-width: 920px;
     color: #000;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.5;
-    font-family: poppin,Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif;
+    font-family: Microsoft JhengHei,Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif;
     background-color: #fafafa;
 }
 /* 字体声明 */
@@ -43,7 +43,7 @@ ol {
 }
 a {
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     color: #000;
 }
 a:hover {

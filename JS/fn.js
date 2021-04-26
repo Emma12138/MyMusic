@@ -37,10 +37,11 @@ function scroll(target = 0, callback) {
     let obj = document.documentElement || document.body;
     clearInterval(obj.timer);
     obj.timer = setInterval(function () {
-        let step = (obj.scrollTop - target) / 15;
+        let scrollTop = obj.scrollTop;
+        let step = (scrollTop - target) / 15;
         step = step > 0 ? Math.ceil(step) : Math.floor(step);
-        obj.scrollTop = obj.scrollTop - step
-        if (obj.scrollTop <= target + 1 && obj.scrollTop >= target - 1) {
+        obj.scrollTop = scrollTop - step
+        if (scrollTop <= target + 1 && scrollTop >= target - 1) {
             clearInterval(obj.timer);
             obj.timer = null;
             callback && callback();
@@ -231,7 +232,7 @@ function closeHis(item, input, hisData) {
 }
 
 // 执行点击搜索框搜索结果后的流程
-function clickSearchResult(keywords, input) {
+function clickSearchResult(keywords, input, url) {
     let hisData = JSON.parse(window.localStorage.history);
 
     keywords = decodeURIComponent(keywords);
@@ -244,10 +245,9 @@ function clickSearchResult(keywords, input) {
     storHis(hisData, keywords);
 
     // 跳转
-    window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html#keywords=${keywords}`;
-    if (window.location.href.includes('search.html')) {
-        window.location.reload(true);
-    }
+    // window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html#keywords=${keywords}`;
+    window.location.href = url;
+    window.location.reload(true);
 }
 
 // 创建分页按钮并绑定事件
@@ -281,6 +281,9 @@ function createPage(obj, data, fn, callback) {
 // 保留前两个。最后两个、当前页的左边两个、右边两个按钮，其他用省略代替
 function changePage(index, items) {
     // index 是当前的页数-1
+    if (items.length == 0) {
+        return;
+    }
 
     for (let i = 0; i < items.length; i++) {
         items[i].innerHTML = items[i].index + 1;
@@ -295,9 +298,6 @@ function changePage(index, items) {
     }
 
     items[index].className = 'page_current';
-
-}
-function getComment() {
 
 }
 
@@ -405,4 +405,9 @@ function loadAvatar(data) {
     avatar.src = data;
     display(avatar);
     display(loginBtn, false);
+}
+
+// 将数字转换为以万为单位
+function changeNum(num) {
+    return (num / 10000).toFixed(1) + '万';
 }

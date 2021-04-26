@@ -299,9 +299,13 @@ button {
     flex-direction: column;
 }
 .search_history_item {
+    max-height: 36px;
     padding: 0 10px;
     color: #333;
     line-height: 36px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: pointer;
 }
 .search_history_item:hover {

@@ -137,6 +137,7 @@ window.onload = function () {
                 let song = mainSearchItems[0];
                 let singer = mainSearchItems[1];
                 let album = mainSearchItems[2];
+                let playlist = mainSearchItems[3];
 
                 mainSearchResult.style.maxHeight = '1000px';
 
@@ -190,7 +191,6 @@ window.onload = function () {
                     album.innerHTML = `${data.result.albums.map((value, index) => {
                         if (index < 4) {
                             let reg = new RegExp(mainSearchInput.value, 'gi');
-                            console.log(reg.test(value.artist.name))
                             return `<a href="javascript:;" class="main_search_result_item">
                                           <div class="main_search_result_info_name">
     
@@ -211,13 +211,43 @@ window.onload = function () {
                 }
 
 
+                // 歌单
+                if (data.result.playlists) {
+                    playlist.innerHTML = `${data.result.playlists.map((value, index) => {
+                        if (index < 4) {
+                            let reg = new RegExp(mainSearchInput.value, 'gi');
+                            return `<a href="javascript:;" class="main_search_result_item" src-id=${value.id}>
+                                          <div class="main_search_result_info_name">
+    
+                                  ${reg.test(value.name) ? value.name.split(reg).join(`<span class="main_search_key">${mainSearchInput.value}</span>`) : value.name}
+         
+                                        </div>
+                                 </a>`
+                        }
+                    }).join('')}`;
+                    display(playlist.parentNode, 'flex');
+                } else {
+                    display(playlist.parentNode, false);
+                }
+
+
+
                 // 绑定发起搜索的事件
+                // 点击歌单的搜索结果进入歌单详情页面
+                let plItems = playlist.children;
+                for (let i = 0; i < plItems.length; i++) {
+                    plItems[i].addEventListener('click', function () {
+                        let id = this.getAttribute('src-id');
+                        clickSearchResult(this.children[0].textContent,
+                            mainSearchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html#pid=${id}&type=2`);
+                    })
+                }
                 let items = document.querySelectorAll('.main_search_result_item');
                 for (let i = 0; i < items.length; i++) {
                     items[i].addEventListener('click', function () {
 
-                        clickSearchResult(this.children[0].textContent,
-                            mainSearchInput);
+                        // clickSearchResult(this.children[0].textContent,
+                        //     mainSearchInput);
                     })
                 }
 
@@ -243,8 +273,9 @@ window.onload = function () {
         let mainHis = document.querySelector('.main_search_history_item_wrapper');
         let hisData = JSON.parse(window.localStorage.history);
 
-        mainHis.innerHTML = hisData.map(value => {
-            if (value !== '') {
+        // 最多展示5条
+        mainHis.innerHTML = hisData.map((value, index) => {
+            if (value !== '' && index < 5) {
                 return `<a class="main_search_history_item">${value}
             <em class="main_search_history_item_close"></em>
             </a>`

@@ -55,6 +55,7 @@ window.addEventListener('load', function () {
             }
         })
     }
+
     // 渲染歌单详情界面的基本信息
     function loadInfo(data) {
         let info = document.querySelector('.playlist_hd .w').children;
@@ -64,8 +65,8 @@ window.addEventListener('load', function () {
         info_right.children[0].innerHTML = data.name;
         info_right.children[1].innerHTML = data.creator.nickname;
         info_right.children[2].innerHTML = `标签：${data.tags.length !== 0 ? data.tags.map(value => value) : '无'}`;
-        info_right.children[3].innerHTML = `播放量：${data.playCount}`;
-        info_right.children[4].innerHTML = `收藏量：${data.subscribedCount}`;
+        info_right.children[3].innerHTML = `播放量：${changeNum(data.playCount)}`;
+        info_right.children[4].innerHTML = `收藏量：${changeNum(data.subscribedCount)}`;
 
         // 点击评论页面后滚动到评论区
         document.querySelector('.playlist_btn').children[2].onclick = function () {
@@ -73,23 +74,30 @@ window.addEventListener('load', function () {
         }
 
         // 简介
-        document.querySelector('.playlist_bd_info_content').innerHTML = data.description ? data.description : '暂无';
-    }
-    // // 获取用户的所有歌单的简略信息
-    // function getPlaylist() {
-    //     ajax({
-    //         url: 'http://localhost:3000/user/playlist',
-    //         data: {
-    //             uid: user.id
-    //         },
-    //         success: function (data) {
-    //             // playlistData = data.playlist;// 数组
-    //             return data.playlist;
-    //         }
-    //     })
-    // }
-    // 渲染歌单的歌曲
+        let plInfo = document.querySelector('.playlist_bd_info');
+        let more = plInfo.querySelector('.playlist_info_more')
+        let content = plInfo.querySelector('.playlist_bd_info_content');
+        content.innerHTML = data.description ? data.description : '暂无';
+        if (content.offsetHeight > 64) {
+            content.className = 'playlist_info_content_cut';
+            display(more);
+        }
+        // 点击展开更多查看更多内容
+        more.addEventListener('click', function () {
+            if (this.innerHTML == '展开更多') {
+                content.className = 'playlist_bd_info_content';
+                this.innerHTML = '收起';
+            } else {
+                content.className = 'playlist_info_content_cut';
+                this.innerHTML = '展开更多';
+            }
 
+        })
+
+    }
+
+
+    // 渲染歌单的歌曲
     function renderSongs(data, wrapper) {// data 是数组
         // 判断是不是用户本人的歌单
         let self = false;
@@ -164,14 +172,18 @@ window.addEventListener('load', function () {
                 for (let i = 0; i < delBtns.length; i++) {
                     delBtns[i].onclick = function () {
                         clickDel(pid.id, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), this, function (that) {
+
                             let row = that.parentNode.parentNode.parentNode;
-                            row.parentNode.removeChild(row);
+                            let wrapper = row.parentNode;
+                            wrapper.removeChild(row);
 
                             // 如果歌单中的歌都被删完了
-                            let aside = document.createElement('aside');
-                            aside.className = 'search_loading';
-                            aside.innerHTML = '暂无音乐，快去发现好听的音乐吧！';
-                            document.querySelector('.playlist_bd_song').appendChild(aside);
+                            if (wrapper.children.length === 0) {
+                                let aside = document.createElement('aside');
+                                aside.className = 'search_loading';
+                                aside.innerHTML = '暂无音乐，快去发现好听的音乐吧！';
+                                document.querySelector('.playlist_bd_song').appendChild(aside);
+                            }
 
                         });
                     }
@@ -494,9 +506,9 @@ window.addEventListener('load', function () {
                 },
                 success: function (data) {
                     if (data.code == 200) {
-                        console.log(data)
                         msgPop('回复成功！');
                         that.parentNode.parentNode.className = 'comment_bd_item';
+                        that.parentNode.children[0].value = '';
 
                         data = data.comment;
                         let ul = document.querySelector('.comment_bd_new_wrapper ul');
@@ -516,6 +528,7 @@ window.addEventListener('load', function () {
                         let textarea = li.querySelector('textarea');
                         textarea.value = '';
                         let praise = li.querySelector('.comment_bd_praise');
+                        praise.setAttribute('src-t', 1);
                         praise.className = 'comment_bd_praise';
                         praise.innerHTML = 0;
                         let time = li.querySelector('.comment_bd_time');
@@ -523,6 +536,7 @@ window.addEventListener('load', function () {
 
                         ul.insertBefore(li, oldLi);
 
+                        // 事件
                         li.querySelector('.comment_bd_commentHim').onclick = oldLi.querySelector('.comment_bd_commentHim').onclick;
                         li.querySelector('.comment_post').onclick = oldLi.querySelector('.comment_post').onclick;
                         li.querySelector('.comment_cancel').onclick = oldLi.querySelector('.comment_cancel').onclick;
