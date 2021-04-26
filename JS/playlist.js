@@ -475,11 +475,13 @@ window.addEventListener('load', function () {
     }
     // 点击取消按钮取消评论，隐藏输入框
     function cancelComment(that) {
+        that.parentNode.children[0].value = '';
         that.parentNode.parentNode.className = 'comment_bd_item';
     }
     // 点击回复按钮回复评论
     function commentPost(that) {
         let textarea = that.parentNode.children[0];
+        let replyedContent = that.parentNode.parentNode.querySelector('.comment_bd_text').innerHTML;
         if (textarea.value.replace(/[\n\r ]/g, '').length > 0) {
             ajax({
                 url: 'http://localhost:3000/comment',
@@ -492,6 +494,7 @@ window.addEventListener('load', function () {
                 },
                 success: function (data) {
                     if (data.code == 200) {
+                        console.log(data)
                         msgPop('回复成功！');
                         that.parentNode.parentNode.className = 'comment_bd_item';
 
@@ -507,7 +510,9 @@ window.addEventListener('load', function () {
                         avatar.src = data.user.avatarUrl;
                         let text = li.querySelector('.comment_bd_text');
                         text.innerHTML = `${data.beRepliedUser.nickname ? `回复 @<span class="highlight">${data.beRepliedUser.nickname}</span>: ${data.content}` : `${data.content}`
-                            } `
+                            } `;
+                        let reply = li.querySelector('.comment_reply');
+                        reply.innerHTML = replyedContent;
                         let textarea = li.querySelector('textarea');
                         textarea.value = '';
                         let praise = li.querySelector('.comment_bd_praise');
