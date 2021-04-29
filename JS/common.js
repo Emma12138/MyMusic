@@ -26,9 +26,9 @@ window.addEventListener('load', function () {
     let searchItems = searchResult.querySelectorAll('.search_result_item_wrapper');
     //
     // 如果当前在搜索结果页面
-    if (window.location.hash.includes('search.html')) {
-        let searchKey = window.location.hash.substr(10);
-        searchInput.value = decodeURIComponent(searchKey);
+    if (window.location.href.includes('search.html')) {
+        let searchKey = window.location.search.substr(10);
+        searchInput.value = decodeURIComponent(searchKey).replace(/[\n\r]/g, '');
     }
 
     searchInput.addEventListener('blur', function () {
@@ -166,15 +166,15 @@ window.addEventListener('load', function () {
                     plItems[i].addEventListener('click', function () {
                         let id = this.getAttribute('src-id');
                         clickSearchResult(this.children[0].textContent,
-                            searchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html#pid=${id}&type=2`);
+                            searchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${id}&type=2`);
                     })
                 }
 
                 let items = document.querySelectorAll('.search_result_item');
                 for (let i = 0; i < items.length; i++) {
                     items[i].addEventListener('click', function () {
-                        // clickSearchResult(this.children[0].textContent,
-                        //     searchInput);
+                        clickSearchResult(this.children[0].textContent,
+                            searchInput);
                     })
                 }
 
@@ -362,9 +362,11 @@ window.addEventListener('load', function () {
         if (userData) {
             let userId = userData.profile.userId;
             // 跳转到用户个人页面
-            window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html#id=${userId}`;
+            window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/user.html?id=${userId}`;
         } else {
             loginBtn.click();
         }
     }
+
+    console.log(window.location)
 })

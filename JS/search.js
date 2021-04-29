@@ -7,14 +7,14 @@ window.onload = function () {
     // 获取参数：关键词、用户id
     let searchKey;
     let userId;
-    let param = window.location.hash;// #keywords=xxx  /  #userId=xxxxxx&keywords=xxx
+    let param = window.location.search;// #keywords=xxx  /  #userId=xxxxxx&keywords=xxx
     function makeParams(param) {
         if (param.includes('&')) {
             userId = undefined;
         } else {
             userId = parseInt(param.substr(param.indexOf('userId=') + 7, param.indexOf('&keywords=')));
         }
-        searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9));
+        searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9)).replace(/[\n\r ]/g, '');
     }
     makeParams(param);
 
@@ -238,16 +238,18 @@ window.onload = function () {
                 for (let i = 0; i < plItems.length; i++) {
                     plItems[i].addEventListener('click', function () {
                         let id = this.getAttribute('src-id');
-                        clickSearchResult(this.children[0].textContent,
-                            mainSearchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html#pid=${id}&type=2`);
+                        clickSearchResult(this.children[0].textContent.replace(/[\n\r ]/g, ''),
+                            mainSearchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${id}&type=2`);
                     })
                 }
                 let items = document.querySelectorAll('.main_search_result_item');
                 for (let i = 0; i < items.length; i++) {
                     items[i].addEventListener('click', function () {
-
-                        // clickSearchResult(this.children[0].textContent,
-                        //     mainSearchInput);
+                        if (!this.className.includes('search_result_list')) {
+                            let keywords = this.children[0].textContent;
+                            clickSearchResult(keywords,
+                                mainSearchInput);
+                        }
                     })
                 }
 

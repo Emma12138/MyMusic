@@ -241,13 +241,20 @@ function clickSearchResult(keywords, input, url) {
     // 保存关键词到搜索框中
     input.value = keywords;
 
+    if (!url) {
+        url = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html?keywords=${keywords}`;
+    }
     // 储存搜索历史
     storHis(hisData, keywords);
-
     // 跳转
-    // window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html#keywords=${keywords}`;
-    window.location.href = url;
-    window.location.reload(true);
+    window.open(url, '_self');
+    // window.location.reload(true);
+    // if (bool) {
+
+    // }
+
+    // return false;
+
 }
 
 // 创建分页按钮并绑定事件
@@ -407,7 +414,10 @@ function loadAvatar(data) {
     display(loginBtn, false);
 }
 
-// 将数字转换为以万为单位
+// 将大于一万的数字转换为以万为单位
 function changeNum(num) {
+    if (num < 10000) {
+        return;
+    }
     return (num / 10000).toFixed(1) + '万';
 }
