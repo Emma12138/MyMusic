@@ -121,6 +121,9 @@ input::-webkit-input-placeholder {
 }
 .playlist .playlist_body .playlist_item_info {
     flex-basis: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 /* 修改滚动条样式 */
 .playlist_body::-webkit-scrollbar { 
@@ -180,12 +183,32 @@ input::-webkit-input-placeholder {
 
 /* 歌词 */
 .lyric {
-    align-self: center;
-    color: #000;
-    line-height: 40px;
+    width: 400px;
+    position: relative;
     height: 400px;
     overflow-y: hidden;
+   
 }
+.lyric_wrapper {
+    position: absolute;
+    align-self: center;
+    line-height: 40px;
+    cursor: grab;
+    transition: top .6s;
+}
+.lyric_wrapper p {
+    color: #000;
+    /* line-height: 40px; */
+    min-height: 40px;
+}
+.lyric .lyric_highlight {
+    color: red;
+}
+
+
+
+
+
 /* 播放器 */
 .player {
     position: fixed;

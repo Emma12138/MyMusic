@@ -17,9 +17,9 @@ window.onload = function () {
         searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9)).replace(/[\n\r ]/g, '');
     }
     makeParams(param);
-
     // 登录
     if (userId) {
+        console.log(userId)
         ajax({
             // async: false,
             url: 'http://localhost:3000/user/detail',
@@ -265,7 +265,7 @@ window.onload = function () {
     // 搜索历史
     // localstor.clear();
     // 如果 localstorage 中未设置存储搜索历史的数组，就设置
-    if (!window.localStorage) {
+    if (!window.localStorage.history) {
         localstor.setItem('history', JSON.stringify([]));
     }
 
