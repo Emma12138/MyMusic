@@ -6,6 +6,7 @@ window.addEventListener('load', function () {
     // 获取用户信息，用户id
     let param = window.location.hash;
     let userId = parseInt(param.substr(param.indexOf('id=') + 3));
+    userId = 283150068;
     let pid = {
         type: 2
     }
@@ -22,7 +23,7 @@ window.addEventListener('load', function () {
             loadUser(data.profile);
 
             // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
-            playlistData = getPlaylist();
+            getPlaylist();
         }
     })
 

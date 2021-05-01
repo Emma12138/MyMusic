@@ -336,7 +336,8 @@ function clickAdd(userid, sid, pid, playlistData) {
                 pid: pid,
                 tracks: sid
             },
-            success: function () {
+            success: function (data) {
+                // console.
                 msgPop('添加成功！');
                 // callback && callback();
                 // 关闭弹窗
@@ -421,3 +422,9 @@ function changeNum(num) {
     }
     return (num / 10000).toFixed(1) + '万';
 }
+
+
+
+
+// 评论区
+

@@ -426,10 +426,10 @@ window.onload = function () {
                 
                 </p>
                 <ul class="mod_list_menu">
-                    <li href="javascript:;"></li>
-                    <li href="javascript:;"></li>
-                    <li href="javascript:;"></li>
-                    <li href="javascript:;"></li>
+                    <li href="javascript:;" title="播放"></li>
+                    <li href="javascript:;" title="添加到歌单"></li>
+                    <li href="javascript:;" title="添加到播放队列"></li>
+                    <li href="javascript:;" title="分享"></li>
                 </ul>
             </a>
             <div class="search_bd_song_content_singer">
@@ -449,7 +449,53 @@ window.onload = function () {
         </div>`
         }).join('');
 
+        if (!window.localStorage.playlist) {
+            window.localStorage.playlist = JSON.stringify([]);
+        }
+        if (!window.localStorage.playNow) {
+            window.localStorage.playNow = JSON.stringify('');
+        }
+        // 播放按钮
+        let playBtns = document.querySelectorAll('.mod_list_menu li:nth-child(1)');
+        for (let i = 0; i < playBtns.length; i++) {
+            playBtns[i].addEventListener('click', function () {
+                let playlist = JSON.parse(window.localStorage.playlist);
+                let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                let bool = false;// 表本地存储中不含该歌曲
+                playlist.forEach((value, index) => {
+                    if (value == id) {
+                        bool = true;
+                        index = playlist.length;
+                    }
+                })
+                if (!bool) {
+                    playlist.unshift(id);
+                    window.localStorage.playlist = JSON.stringify(playlist);
+                }
 
+                window.localStorage.playNow = JSON.stringify(id);
+            })
+        }
+
+        // 添加到播放队列按钮
+        let addBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
+        for (let i = 0; i < addBtns.length; i++) {
+            addBtns[i].addEventListener('click', function () {
+                let playlist = JSON.parse(window.localStorage.playlist);
+                let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                let bool = false;// 表本地存储中不含该歌曲
+                playlist.forEach((value, index) => {
+                    bool = true;
+                    if (value == id) {
+                        index = playlist.length;
+                    }
+                })
+                if (!bool) {
+                    playlist.unshift(id);
+                    window.localStorage.playlist = JSON.stringify(playlist);
+                }
+            })
+        }
     }
 
 }

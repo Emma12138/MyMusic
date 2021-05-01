@@ -1090,3 +1090,67 @@ body .index_nav_current a {
 .comment_bd_content .load_more:hover {
     color: #31c27c;
 }
+
+/* 添加歌曲到歌单弹窗 */
+.addsong_playlist {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    width: 330px;
+    height: 250px;
+    padding-top: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #666;
+    font-size: 16px;
+    overflow-y: auto;
+    box-shadow: 0 0 4px rgb(0,0,0,.3);
+    transform: translate(-50%,-50%);
+}
+.addsong_playlist .addsong_playlist_title {
+    padding: 0 10px;
+    margin-bottom: 7px;
+    font-weight: 400;
+    color: #999;
+    font-size: 20px;
+}
+.addsong_playlist_close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_new {
+    padding: 0 10px;
+    color: #333;
+    line-height: 36px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_new:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.addsong_playlist ol {
+    display: flex;
+    flex-direction: column;
+}
+.addsong_playlist .addsong_playlist_item {
+    padding: 0 10px;
+    color: #333;
+    line-height: 36px;
+    cursor: pointer;
+}
+.addsong_playlist .addsong_playlist_item:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+.addsong_playlist .addsong_playlist_msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 26px;
+    transform: translate(-50%,-50%);
+}
