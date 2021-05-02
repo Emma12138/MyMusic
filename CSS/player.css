@@ -151,7 +151,7 @@ a:hover {
 .playlist {
     position: absolute;
     top: -80px;
-    left: 61px;
+    left: 60px;
     display: flex;
     flex-direction: column;
     width: 350px;
@@ -172,7 +172,7 @@ a:hover {
 }
 .playlist .playlist_now_pic {
     position: absolute;
-    top: 20px;
+    top: -10px;
     right: 21px;
 }
 .playlist .playlist_now_name {
@@ -180,6 +180,7 @@ a:hover {
     line-height: 50px;
 }
 .playlist .playlist_now_singer {
+    font-weight: 500;
     font-size: 14px;
 }
 
@@ -243,7 +244,11 @@ a:hover {
     margin-left: 46px;
 }
 /* 修改滚动条样式 */
+.playlist .playlist_body:hover::-webkit-scrollbar {
+    display: block;
+}
 .playlist_body::-webkit-scrollbar { 
+    display: none;
     width: 5px;
     height: 10px;
 }

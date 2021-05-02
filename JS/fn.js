@@ -413,6 +413,7 @@ function loadAvatar(data) {
     avatar.src = data;
     display(avatar);
     display(loginBtn, false);
+    display(document.querySelector('.login_status'));
 }
 
 // 将大于一万的数字转换为以万为单位

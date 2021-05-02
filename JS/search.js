@@ -455,13 +455,17 @@ window.onload = function () {
         if (!window.localStorage.playNow) {
             window.localStorage.playNow = JSON.stringify('');
         }
+
         // 播放按钮
         let playBtns = document.querySelectorAll('.mod_list_menu li:nth-child(1)');
         for (let i = 0; i < playBtns.length; i++) {
             playBtns[i].addEventListener('click', function () {
-                let playlist = JSON.parse(window.localStorage.playlist);
+
+                let playlists = JSON.parse(window.localStorage.playlists);
+                let playlist = playlists.playlist;
                 let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
                 let bool = false;// 表本地存储中不含该歌曲
+
                 playlist.forEach((value, index) => {
                     if (value == id) {
                         bool = true;
@@ -470,10 +474,12 @@ window.onload = function () {
                 })
                 if (!bool) {
                     playlist.unshift(id);
-                    window.localStorage.playlist = JSON.stringify(playlist);
+                    playlists.playNow = id;
+                    window.localStorage.playlists = JSON.stringify(playlists);
+                    window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
                 }
 
-                window.localStorage.playNow = JSON.stringify(id);
+                // window.localStorage.playNow = JSON.stringify(id);
             })
         }
 
@@ -481,18 +487,23 @@ window.onload = function () {
         let addBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
         for (let i = 0; i < addBtns.length; i++) {
             addBtns[i].addEventListener('click', function () {
-                let playlist = JSON.parse(window.localStorage.playlist);
+
+                let playlists = JSON.parse(window.localStorage.playlists);
+                let playlist = playlists.playlist;
                 let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
                 let bool = false;// 表本地存储中不含该歌曲
+
                 playlist.forEach((value, index) => {
-                    bool = true;
                     if (value == id) {
+                        bool = true;
                         index = playlist.length;
                     }
                 })
                 if (!bool) {
                     playlist.unshift(id);
-                    window.localStorage.playlist = JSON.stringify(playlist);
+                    playlists.playNow = null;
+                    window.localStorage.playlists = JSON.stringify(playlists);
+                    window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
                 }
             })
         }

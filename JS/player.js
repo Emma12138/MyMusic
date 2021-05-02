@@ -12,14 +12,41 @@ window.addEventListener('load', function () {
 
     // 监听更新播放列表
     window.addEventListener('storage', function (e) {
-        if (e.key == 'playNow') {
+        console.log(e)
 
-        } else if (e.key == 'playlist') {
+        let playlists = JSON.parse(window.localStorage.playlists);
+        playlist = playlists.playlist;
+        let playNow = playlists.playNow;
+
+        let num = JSON.parse(window.localStorage.newNum);// 一共有 num 条新数据
+
+        let newList = playlist.slice(0, num);
+        //
+        getAudioSrc(newList);
+
+        console.log(playlist)
+
+        if (e.key == 'playlists') {
+            if (playNow != null) {
+                index = 0;
+
+                // 更新播放列表的数据
+                getSongsDetail(newList, function () {
+                    // 加载第一条歌曲的数据
+                    renderData();
+                });
+
+                audio.src = audioArr[0];
+                audio.play();
+            } else {
+                // 更新播放列表的数据
+                getSongsDetail(newList);
+            }
 
         }
-        console.log(e.key);
-        console.log(e.newValue);
     })
+
+
 
     // 获取喜欢音乐列表，用于判断某歌曲是否已喜欢
     let likelist = [];
@@ -30,7 +57,6 @@ window.addEventListener('load', function () {
                 uid: userId
             },
             success: function (data) {
-                console.log(1)
                 likelist = data.ids;
             }
         })
@@ -84,10 +110,6 @@ window.addEventListener('load', function () {
     let audio = document.querySelector('audio');
     let index = 0;// 当前播放歌曲的索引
 
-    // 更新播放列表
-    window.addEventListener('message', function (e) {
-        console.log(e);
-    })
 
     // 获取播放列表
     // window.localStorage.removeItem('playlist')
@@ -95,20 +117,32 @@ window.addEventListener('load', function () {
     let audioArr = [];
     let playlistBd = document.querySelector('.playlist_body');
 
-    // window.localStorage.setItem('playlist', '[]')
-    if (JSON.parse(window.localStorage.playlist).length === 0) {
-        window.localStorage.setItem('playlist', JSON.stringify(['1463165983', '417859631', '32507038', '27955653', '415792881', '1392089153']));
+    // window.localStorage.removeItem('playlist')
+    if (!window.localStorage.playlists) {
+        let playlists = {
+            playlist: [],
+            playNow: null
+        }
+        window.localStorage.playlists = JSON.stringify(playlists);
     } else {
-        playlist = JSON.parse(window.localStorage.playlist);// 存放的是歌曲id
+        playlist = JSON.parse(window.localStorage.playlists).playlist;// 存放的是歌曲id
 
         if (playlist.length !== 0) {
             // 获取播放列表的所有歌曲的详细信息
-            getSongsDetail();
+            getSongsDetail(playlist, function () {
+                // 加载第一条歌曲的数据
+                renderData();
+            });
 
             // 获得播放列表的歌曲的url
-            getAudioSrc();
+            getAudioSrc(playlist);
 
-            audio.src = audioArr[0];
+            if (audioArr[0] == '404') {
+                msgPop('该歌曲暂无版权，换首歌试试吧~');
+                return;
+            } else {
+                audio.src = audioArr[0];
+            }
 
             // getLyric(playlist[0]);
         }
@@ -116,18 +150,23 @@ window.addEventListener('load', function () {
     }
 
     // 获取播放列表的所有歌曲的详细信息
-    function getSongsDetail() {
+    function getSongsDetail(arr, fn) {
+
+        let ids;
+        if (arr.length == 1) {
+            ids = arr[0];
+        } else {
+            ids = arr.join(',');
+        }
+
         ajax({
             url: 'http://localhost:3000/song/detail',
             data: {
-                ids: playlist.join(',')
+                ids: ids
             },
             success: function (data) {
                 // 成功后渲染到播放列表
-                renderPlaylist(data.songs, function () {
-                    // 加载第一条歌曲的数据
-                    renderData();
-                });
+                renderPlaylist(data.songs, fn);
             }
         })
     }
@@ -205,7 +244,7 @@ window.addEventListener('load', function () {
         mv.setAttribute('src-id', obj.mv);
 
 
-        // 歌词部分
+        // 歌词上方信息
         let lrcSong = document.querySelector('.lyric_song');
         lrcSong.innerHTML = obj.name;
 
@@ -234,9 +273,12 @@ window.addEventListener('load', function () {
         display(this.children[1], false);
     })
 
+    function createFrag(str) {
+        return document.createRange().createContextualFragment(str);
+    }
     // 渲染播放列表数据
     function renderPlaylist(data, callback) {
-        playlistBd.innerHTML = data.map((value, index) => {
+        let newNode = data.map((value, index) => {
             return `<li class="playlist_item" src-id=${value.id} src-index=${index}>
             <input type="checkbox" name="" id="">
             <img src="https://y.gtimg.cn/mediastyle/yqq/img/wave.gif?max_age=2592000&v=78979d47cc7dc55cab5d36b4c96168d5">
@@ -246,13 +288,31 @@ window.addEventListener('load', function () {
                 <i class="playlist_item_singer">
                     ${value.ar.length === 1 ? `<a href="javascript:;" src-id=${value.ar[0].id}>${value.ar[0].name}</a>` : value.ar.map(value => {
                 return `<a href="javascript:;" src-id=${value.id}>${value.name}</a>`
-            }).join(`&nbsp;/$nbsp;`)}
+            }).join(`&nbsp;/&nbsp;`)}
                 </i>
             </div>
             <em class="playlist_item_time">${getTime(value.dt)}</em>
             <a href="javascript:;" class="playlist_item_del iconfont">&#xe62f;</a>
         </li>`
         }).join('');
+
+        if (playlistBd.children.length === 0) {
+            playlistBd.innerHTML = newNode;
+        } else {
+            let node = createFrag(newNode);
+            let frag = document.createDocumentFragment();
+            frag.appendChild(node);
+
+            playlistBd.insertBefore(frag, playlistBd.children[0]);
+
+            let items = playlistBd.children;
+            // 重新赋予 src-index
+            for (let i = data.length; i < items.length; i++) {
+                items[i].setAttribute('src-index', i);
+            }
+        }
+
+
 
 
         // 点击播放列表中的播放按钮播放对应歌曲
@@ -430,33 +490,55 @@ window.addEventListener('load', function () {
     // 
     function storPlaylist(index) {
         playlist.splice(index, 1);
-        window.localStorage.playlist = JSON.stringify(playlist);
+        let playlists = JSON.parse(window.localStorage.playlists)
+        playlists.playlist = playlist;
+        window.localStorage.playlists = JSON.stringify(playlists);
     }
 
-    function getAudioSrc() {
-        audioArr = playlist.map(value => {
-            let bool = false;
-            // 判断音乐是否可用
-            ajax({
-                url: 'http://localhost:3000/check/music',
-                data: {
-                    id: value
-                },
-                success: function (data) {
-                    if (data.success) {
-                        bool = true;
-                    }
-                }
-            })
-            if (!bool) {
-                return `https://music.163.com/song/media/outer/url?id=${value}.mp3`
-            } else {
-                return '404';
-            }
+    function getAudioSrc(arr) {
 
-        })
-        // console.log(audioArr)
+        for (let i = arr.length - 1; i >= 0; i--) {
+            audioArr.unshift(`https://music.163.com/song/media/outer/url?id=${arr[i]}.mp3`);
+        }
+
+        // arr.forEach((value, index) => {
+        //     audioArr.push(`https://music.163.com/song/media/outer/url?id=${value}.mp3`);
+
+        //     判断音乐是否可用
+        //     ajax({
+        //         url: 'http://localhost:3000/check/music',
+        //         data: {
+        //             id: value
+        //         },
+        //         success: function () {
+
+        //             if (index == arr.length - 1) {
+        //                 check();
+        //                 fn();
+        //                 console.log(audioArr);
+        //             }
+        //         },
+        //         error: function () {
+        //             errorArr.push(index);
+        //         }
+        //     })
+
+        // })
+
+        // function check() {
+        //     audioArr.forEach((v, index) => {
+        //         if (errorArr.includes(index)) {
+        //             v = '404';
+        //         }
+        //     })
+        // }
+
     }
+
+    document.querySelector('.aside_wrapper').children[1].onclick = function () {
+        console.log(style);
+    }
+
 
     // window.localStorage.removeItem('playlist');
     function clickDel(that) {
@@ -469,38 +551,35 @@ window.addEventListener('load', function () {
             // 删除src数组中对应的src
             audioArr.splice(songIndex, 1);
 
-            if (index === audioArr.length) {
-                index--;
-            }
-
             // 如果删完后列表中已经没有歌曲了
             if (audioArr.length === 0) {
                 msgPop('暂无歌曲了');
                 audio.pause();
             } else {
-                audio.src = audioArr[index];
-                if (audio.readyState === 2) {
-                    renderData();
 
-                    audio.play();
-                }
+                audio.src = audioArr[index];
+                audio.play();
+
+                // 删除本地存储中对应的数据
+                storPlaylist(songIndex);
+
+                renderData();
 
                 goBack();
+
             }
 
         } else {
             // 删除src数组中对应的src
             audioArr.splice(songIndex, 1);
+
+            // 删除本地存储中对应的数据
+            storPlaylist(songIndex);
         }
 
         // 删除
         let parent = that.parentNode;
-        console.log(that)
-        console.log(parent)
         parent.parentNode.removeChild(parent);
-
-        // 删除本地存储中对应的数据
-        storPlaylist(songIndex);
 
         let playItems = playlistBd.children;
         // 重新赋予 src-index
@@ -514,40 +593,33 @@ window.addEventListener('load', function () {
 
         audio.src = audioArr[index];
 
-        if (playerBtn.title === '播放') {
-            renderData();
+        audio.play();
 
-            playerBtn.click();
-
-            goBack();
-        } else {
-            renderData();
-
-            audio.play();
-
-            goBack();
-        }
-
+        renderData();
 
     }
+
 
 
     // 播放列表播放
     audio.addEventListener('ended', function () {
         // 顺序播放
         if (style === 'order') {
+            audio.loop = false;
             index++;
             index = index === audioArr.length ? index = 0 : index;
 
             renderData();
             audio.src = audioArr[index];
-            audio.play();
 
             goBack();
+
         } else if (style === 'cycle') {
             audio.loop = true;
             audio.play();
+
         } else if (style === 'random') {
+            audio.loop = false;
             let num = index;
             while (num === index) {
                 num = Math.round(Math.random() * (audioArr.length - 1));
@@ -555,8 +627,8 @@ window.addEventListener('load', function () {
             index = num;
 
             renderData();
+
             audio.src = audioArr[index];
-            audio.play();
 
             goBack();
         }
@@ -581,27 +653,42 @@ window.addEventListener('load', function () {
     // 进度条
     let progress = player.querySelector('.player_progress_bar');
 
+
     // 播放功能
+    audio.addEventListener('error', function () {
+        msgPop('当前资源不可用，换首歌试试吧~~');
+        changePlayer(true);
+    })
+    audio.addEventListener('canplay', function () {
+        audio.play();
+    })
+    audio.addEventListener('pause', function () {
+        changePlayer(true);
+    })
+    audio.addEventListener('play', function () {
+        changePlayer(false);
+    })
+    // 改变播放按钮
+    function changePlayer(bool) {
+        if (bool) {
+            playerBtn.innerHTML = '&#xe60f;';
+            playerBtn.title = '播放';
+            return;
+        }
+        playerBtn.innerHTML = '&#xe638;';
+        playerBtn.title = '暂停';
+    }
+    // 点击播放按钮
     let playerBtn = player.querySelector('.player_stop');
     playerBtn.addEventListener('click', function () {
         if (this.title === '播放') {
-            // renderData();
             audio.play();
-            this.innerHTML = '&#xe638;';
-            this.title = '暂停';
-
-            if (!audio.notFirstPlay) {
-                // 进度条
-                // updateProgress(progress);
-            }
-            audio.notFirstPlay = true;
 
         } else {
             audio.pause();
-            this.innerHTML = '&#xe60f;';
-            this.title = '播放';
         }
     })
+
     // 按空格键也能控制播放暂停
     window.addEventListener('keyup', function (e) {
         if (e.key === ' ') {
@@ -614,14 +701,25 @@ window.addEventListener('load', function () {
     previous.addEventListener('click', function () {
         index--;
         index = index < 0 ? audioArr.length - 1 : index;
-        audio.src = audioArr[index];
 
-        if (playerBtn.title === '播放') {
-            playerBtn.click();
-        } else {
-            renderData();
-            audio.play();
-        }
+        audio.src = audioArr[index];
+        audio.play();
+        renderData();
+        // if (audioArr[index] == '404') {
+        //     msgPop('该歌曲暂无版权，换首歌试试吧~');
+        // }
+
+        // if (playerBtn.title === '播放') {
+        //     playerBtn.click();
+        // } else {
+        //     renderData();
+        //     if (audio.readyState === 2) {
+        //         audio.play();
+        //     } else {
+        //         msgPop('出现未知错误，请稍后再试！');
+        //     }
+
+        // }
 
 
         goBack();
@@ -631,14 +729,23 @@ window.addEventListener('load', function () {
         index++;
         index = index == audioArr.length ? 0 : index;
         audio.src = audioArr[index];
+        audio.play();
+        // if (audioArr[index] == '404') {
+        //     msgPop('该歌曲暂无版权，换首歌试试吧~');
+        // }
 
-        if (playerBtn.title === '播放') {
-            playerBtn.click();
-        } else {
-            renderData();
-            audio.play();
-        }
+        // if (playerBtn.title === '播放') {
+        //     playerBtn.click();
+        // } else {
+        //     if (audio.readyState == 2) {
 
+        //         audio.play();
+        //     } else {
+        //         msgPop('出现未知错误，请稍后再试！');
+        //     }
+        // }
+
+        renderData();
         goBack();
     })
 
@@ -785,7 +892,7 @@ window.addEventListener('load', function () {
         let height = lyric.offsetTop;
         if (lyricFlag) {
             let long = items[lineNow].getBoundingClientRect().top - lyricTop;
-            if (long > 118 || long < 0) {
+            if (long > 118 || long < -20) {
                 lyric.style.top = height - long + 120 + 'px';
             }
         }
@@ -1034,14 +1141,13 @@ window.addEventListener('load', function () {
     // 歌词实时高亮
     function lyricHighlight() {
 
-        // console.log(lineNow)
-
 
         let lines = lyric.children;
         let now = parseFloat(audio.currentTime);
         if (lineNow >= lines.length) {
             return;
         }
+
 
         if (parseFloat(lines[lineNow].getAttribute('src-time')) <= now) {
 
@@ -1055,7 +1161,7 @@ window.addEventListener('load', function () {
 
             if (lyricFlag) {
                 let long = lines[lineNow].getBoundingClientRect().top - lyricTop;
-                if (long > 118) {
+                if (long > 118 || long < -20) {
                     lyric.style.top = height - long + 120 + 'px';
                 }
             }
@@ -1068,6 +1174,7 @@ window.addEventListener('load', function () {
         getLyric(playlist[index]);
         lyric.style.top = 0;
         lineNow = 0;
+        progress.style.width = '0%';
     }
 
     // 拖拽歌词
@@ -1107,12 +1214,6 @@ window.addEventListener('load', function () {
         type: 0
     };
 
-
-
-
-
-
-    // 评论区
 
     // 关闭评论
     let commentClose = document.querySelector('.comment_close');

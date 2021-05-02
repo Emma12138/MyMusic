@@ -389,9 +389,15 @@ button {
 }
 
 .header_login {
+    position: relative;
     font-size: 16px;
     line-height: 90px;
     cursor: pointer;
+}
+
+.login_status {
+    display: none;
+    position: relative;
 }
 .login_avatar {
     display: none;
@@ -400,6 +406,44 @@ button {
     border-radius: 50%;
     vertical-align: middle;
 }
+
+/* 登录下拉菜单 */
+.login_status:hover .login_menu {
+    max-height: 200px;
+}
+.login_menu {
+    position: absolute;
+    top: 43px;
+    left: -15px;
+    z-index: 999;
+    max-height: 0;
+    background-color: #fff;
+    overflow: hidden;
+    transition: max-height .6s;
+}
+.login_menu_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #c9c9c9;
+}
+.login_menu a {
+    width: 92px;
+    height: 41px;
+    border-bottom: 1px solid #c9c9c9;
+    color: #000;
+    line-height: 40px;
+    text-align: center;
+}
+.login_menu a:last-child {
+    border-bottom: 0;
+}
+.login_menu a:hover {
+    background-color: #31c27c;
+    color: #fff;
+}
+
+
 .header_VIP {
     position: relative;
     width: 122px;
@@ -768,8 +812,11 @@ body .index_nav_current a {
     z-index: 999;
     width: 100%;
     height: 100%;
+    background-image: linear-gradient(to right,#b29ef5 0%,#fa8db6 100%);
     background-color: rgba(0,0,0,.3);
 }
+
+
 /* 登录 */
 .login {
     display: none;
@@ -779,15 +826,15 @@ body .index_nav_current a {
     z-index: 1000;
     width: 430px;
     height: 550px;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #666;
+    border-radius: 20px;
+    background-color: #fafafa;
+    color: #000;
     font-size: 16px;
     transform: translate(-50%,-50%);
 }
 .login a {
     font-size: 16px;
-    color: #666;
+    color: #000;
 }
 .login .login_close {
     position: absolute;
@@ -801,52 +848,69 @@ body .index_nav_current a {
     gap: 140px;
     line-height: 55px;
 }
+.login_type .a_current {
+    color: #d42359;
+}
 .login_type a:hover {
-    color: #31C27c;
+    color: #d42359;
 }
 .login_body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    gap: 24px;
     height: 444px;
 }
 .login_body a:hover {
     text-decoration: underline;
 }
 .login_body_title {
-    font-size: 20px;
-    font-weight: 400;
-    color: #333;
-}
-.login_body_rec a {
-    color: #1E6FFF;
+    font-size: 35px;
+    font-weight: 700;
+    color: #000;
 }
 .login_body_content {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 54px;
 }
 .login_body_content input {
     width: 300px;
     height: 40px;
     padding-left: 5px;
-    border-bottom: 2px solid #666;
+    border-bottom: 2px solid #000;
+    background-color: #fafafa;
     font-size: 18px;
 }
 .login_body_content input[type="button"] {
+    height: 50px;
+    line-height: 50px;
     padding-left: 0;
     border: 0;
+    border-radius: 10px;
+    background-image: linear-gradient(to right,#b29ef5 0%,#fa8db6 100%);
+    font-weight: 700;
+    font-size: 20px;
     cursor: pointer;
 }
-.login_body_forget {
-    display: flex;
-    gap: 10px;
-    font-size: 12px;
+.login_body_content .login_msg {
+    display: none;
+    position: absolute;
+    top: 148px;
+    font-weight: 500;
+    color: #e33232;
 }
-.login_body_forget a {
-    font-size: 12px;
+.login_body .login_body_qr {
+    display: none;
+}
+.login_body .login_body_qr p {
+    margin-bottom: 34px;
+    text-align: center;
+}
+.login_body .login_body_qr img {
+    width: 180px;
+    height: 180px;
 }
 
 /* 加载动画 */
@@ -1017,11 +1081,11 @@ body .index_nav_current a {
 .comment_bd_commentHim {
     position: absolute;
     bottom: 0px;
-    right: 0px;
+    right: 20px;
     height: 20px;
 }
 .comment_bd_item .comment_bd_praise {
-    right: 50px;
+    right: 70px;
     padding: 0 5px 0 25px;
 }
 .comment_bd_item .comment_bd_praise::before {
