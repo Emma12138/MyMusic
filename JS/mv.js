@@ -1,280 +1,589 @@
-
 window.addEventListener('load', function () {
 
-    // 如果本地存储中有用户信息，自动登录
-    let userData;
-    let userId;
-    if (window.localStorage.user) {
-        userData = JSON.parse(window.localStorage.getItem('user'));
-
-        // 更新头像
-        loadAvatar(userData.profile.avatarUrl);
-
-        userId = userData.profile.userId;
+    let mvid = window.location.search.substr(4);
+    let pid = {
+        type: 1,
+        id: mvid
     }
 
-    // 获取参数：资源id、类型
-    let pid = {};
-    let param = window.location.hash;// #pid=xxx&type=xxx
-    pid.id = parseInt(param.substr(param.indexOf('pid=') + 4, param.indexOf('&')));
-    pid.type = parseInt(param.substr(param.indexOf('type=') + 5));
 
 
-
-    // 渲染歌曲
-    let plBd = document.querySelector('.playlist_bd_song_content_wrapper');
-
-    // 获取歌单下的所有歌曲的信息
-    let playlistData;
+    let mvData = null;
+    // 获取 mv 信息
     ajax({
-        url: 'http://localhost:3000/playlist/detail',
+        url: 'http://localhost:3000/mv/detail',
         data: {
-            id: pid.id
+            mvid: pid.id
         },
         success: function (data) {
-            // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
-            getPlaylist(userId);
+            mvData = data.data;
 
-            // 加载歌单的基本信息
-            loadInfo(data.playlist);
-
-            // 渲染歌单的所有歌曲
-            renderSongs(data.playlist, plBd);
+            loadInfo();
         }
     })
-    // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
-    // 获取用户的所有歌单的简略信息
-    function getPlaylist(uid) {
-        ajax({
-            url: 'http://localhost:3000/user/playlist',
-            data: {
-                uid: uid
-            },
-            success: function (data) {
-                playlistData = data.playlist;
-            }
-        })
-    }
 
-    // 渲染歌单详情界面的基本信息
-    function loadInfo(data) {
-        let info = document.querySelector('.playlist_hd .w').children;
-        let pic = info[0].children[0];
-        pic.src = data.coverImgUrl;
-        let info_right = info[1];
-        info_right.children[0].innerHTML = data.name;
-        info_right.children[1].innerHTML = data.creator.nickname;
-        info_right.children[2].innerHTML = `标签：${data.tags.length !== 0 ? data.tags.map(value => value) : '无'}`;
-        info_right.children[3].innerHTML = `播放量：${changeNum(data.playCount)}`;
-        info_right.children[4].innerHTML = `收藏量：${changeNum(data.subscribedCount)}`;
+    function loadInfo() {
+        // 视频封面
+        video.poster = mvData.cover;
 
-        // 点击评论页面后滚动到评论区
-        document.querySelector('.playlist_btn').children[2].onclick = function () {
-            scroll(commentInput.parentNode.offsetTop);
-        }
+        // mv 名字和歌手
+        let name = document.querySelector('.mv_info_name');
+        name.innerHTML = mvData.name;
+        let singer = document.querySelector('.mv_info_singer');
+        singer.innerHTML = mvData.artistName;
+        singer.setAttribute('src-id', mvData.artistId);
+
+        // 播放量、评论数、时间
+        let count = document.querySelector('.mv_info_count');
+        let playCount = mvData.playCount;
+        playCount = playCount >= 10000 ? changeNum(playCount) : playCount;
+        count.innerHTML = `${playCount}播放`;
+        let comment = document.querySelector('.mv_info_comment');
+        comment.innerHTML = `${mvData.commentCount}条评论`;
+        let time = document.querySelector('.mv_info_time');
+        time.innerHTML = mvData.publishTime;
 
         // 简介
-        let plInfo = document.querySelector('.playlist_bd_info');
-        let more = plInfo.querySelector('.playlist_info_more')
-        let content = plInfo.querySelector('.playlist_bd_info_content');
-        content.innerHTML = data.description ? data.description : '暂无';
-        if (content.offsetHeight > 64) {
-            content.className = 'playlist_info_content_cut';
+        let desc = document.querySelector('.mv_desc_content');
+        desc.innerHTML = mvData.desc;
+        // 若简介过长，省略
+        getDesc(desc);
+
+    }
+
+    // 若简介过长，省略，点击更多查看更多内容
+    function getDesc() {
+        let desc = document.querySelector('.mv_desc_content');
+        let more = document.querySelector('.mv_desc_more');
+        if (desc.offsetHeight > 42) {
+            desc.className = 'mv_desc_content_cut';
             display(more);
         }
         // 点击展开更多查看更多内容
         more.addEventListener('click', function () {
             if (this.innerHTML == '展开更多') {
-                content.className = 'playlist_bd_info_content';
+                desc.className = 'mv_desc_content';
                 this.innerHTML = '收起';
             } else {
-                content.className = 'playlist_info_content_cut';
+                desc.className = 'mv_desc_content_cut';
                 this.innerHTML = '展开更多';
             }
 
         })
-
     }
 
 
-    // 渲染歌单的歌曲
-    function renderSongs(data, wrapper) {// data 是数组
-        // 判断是不是用户本人的歌单
-        let self = false;
-        if (data.userId == userId) {
-            self = true;
+    // 获取 mv 的 url
+    ajax({
+        url: 'http://localhost:3000/mv/url',
+        data: {
+            id: pid.id
+        },
+        success: function (data) {
+
+            video.src = data.data.url;
         }
+    })
 
-        data = data.tracks;
-        // 如果该歌单下有歌曲
-        if (data.length > 0) {
-            for (let i = 30; i < data.length + 30; i += 30) {
-                let div = document.createElement('div');
-                div.className = 'playlist_bd_song_content';
-                display(div, false);
-                div.innerHTML = data.map((value, index) => {
-                    if (index < i && index >= i - 30) {
-                        return `<div class="playlist_bd_song_content_row">
-                    <a href="javascript:;" class="playlist_bd_song_content_song">
-                        <p class="playlist_bd_song_text" src-songid="${value.id}">${value.name}</p>
-                        <ul class="mod_list_menu">
-                            <li href="javascript:;" title="播放"></li>
-                            <li href="javascript:;" title="添加到歌单"></li>
-                            <li href="javascript:;" title="下载"></li>
-                    ${self ? `<li href="javascript:;" title="删除" class="mod_list_menu_del"></li>` : `<li href="javascript:;" title="分享" class="mod_list_menu_share"></li>`}
-                        </ul>
-                    </a>
-                    <div class="playlist_bd_song_content_singer">
-        
-                    ${value.ar.map(value => {
-                            return `<a href="javascript:;" src-singerid="${value.id}">${value.name}</a>`
-                        }).join('&nbsp;/&nbsp;')}
-        
-                    </div>
-                    <a href="javascript:;" class="playlist_bd_song_content_album" src-albumid="${value.al.id}">${value.al.name}</a>
-                    <span class="playlist_bd_song_content_time">${getTime(value.dt)}</span>
-                </div>`
-                    } else {
-                        return;
-                    }
-                }).join('');
 
-                wrapper.appendChild(div);
+    // 阻止按下键盘一些键时浏览器的默认行为
+    window.addEventListener('keydown', function (e) {
 
-            }
+        if (e.key == ' ' || e.key == 'ArrowLeft' || e.key == 'ArrowRight' || e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'Escape') {
+            e.preventDefault();
+        }
+    })
 
-            // 设置整个区域最小高度
-            if (data.length > 30) {
-                document.querySelector('.playlist_bd .w').minHeight = '1500px';
-            }
-            // 去掉加载动画
-            wrapper.parentNode.removeChild(wrapper.nextElementSibling);
 
-            // 展示第一页
-            display(wrapper.children[0], 'grid');
 
-            // 为添加歌曲到歌单按钮绑定事件
-            let addBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');
-            for (let i = 0; i < addBtns.length; i++) {
-                addBtns[i].onclick = function () {
-                    // 如果未登录
-                    if (!userId) {
-                        //唤起登录界面
-                        return;
-                    }
+    let video = document.querySelector('video');
 
-                    clickAdd(userId, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), pid.id, playlistData);
-                }
-            }
-            // 如果是用户本人的歌单，绑定删除事件
-            if (self) {
-                let delBtns = document.querySelectorAll('.mod_list_menu_del');
-                for (let i = 0; i < delBtns.length; i++) {
-                    delBtns[i].onclick = function () {
-                        clickDel(pid.id, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), this, function (that) {
+    // 视频封面
 
-                            let row = that.parentNode.parentNode.parentNode;
-                            let wrapper = row.parentNode;
-                            wrapper.removeChild(row);
 
-                            // 如果歌单中的歌都被删完了
-                            if (wrapper.children.length === 0) {
-                                let aside = document.createElement('aside');
-                                aside.className = 'search_loading';
-                                aside.innerHTML = '暂无音乐，快去发现好听的音乐吧！';
-                                document.querySelector('.playlist_bd_song').appendChild(aside);
-                            }
+    let player = document.querySelector('.player');
 
-                        });
-                    }
-                }
-            }
+    // 缓存
+    let loadBar = player.querySelector('.player_progress_buffer');
+    video.addEventListener('timeupdate', function () {
 
-            // 创建分页按钮并绑定事件
-            createPage(document.querySelector('.playlist_bd_page'), data.length, function () {
-                if (this.className !== 'page_current') {
-                    // 更换样式
-                    changePage(this.index, document.querySelectorAll('.playlist_bd_page li'))
+        let buffer = video.buffered;
+        if (buffer.length !== 0) {
+            // 已缓冲的时长
+            let timeLoaded = buffer.end(buffer.length - 1);
+            loadBar.style.width = (timeLoaded / video.duration) * 100 + '%';
 
-                    // 显示当前页
-                    let items = plBd.children;
-                    for (let i = 0; i < items.length; i++) {
-                        display(items[i], false);
-                    }
-                    display(items[this.index], 'grid');
+        }
+    })
 
-                    // 优化页面滚动效果
-                    this.parentNode.parentNode.previousElementSibling.style.minHeight = '1500px';
-                    scroll(document.querySelector('.playlist_bd_song_title').offsetTop, function () {
-                        document.querySelector('.playlist_bd .w').style.minHeight = '';
-                    });
-                }
-            }, function () {
-                changePage(0, document.querySelectorAll('.playlist_bd_page li'));
-            })
+    // 进度条
+    let progress = player.querySelector('.player_progress_bar');
+
+
+    // 播放功能
+    video.addEventListener('error', function () {
+        msgPop('当前资源不可用，试试别的吧~~');
+        changePlayer(true);
+    })
+    video.addEventListener('canplay', function () {
+        video.play();
+    })
+    video.addEventListener('pause', function () {
+        changePlayer(true);
+    })
+    video.addEventListener('play', function () {
+        changePlayer(false);
+    })
+
+    // 改变播放按钮
+    function changePlayer(bool) {
+        if (bool) {
+            playerBtn.innerHTML = '&#xe60f;';
+            playerBtn.title = '播放';
+            return;
+        }
+        playerBtn.innerHTML = '&#xe638;';
+        playerBtn.title = '暂停';
+    }
+
+    // 点击播放按钮
+    let playerBtn = player.querySelector('.player_controll');
+    playerBtn.addEventListener('click', function () {
+        if (this.title === '播放') {
+            video.play();
+
         } else {
-            document.querySelector('.search_loading').innerHTML = '暂无音乐！快去发现好听的音乐吧！';
-            document.querySelector('.playlist_bd .w').style.minHeight = '0px';
+            video.pause();
+        }
+    })
 
+    // 按空格键也能控制播放暂停
+    window.addEventListener('keyup', function (e) {
+        if (e.key === ' ') {
+            playerBtn.click();
+        }
+    })
+    // 点击视频也可控制播放暂停
+    let clickTimer = null;// 解决单击与双击事件冲突的问题
+    video.addEventListener('click', function () {
+        if (clickTimer) {
+            clearTimeout(clickTimer);
+            clickTimer = null;
+            return;
+        }
+        clickTimer = setTimeout(function () {
+            playerBtn.click();
+            clearTimeout(clickTimer);
+            clickTimer = null;
+        }, 200);
+
+    })
+
+
+    // 时长提示
+    let progressBar = progress.parentNode;
+    let progressTime = player.querySelector('.player_progress_time');
+    progressBar.addEventListener('mousemove', function (e) {
+        // console.log(1)
+        let long = progressBar.getBoundingClientRect().left;
+        let num = (e.clientX - long) / progressBar.offsetWidth;
+        num = num < 0 ? 0 : num;
+
+        progressTime.style.left = num * 100 + '%';
+        progressTime.innerHTML = getTime(num * video.duration * 1000);
+    })
+
+    // 拖拽进度条
+    let dragFlag = false;
+    progress.onmousedown = function () {
+
+        let left = progress.getBoundingClientRect().left;
+        let num = null;
+
+        document.onmousemove = function (e) {
+            let current = player.querySelector('.player_progress_time');
+
+            dragFlag = true;
+            // 
+            num = (e.clientX - left) / progressBar.offsetWidth;
+            if (num > 1) {
+                num = 1;
+            }
+            if (num < 0) {
+                num = 0;
+            }
+            current.innerHTML = getTime(num * video.duration * 1000);
+
+            progress.style.width = num * 100 + "%";
+
+            return false;
+        };
+
+        document.onmouseup = function () {
+            // if (dragFlag) {
+
+            dragFlag = false;
+            document.onmousemove = null;
+            document.onmouseup = null;
+
+            if (clickFlag) {
+                clickFlag = false;
+                return;
+            }
+
+
+            video.currentTime = num * video.duration;
+
+
+            return false;
         }
 
+        return false;
+
+    };
+
+    let clickFlag = false;
+    // 点击进度条调节进度
+    progressBar.addEventListener('mouseup', function (e) {
+        if (e.target === progress) {
+            clickFlag = true;
+        }
+        if (dragFlag) {
+            return;
+        }
+
+        let long = e.clientX - progress.getBoundingClientRect().left;
+        let num = long / progressBar.offsetWidth;
+
+        progress.style.width = num * 100 + '%';
+        video.currentTime = video.duration * num;
+
+    })
+
+
+
+    // 进度条
+    video.addEventListener('timeupdate', function () {
+        if (!dragFlag) {
+            let num = (video.currentTime / video.duration) * 100;
+            progress.style.width = num + '%';
+            document.querySelector('.player>.player_progress .player_progress_bar').style.width = num + '%';
+        }
+
+    })
+
+    // 按下键盘 ➡、⬅ 快进、快退
+    window.addEventListener('keyup', function (e) {
+        let num;
+        // 快退
+        if (e.key === 'ArrowLeft') {
+            // 获得比例
+            num = (video.currentTime / video.duration) - 0.05;
+            if (num < 0) {
+                num = 0;
+            }
+
+            progress.style.width = num * 100 + '%';
+            video.currentTime = num * video.duration;
+        }
+        // 快进
+        if (e.key === 'ArrowRight') {
+            // 获得比例
+            num = (video.currentTime / video.duration) + 0.05;
+            if (num > 100) {
+                num = 100;
+            }
+
+            progress.style.width = num * 100 + '%';
+            video.currentTime = num * video.duration;
+        }
+
+    })
+
+
+    // 当前时间
+    let current = player.querySelector('.player_body_now');
+    video.addEventListener('timeupdate', function () {
+        current.innerHTML = getTime(video.currentTime * 1000);
+    })
+
+    // 视频长度
+    let all = player.querySelector('.player_body_all');
+    video.oncanplay = function () {
+        all.innerHTML = getTime(video.duration * 1000);
+    }
+
+    // 设置初始音量
+    video.volume = 0.3;
+    // 静音功能
+    let muted = player.querySelector('.player_voice a i');
+    muted.addEventListener('click', function () {
+        // 如果静音了，就开启声音
+        if (video.muted) {
+            video.muted = false;
+            this.innerHTML = '&#xe80c;';
+            this.title = '静音';
+            voice.style.height = video.volume * 100 + '%';
+        } else {
+            video.muted = true;
+            this.innerHTML = '&#xe621;';
+            this.title = '开启声音';
+            voice.style.height = '0%';
+        }
+    })
+
+    // 拖动音量条调节声音
+    let voice = player.querySelector('.player_voice_progress');
+    voice.style.height = '46%';
+    voice.onmousedown = function (e) {
+
+        let long = voice.getBoundingClientRect().bottom;
+
+        document.onmousemove = function (e) {
+            let num = (long - e.clientY) / voice.parentNode.offsetHeight;
+            if (num > 1) {
+                num = 1;
+            }
+            if (num < 0) {
+                num = 0;
+            }
+            console.log(num)
+            voice.style.height = num * 100 + "%";
+
+            video.volume = num;
+
+            return false;
+        };
+
+        document.onmouseup = function () {
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+    };
+
+    // 按键盘 ⬆、⬇键调节音量
+    let voiceMsg = document.querySelector('.video_wrapper_msg');
+    let VoiceTimer = null;
+    window.addEventListener('keyup', function (e) {
+        let num;
+
+        // 键盘 ⬆ 键
+        if (e.key === 'ArrowUp') {
+            if (video.muted) {
+                return;
+            }
+            num = video.volume + 0.1;
+            if (num > 1) {
+                num = 1;
+            }
+            video.volume = num;
+
+            voice.style.height = num * 100 + '%';
+        }
+
+        // 键盘 ⬇ 键
+        if (e.key === 'ArrowDown') {
+            if (video.muted) {
+                return;
+            }
+            num = video.volume - 0.1;
+            if (num < 0) {
+                num = 0;
+            }
+            video.volume = num;
+
+            voice.style.height = num * 100 + '%';
+        }
+
+        if (num != undefined) {
+            voiceMsg.innerHTML = parseInt(num * 100) + '%';
+
+            if (VoiceTimer) {
+                clearInterval(VoiceTimer);
+            }
+            voiceMsg.style.opacity = 1;
+            VoiceTimer = setInterval(function () {
+                voiceMsg.style.opacity = 0;
+                clearInterval(VoiceTimer);
+                VoiceTimer = null;
+            }, 1000);
+        }
+
+    })
+    // 点击音量调调节音量
+    let voiceBar = voice.parentNode;
+    voiceBar.addEventListener('click', function (e) {
+        let long = voice.getBoundingClientRect().bottom;
+        let num = (long - e.clientY) / voice.parentNode.offsetHeight;
+
+        voice.style.height = num * 100 + '%';
+        video.volume = num;
+    })
+
+
+    // 隐藏控件
+    let videoWrapper = document.querySelector('.video_wrapper');
+    let displayTimer = null;
+    let outerProgress = document.querySelector('.player>.player_progress');
+    videoWrapper.addEventListener('mouseover', function () {
+
+        if (displayTimer) {
+            clearTimeout(displayTimer);
+            displayTimer = null;
+        }
+
+        displayTimer = setTimeout(function () {
+            player.style.bottom = '-10%';
+            display(outerProgress);
+        }, 5000);
+
+        videoWrapper.onmousemove = function () {
+            player.style.bottom = '0';
+            display(outerProgress, false);
+        }
+    })
+
+
+    // 开启画中画
+    let desc = document.querySelector('.mv_desc');
+    let videoPicFlag = false;
+    // window.addEventListener('scroll', debounce(function () {
+
+    //     if (window.pageYOffset > desc.offsetTop) {
+
+    //         video.requestPictureInPicture();
+    //         videoPicFlag = true;
+    //     } else if (videoPicFlag) {
+
+    //         document.exitPictureInPicture();
+    //         videoPicFlag = false;
+    //     }
+    // }))
+
+
+
+    // 全屏
+    let fullBtn = player.querySelector('.player_full');
+    let fullFlag = false;// 不是全屏
+    fullBtn.onclick = function () {
+        // 如果当前是全屏
+        if (fullFlag) {
+
+            document.exitFullscreen();
+        } else {
+
+            document.documentElement.requestFullscreen();
+        }
 
     }
 
-    // 添加或删除歌曲到歌单
-    // 添加歌曲到歌单
-    // function clickAdd(sid, callback) {
-    //     // 显示弹窗
+    document.onfullscreenchange = function () {
+        // 如果当前是全屏
+        if (!fullFlag) {
+            fullFlag = true;
 
-    //     createPlaylist(user.id, function () {
-    //         let pid = parseInt(this.getAttribute('pid'));
-    //         ajax({
-    //             url: 'http://localhost:3000/playlist/tracks',
-    //             data: {
-    //                 op: 'add',
-    //                 pid: pid,
-    //                 tracks: sid
-    //             },
-    //             success: function () {
-    //                 msgPop('添加成功！');
-    //                 callback && callback();
-    //             },
-    //             error: function (data) {
-    //                 console.log(data)
-    //             }
-    //         })
-    //     });
-    // }
+            fullBtn.title = '退出全屏';
+
+            videoWrapper.className = 'video_wrapper full';
+            document.body.style.overflowY = 'hidden';
+
+        } else {
+            fullFlag = false;
+
+            fullBtn.title = '全屏';
+
+            videoWrapper.className = 'video_wrapper';
+            document.body.style.overflowY = 'auto';
+
+        }
+    }
+
+    // 双击全屏
+    video.ondblclick = function () {
+        fullBtn.click();
+    }
 
 
+    // 弹幕
+    let bullet = document.querySelector('.bullet');
+    let bulletNum = 0;
+    let bulletFlag = false;
+    let bulletContent = bullet.children[0];
 
-    // // 创建"收藏到我的歌单"弹窗
-    // function createPlaylist(fn) {
-    //     let addSong = document.querySelector('.addsong_playlist');
-    //     let addSongOl = addSong.lastElementChild;
-    //     let close = addSong.querySelector('.addsong_playlist_close');
-    //     // 显示我创建的所有歌单
-    //     userId = user.id;
-    //     playlistData.forEach(value => {
-    //         // let userId = param.substr(param.indexOf('id=') + 3);
-    //         // 如果是该用户创建的而不是该用户收藏的歌单且不是当前歌单
-    //         if (value.creator.userId === userId && value.id !== pid.id) {
+    let BulletTime = null;
+    let BulletPage = 1;
 
-    //             let li = document.createElement('li');
-    //             li.className = 'addsong_playlist_item';
-    //             li.innerHTML = value.name;
-    //             li.setAttribute('pid', value.id);
-    //             li.addEventListener('click', fn)
+    // 弹幕开关
+    let bulletBtn = document.querySelector('.bullet_open');
+    bulletBtn.onclick = function () {
+        if (this.title == '关闭弹幕') {
+            display(bullet, false);
+            this.title = '开启弹幕';
+            this.innerHTML = '&#xe696;';
+            bulletFlag = false;
+        } else {
+            display(bullet);
+            this.title = '关闭弹幕';
+            this.innerHTML = '&#xe697;';
+            bulletFlag = true;
+        }
+    }
 
-    //             addSongOl.appendChild(li);
-    //         }
-    //     })
-    //     close.addEventListener('click', function () {
-    //         display(addSong, false);
-    //         addSongOl.innerHTML = '';
-    //     })
-    //     display(addSong);
-    // }
+
+    // 获取评论，渲染成弹幕
+    function getBullet(callback) {
+
+        ajax({
+            url: 'http://localhost:3000/comment/new',
+            data: {
+                id: pid.id,
+                type: pid.type,
+                pageNo: BulletPage,
+                sortType: 3,
+                cursor: BulletTime
+            },
+            success: function (data) {
+                data = data.data;
+                BulletPage++;
+                BulletTime = data.cursor;
+
+                loadBullet(data.comments);
+                callback && callback();
+            }
+        })
+    }
+    function loadBullet(data) {
+
+        let frag = document.createDocumentFragment();
+
+        data.forEach(value => {
+            let p = document.createElement('p');
+            p.innerHTML = value.content;
+            frag.appendChild(p);
+        })
+
+        bulletContent.appendChild(frag);
+    }
+
+    getBullet(function () {
+        bulletFlag = true;
+    });
+    video.addEventListener('timeupdate', function () {
+        if (bulletFlag) {
+            let long = bulletContent.lastElementChild.getBoundingClientRect().right;
+            let BulletLong = video.getBoundingClientRect().right;
+
+            if (long < BulletLong && long > BulletLong - 30) {
+                getBullet();
+            }
+            // display(bullet, 'flex');
+            bulletContent.style.left = -bulletNum + 'px';
+            bulletNum += 20;
+        } else {
+            // display(bullet, false);
+        }
+    })
+
 
 
 
@@ -436,7 +745,7 @@ window.addEventListener('load', function () {
                 newPage++;
                 newCursor = data.cursor;
 
-                loadNewComment(data, document.querySelector('.comment_bd_new_wrapper'))
+                loadNewComment(data, document.querySelector('.comment_bd_new_wrapper'));
             }
         })
     }
@@ -654,9 +963,6 @@ window.addEventListener('load', function () {
         }
     }
 
-
-
-    // 评论区
     getHotComment(pid);
     getNewComment(pid);
 

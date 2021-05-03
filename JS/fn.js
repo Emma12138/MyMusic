@@ -242,7 +242,7 @@ function clickSearchResult(keywords, input, url) {
     input.value = keywords;
 
     if (!url) {
-        url = `file:///C:/Users/Emma/Desktop/study/MyMusic/search.html?keywords=${keywords}`;
+        url = `search.html?keywords=${keywords}`;
     }
     // 储存搜索历史
     storHis(hisData, keywords);
@@ -409,11 +409,20 @@ function getCommentCount(commentTitle) {
 // 更新头像
 function loadAvatar(data) {
     let avatar = document.querySelector('.login_avatar');
-    let loginBtn = document.querySelector('.header_login a');
+    if (!avatar) {
+        avatar = document.querySelector('.aside_login_avatar');
+        document.querySelector('.aside_wrapper span:first-of-type').className = 'logined';
+    } else {
+        display(avatar);
+    }
     avatar.src = data;
-    display(avatar);
-    display(loginBtn, false);
-    display(document.querySelector('.login_status'));
+
+    let loginBtn = document.querySelector('.header_login a');
+    if (loginBtn) {
+        display(loginBtn, false);
+        display(document.querySelector('.login_status'));
+    }
+
 }
 
 // 将大于一万的数字转换为以万为单位

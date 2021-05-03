@@ -14,12 +14,13 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="CSS/base.css">
     <link rel="stylesheet" href="CSS/common.css">
-    <link rel="stylesheet" href="CSS/user.css">
+    <link rel="stylesheet" href="CSS/index.css">
+    <link rel="stylesheet" href="CSS/mv.css">
     <script src="JS/constructor.js"></script>
     <script src="JS/fn.js"></script>
     <script src="JS/common.js"></script>
-    <script src="JS/user.js"></script>
     <script src="JS/login.js"></script>
+    <script src="JS/mv.js"></script>
 </head>
 
 <body>
@@ -35,8 +36,8 @@
                     </h1>
                 </div>
                 <ul class="header_nav">
-                    <li class="header_nav_item"><a href="javascript:;">音乐馆</a></li>
-                    <li class="header_nav_item index_nav_current"><a href="javascript:;" class="a_current">我的音乐</a></li>
+                    <li class="header_nav_item index_nav_current"><a href="javascript:;" class="a_current">音乐馆</a></li>
+                    <li class="header_nav_item"><a href="javascript:;">我的音乐</a></li>
                     <li class="header_nav_item header_nav_item_client">
                         <a href="javascript:;">客户端</a>
                         <img src="http://y.gtimg.cn/mediastyle/yqq/extra/mark_1.png" class="header_nav_special">
@@ -170,97 +171,101 @@
                 </div>
             </div>
         </div>
-        <div class="index_nav_wrapper">
-            <ol class="index_nav w">
-                <li class="index_nav_item"><a href="javascript:;" class="a_current">首页</a></li>
-                <li class="index_nav_item"><a href="javascript:;">歌手</a></li>
-                <li class="index_nav_item"><a href="javascript:;">新碟</a></li>
-                <li class="index_nav_item"><a href="javascript:;">排行榜</a></li>
-                <li class="index_nav_item"><a href="javascript:;">分类歌单</a></li>
-                <li class="index_nav_item"><a href="javascript:;">电台</a></li>
-                <li class="index_nav_item"><a href="javascript:;">MV</a></li>
-                <li class="index_nav_item"><a href="javascript:;">数字专辑</a></li>
-                <li class="index_nav_item"><a href="javascript:;">票务</a></li>
-            </ol>
-        </div>
     </header>
-    <section class="main">
-        <div class="user_hd">
-            <div class="w">
-                <div class="user_pic">
-                    <img src="" alt="">
+    <!-- 主体部分 -->
+    <div class="main">
+        <div class="w">
+            <div class="mv_info">
+                <h1 class="mv_info_name">————</h1>
+                <a href="javascript:;" class="mv_info_singer">——</a>
+                <p class="mv_info_more">
+                    <em class="mv_info_count">——</em>
+                    <em class="mv_info_comment">——</em>
+                    <em class="mv_info_time">——</em>
+                </p>
+            </div>
+            <div class="video_wrapper">
+                <video
+                    src="http://vodkgeyttp8.vod.126.net/cloudmusic/JDEhJCAwIGEgMCEyMCAkIA==/mv/5780008/6c3e4b6fb9023a885c7f6077aee54b20.mp4?wsSecret=e9d160f98a3e4d8950bd5d9fb2b29aad&wsTime=1620022435"
+                    autobuffer></video>
+                <div class="player">
+                    <em class="player_controll iconfont" title="播放">&#xe60f;</em>
+                    <div class="player_body">
+                        <div class="player_progress">
+                            <div class="player_progress_bar">
+                                <em class="player_progress_dot"></em>
+                            </div>
+                            <!-- 缓存条 -->
+                            <div class="player_progress_buffer">
+                            </div>
+                            <div class="player_progress_time">00:00</div>
+                        </div>
+                        <span class="player_body_now">00:00</span>/
+                        <span class="player_body_all">00:00</span>
+                    </div>
+                    <div class="player_menu">
+                        <a href="javascript:;" class="bullet_open iconfont" title="关闭弹幕">&#xe697;</a>
+                        <div class="player_voice">
+                            <a href="javascript:;">
+                                <i class="iconfont" title="静音">&#xe80c;</i>
+                                <div class="player_voice_bar_wrapper">
+                                    <div class="player_voice_bar">
+                                        <div class="player_voice_progress">
+                                            <em class="player_voice_dot"></em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <i class="player_full iconfont" title="全屏">&#xe623;</i>
+                    </div>
+                    <div class="player_progress">
+                        <div class="player_progress_bar">
+                        </div>
+                        <!-- 缓存条 -->
+                        <div class="player_progress_buffer"></div>
+                    </div>
                 </div>
-                <p class="user_name">平成.</p>
-                <div class="user_info">
-                    <a href="javascript:;" class="user_info_follow">
-                        <em class="user_info_follow_count">8</em>
-                        关注
-                    </a>
-                    <div class="user_info_line"></div>
-                    <a href="javascript:;" class="user_info_fans">
-                        <em class="user_info_fans_count">1</em>
-                        粉丝
-                    </a>
+                <!-- 音量提醒 -->
+                <div class="video_wrapper_msg">46%</div>
+                <!-- 弹幕 -->
+                <section class="bullet">
+                    <div class="bullet_wrapper">
+                    </div>
+                </section>
+            </div>
+            <!-- 简介 -->
+            <div class="mv_desc">
+                <p class="mv_desc_content">
+                    留不住的人血液里都藏着风。与风缠绕过的人，经历过那些不留余地的侵袭与掠夺、那些酸楚与萧瑟、那些甘甜与期许，所有记忆反覆散落风里，如影随形却触不可及。风里，没有你，也没有我
+                    …黄中平导演与薛之谦以诗入画，为你带来一段哀伤的风之物语。</p>
+                <span class="mv_desc_more">展开更多</span>
+            </div>
+            <!-- 评论区 -->
+            <div class="comment">
+                <div class="w">
+                    <div class="comment_content">
+                        <h3 class="comment_title">评论区
+                        </h3>
+                        <div class="comment_input">
+                            <textarea name="" id="" cols="30" rows="10" placeholder="期待你的神评论......"></textarea>
+                            <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+                            <a href="javascript:;" class="comment_face"></a>
+                            <button class="comment_post">发表评论</button>
+                        </div>
+                        <div class="comment_bd">
+                            <div class="comment_bd_good_wrapper">
+                                <h4 class="comment_bd_title">精彩评论</h4>
+                            </div>
+                            <div class="comment_bd_new_wrapper">
+                                <h4 class="comment_bd_title">最新评论</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <nav class="user_nav">
-                    <a href="javascript:;" class="user_nav_current user_nav_mylike">我喜欢</a>
-                    <!-- <a href="javascript:;">我的已购</a> -->
-                    <a href="javascript:;" class="user_nav_mypl">我创建的歌单</a>
-                    <!-- <a href="javascript:;">关注</a>
-                    <a href="javascript:;">粉丝</a>
-                    <a href="javascript:;">我上传的视频</a> -->
-                </nav>
             </div>
         </div>
-        <div class="user_bd">
-            <div class="w">
-                <div class="user_bd_song">
-                    <div class="user_bd_song_btn">
-                        <a href="javascript:;">播放全部</a>
-                        <a href="javascript:;">添加到</a>
-                        <a href="javascript:;">下载</a>
-                        <a href="javascript:;">批量操作</a>
-                    </div>
-                    <div class="user_bd_song_title">
-                        <span>歌曲</span>
-                        <span>歌手</span>
-                        <span>专辑</span>
-                        <span>时长</span>
-                    </div>
-                    <div class="user_bd_song_content_wrapper">
-                        <aside class="search_loading">
-                            <img src="https://y.gtimg.cn/mediastyle/yqq/img/loading.gif?max_age=2592000&v=4d882ab54383b136b0cae1f7c93ab74a"
-                                alt="">
-                        </aside>
-                    </div>
-                </div>
-                <div class="user_bd_playlist">
-                    <ol class="user_bd_playlist_btn">
-                        <a href="javascript:;">新建歌单</a>
-                        <a href="javascript:;">导入歌单</a>
-                        <a href="javascript:;">恢复歌单</a>
-                    </ol>
-                    <ul class="user_bd_playlist_content">
-                        <!-- <li class="user_bd_playlist_item">
-                            <img src="https://y.gtimg.cn/mediastyle/global/img/cover_like.png?max_age=2592000" alt="">
-                            <p class="user_bd_playlist_item_name">我喜欢</p>
-                            <p class="user_bd_playlist_item_user">平成.</p>
-                        </li> -->
-                        <aside class="search_loading">
-                            <img src="https://y.gtimg.cn/mediastyle/yqq/img/loading.gif?max_age=2592000&v=4d882ab54383b136b0cae1f7c93ab74a"
-                                alt="">
-                        </aside>
-                    </ul>
-                </div>
-            </div>
-            <ol class="user_bd_page">
-                <!-- <li class="page_current">1</li>
-                        <li>2</li>
-                        <li>3</li> -->
-            </ol>
-        </div>
-        </div>
-    </section>
+    </div>
     <!-- 页脚 -->
     <footer class="footer">
         <div class="w">
@@ -341,6 +346,8 @@
         <p class="download_text">千万高品质曲库尽享</p>
         <a href="javascript:;" class="download_content">客户端下载</a>
     </aside>
+    <!-- 信息弹窗 -->
+    <aside class="msgpop"></aside>
     <!-- 固定侧边栏 -->
     <aside class="sidebar">
         <a href="javascript:;" class="sidebar_top"></a>
@@ -370,15 +377,6 @@
             </div>
         </div>
     </aside>
-    <!-- 添加歌曲到歌单 -->
-    <aside class="addsong_playlist">
-        <i class="addsong_playlist_close">×</i>
-        <h5 class="addsong_playlist_title">添加到歌单</h5>
-        <div href="javascript:;" class="addsong_new">新建歌单</div>
-        <ol></ol>
-    </aside>
-    <!-- 信息弹窗 -->
-    <aside class="msgpop"></aside>
 </body>
 
 </html>

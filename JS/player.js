@@ -12,7 +12,6 @@ window.addEventListener('load', function () {
 
     // 监听更新播放列表
     window.addEventListener('storage', function (e) {
-        console.log(e)
 
         let playlists = JSON.parse(window.localStorage.playlists);
         playlist = playlists.playlist;
@@ -23,8 +22,6 @@ window.addEventListener('load', function () {
         let newList = playlist.slice(0, num);
         //
         getAudioSrc(newList);
-
-        console.log(playlist)
 
         if (e.key == 'playlists') {
             if (playNow != null) {
@@ -73,36 +70,14 @@ window.addEventListener('load', function () {
             playlistData = data.playlist;
         }
     })
-    // 登录
-    // if (userId) {
-    //     ajax({
-    //         // async: false,
-    //         url: 'http://localhost:3000/login/cellphone',
-    //         data: {
-    //             phone: 13543902389,
-    //             password: 661254
-    //         },
-    //         success: function (data) {
-    //             // 加载用户基本信息
-    //             ajax({
-    //                 url: 'http://localhost:3000/user/record',
-    //                 data: {
-    //                     uid: userId,
-    //                     type: 1
-    //                 },
-    //                 success: function (data) {
-    //                     console.log(JSON.stringify(data, null, 4));
-    //                 }
-    //             })
-    //         }
-    //     })
-    // }
-
 
 
     // 阻止按下键盘一些键时浏览器的默认行为
     window.addEventListener('keydown', function (e) {
-        e.preventDefault();
+
+        if (e.key == ' ' || e.key == 'ArrowLeft' || e.key == 'ArrowRight' || e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+            e.preventDefault();
+        }
     })
 
 
@@ -242,6 +217,9 @@ window.addEventListener('load', function () {
         // MV 按钮
         let mv = document.querySelector('.info_btns').children[2];
         mv.setAttribute('src-id', obj.mv);
+        if (obj.mv == 0) {
+            mv.style.cssText = 'color: #999; cursor: default;';
+        }
 
 
         // 歌词上方信息
@@ -250,18 +228,20 @@ window.addEventListener('load', function () {
 
         let lrcSinger = document.querySelector('.lyric_singer a');
         lrcSinger.innerHTML = obj.singer;
+        lrcSinger.title = obj.singer;
         lrcSinger.setAttribute('src-id', obj.sId);
 
         let lrcAl = document.querySelector('.lyric_album a');
         lrcAl.innerHTML = obj.album;
+        lrcAl.title = obj.album;
         lrcAl.setAttribute('src-id', obj.aId);
 
         // 获取评论
         hotPage = 0;
         document.querySelector('.comment_bd_good_wrapper').innerHTML = `<h4 class="comment_bd_title">精彩评论</h4>`;
         document.querySelector('.comment_bd_new_wrapper').innerHTML = `<h4 class="comment_bd_title">最新评论</h4>`;
-        getHotComment();
-        getNewComment();
+        getHotComment(pid);
+        getNewComment(pid);
     }
 
     // 显示隐藏播放列表
@@ -479,6 +459,16 @@ window.addEventListener('load', function () {
         clickAdd(userId, playlist[index], null, playlistData);
     })
 
+    // mv 按钮
+    let mvBtn = document.querySelector('.info_btns').children[2];
+    mvBtn.addEventListener('click', function () {
+        let id = this.getAttribute('src-id');
+        if (id == 0) {
+            return;
+        }
+        window.open(`mv.html?id=${id}`, '_blank');
+    })
+
     // 评论按钮
     let comment = document.querySelector('.comment');
     let commentBtn = document.querySelector('.info_btns').children[3];
@@ -535,9 +525,6 @@ window.addEventListener('load', function () {
 
     }
 
-    document.querySelector('.aside_wrapper').children[1].onclick = function () {
-        console.log(style);
-    }
 
 
     // window.localStorage.removeItem('playlist');
@@ -667,6 +654,7 @@ window.addEventListener('load', function () {
     })
     audio.addEventListener('play', function () {
         changePlayer(false);
+        console.log("index:" + index);
     })
     // 改变播放按钮
     function changePlayer(bool) {
@@ -1033,6 +1021,9 @@ window.addEventListener('load', function () {
         // console.log(e.key)
         // 键盘 ⬆ 键
         if (e.key === 'ArrowUp') {
+            if (audio.muted) {
+                return;
+            }
             let num = audio.volume + 0.1;
             if (num > 1) {
                 num = 1;
@@ -1043,6 +1034,9 @@ window.addEventListener('load', function () {
         }
         // 键盘 ⬇ 键
         if (e.key === 'ArrowDown') {
+            if (audio.muted) {
+                return;
+            }
             let num = audio.volume - 0.1;
             if (num < 0) {
                 num = 0;
@@ -1250,23 +1244,23 @@ window.addEventListener('load', function () {
                         let ul = document.createElement('ul');
                         ul.className = 'comment_bd_content';
                         ul.innerHTML = `<li class="comment_bd_item" src-cid="${data.commentId}">
-                            <img class="comment_bd_pic" src=${data.user.avatarUrl}>
-                            <div class="comment_bd_info">
-                                <h5 class="comment_bd_name">${data.user.nickname}</h5>
-                                <p class="comment_bd_text">${data.content}</p>
-                                <p class="comment_reply"></p>
-                                <i class="comment_bd_time">${getYearTime(data.time)}</i>
-                                <a href="javascript:;" class="comment_bd_praise" src-t=1>0</a>
-                                <a href="javascript:;" class="comment_bd_commentHim"></a>
-                            </div>
-                            <div class="comment_input">
-                                <textarea name="" id="" cols="30" rows="10" placeholder="回复@${data.user.nickname}."></textarea>
-                                <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
-                                <a href="javascript:;" class="comment_face"></a>
-                                <button class="comment_post">回复</button>
-                                <button class="comment_cancel">取消</button>
-                            </div>
-                        </li>`
+                        <img class="comment_bd_pic" src=${data.user.avatarUrl}>
+                        <div class="comment_bd_info">
+                            <h5 class="comment_bd_name">${data.user.nickname}</h5>
+                            <p class="comment_bd_text">${data.content}</p>
+                            <p class="comment_reply"></p>
+                            <i class="comment_bd_time">${getYearTime(data.time)}</i>
+                            <a href="javascript:;" class="comment_bd_praise" src-t=1>0</a>
+                            <a href="javascript:;" class="comment_bd_commentHim"></a>
+                        </div>
+                        <div class="comment_input">
+                            <textarea name="" id="" cols="30" rows="10" placeholder="回复@${data.user.nickname}."></textarea>
+                            <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+                            <a href="javascript:;" class="comment_face"></a>
+                            <button class="comment_post">回复</button>
+                            <button class="comment_cancel">取消</button>
+                        </div>
+                    </li>`
                         textarea.value = '';
 
                         let commentContent = document.querySelector('.comment_bd_new_wrapper').children;
@@ -1308,7 +1302,7 @@ window.addEventListener('load', function () {
 
     // 获得精彩评论
     let hotPage = 0;// 当前页数-1
-    function getHotComment() {
+    function getHotComment(pid) {
         ajax({
             url: 'http://localhost:3000/comment/hot',
             data: {
@@ -1323,7 +1317,6 @@ window.addEventListener('load', function () {
             }
         })
     }
-    // getHotComment();
 
     // 渲染精彩评论
     function loadHotComment(data, wrapper, fn) {
@@ -1335,24 +1328,24 @@ window.addEventListener('load', function () {
         ul.className = 'comment_bd_content';
         ul.innerHTML = data.hotComments.map(value => {
             return `<li class= "comment_bd_item" src-cid="${value.commentId}" >
-        <img src="${value.user.avatarUrl}"
-            class="comment_bd_pic">
-        <div class="comment_bd_info">
-            <h5 class="comment_bd_name">${value.user.nickname}</h5>
-            <p class="comment_bd_text">${value.beReplied.length !== 0 ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
-            <p class="comment_reply">${value.beReplied.length !== 0 ? value.beReplied[0].content : ''}</p>
-            <i class="comment_bd_time">${getYearTime(value.time)}</i>
-            ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
-            <a href="javascript:;" class="comment_bd_commentHim"></a>
-            </div>
-        <div class="comment_input">
-            <textarea name="" id="" cols="30" rows="10" placeholder="回复@${value.user.nickname}"></textarea>
-            <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
-            <a href="javascript:;" class="comment_face"></a>
-            <button class="comment_post">回复</button>
-            <button class="comment_cancel">取消</button>
+    <img src="${value.user.avatarUrl}"
+        class="comment_bd_pic">
+    <div class="comment_bd_info">
+        <h5 class="comment_bd_name">${value.user.nickname}</h5>
+        <p class="comment_bd_text">${value.beReplied.length !== 0 ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
+        <p class="comment_reply">${value.beReplied.length !== 0 ? value.beReplied[0].content : ''}</p>
+        <i class="comment_bd_time">${getYearTime(value.time)}</i>
+        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
+        <a href="javascript:;" class="comment_bd_commentHim"></a>
         </div>
-    </li>`}).join('') + `${data.hasMore ? `<a href="javascript:;" class="load_more">点击加载更多 ∨</a>` : ``}`;
+    <div class="comment_input">
+        <textarea name="" id="" cols="30" rows="10" placeholder="回复@${value.user.nickname}"></textarea>
+        <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+        <a href="javascript:;" class="comment_face"></a>
+        <button class="comment_post">回复</button>
+        <button class="comment_cancel">取消</button>
+    </div>
+</li>`}).join('') + `${data.hasMore ? `<a href="javascript:;" class="load_more">点击加载更多 ∨</a>` : ``}`;
 
         wrapper.appendChild(ul);
 
@@ -1362,7 +1355,7 @@ window.addEventListener('load', function () {
     // 获取最新评论
     let newPage = 1;// 当前页数
     let newCursor = null;// 上一页的 time
-    function getNewComment() {
+    function getNewComment(pid) {
         ajax({
             url: 'http://localhost:3000/comment/new',
             data: {
@@ -1381,7 +1374,6 @@ window.addEventListener('load', function () {
             }
         })
     }
-    // getNewComment();
 
     // 渲染最新评论
     function loadNewComment(data, wrapper) {
@@ -1394,24 +1386,24 @@ window.addEventListener('load', function () {
         ul.innerHTML = data.comments.map(value => {
 
             return `<li class="comment_bd_item" src-cid="${value.commentId}">
-        <img src="${value.user.avatarUrl}"
-            class="comment_bd_pic">
-        <div class="comment_bd_info">
-            <h5 class="comment_bd_name">${value.user.nickname}</h5>
-            <p class="comment_bd_text">${value.beReplied ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
-            <p class="comment_reply">${value.beReplied ? value.beReplied[0].content : ''}</p>
-            <i class="comment_bd_time">${getYearTime(value.time)}</i>
-            ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
-            <a href="javascript:;" class="comment_bd_commentHim"></a>
-            </div>
-        <div class="comment_input">
-            <textarea name="" id="" cols="30" rows="10" placeholder="回复@${value.user.nickname}"></textarea>
-            <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
-            <a href="javascript:;" class="comment_face"></a>
-            <button class="comment_post">回复</button>
-            <button class="comment_cancel">取消</button>
+    <img src="${value.user.avatarUrl}"
+        class="comment_bd_pic">
+    <div class="comment_bd_info">
+        <h5 class="comment_bd_name">${value.user.nickname}</h5>
+        <p class="comment_bd_text">${value.beReplied ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
+        <p class="comment_reply">${value.beReplied ? value.beReplied[0].content : ''}</p>
+        <i class="comment_bd_time">${getYearTime(value.time)}</i>
+        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
+        <a href="javascript:;" class="comment_bd_commentHim"></a>
         </div>
-    </li> `
+    <div class="comment_input">
+        <textarea name="" id="" cols="30" rows="10" placeholder="回复@${value.user.nickname}"></textarea>
+        <em class="comment_warn">剩余 <span class="highlight">300</span> 字</em>
+        <a href="javascript:;" class="comment_face"></a>
+        <button class="comment_post">回复</button>
+        <button class="comment_cancel">取消</button>
+    </div>
+</li> `
         }).join('') + `${data.hasMore ? `<a href="javascript:;" class="load_more">点击加载更多 ∨</a>` : ''}`;
 
         wrapper.appendChild(ul);
@@ -1567,6 +1559,7 @@ window.addEventListener('load', function () {
                 commentonInput(this);
             }
         }
+
         // 点赞/取消点赞
         let praiseBtns = ul.querySelectorAll('.comment_bd_praise');
         let praiseComment = debounce(praiseFn);
@@ -1594,4 +1587,7 @@ window.addEventListener('load', function () {
             }
         }
     }
+
+
+
 })

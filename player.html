@@ -15,13 +15,9 @@
     <link rel="stylesheet" href="CSS/base.css">
     <link rel="stylesheet" href="CSS/player.css">
     <link rel="stylesheet" href="CSS/common.css">
-    <!-- <script src="JS/constructor.js"></script> -->
-    <!-- <script src="JS/common.js"></script> -->
     <script src="JS/fn.js"></script>
-    <!-- <script src="JS/common.js"></script>
-    <script src="JS/playlist.js"></script> -->
+    <script src="JS/login.js"></script>
     <script src="JS/player.js"></script>
-
 </head>
 
 <body>
@@ -33,7 +29,7 @@
                 <div class="info_btns">
                     <a href="javascript:;" title="喜欢" class="iconfont">&#xe63a;</a>
                     <a href="javascript:;" title="收藏" class="iconfont">&#xe7a9;</a>
-                    <a href="javascript:;" title="MV" class="iconfont">&#xe51e;</a>
+                    <a href="javascript:;" title="MV" class="iconfont">&#xe600;</a>
                     <a href="javascript:;" title="评论" class="iconfont">&#xe745;</a>
                 </div>
             </div>
@@ -51,8 +47,18 @@
     <section class="aside">
         <div class="aside_wrapper">
             <a href="index.html" target="_blank" title="首页">首页</a>
-            <a href="javascript:;" class="iconfont" title="用户">&#xe614;</a>
-            <span><em class="iconfont" title="播放列表">&#xe550;</em>
+            <span class="">
+                <em class="user iconfont" title="用户">&#xe614;</em>
+                <div class="aside_login_status">
+                    <img src="" alt="" class="aside_login_avatar">
+                    <div class="aside_login_menu">
+                        <span><a href="user.html" target="_blank">我的主页</a></span>
+                        <span><a href="javascript:;">退出登录</a></span>
+                    </div>
+                </div>
+            </span>
+            <span>
+                <em class="iconfont" title="播放列表">&#xe601;</em>
                 <div class="playlist">
                     <div class="playlist_now">
                         <img src="https://y.gtimg.cn/mediastyle/yqq/img/wave.gif?max_age=2592000&v=78979d47cc7dc55cab5d36b4c96168d5"
@@ -62,13 +68,12 @@
                     </div>
                     <div class="playlist_btns">
                         <a href="javascript:;" class="playlist_now_del iconfont" title="删除全部">&#xe62f;</a>
-                        <a href="javascript:;" class="playlist_now_choose iconfont" title="批量选择">aaa</a>
+                        <a href="javascript:;" class="playlist_now_choose iconfont" title="批量选择">&#xe622;</a>
                         <span>全选：<input type="checkbox" name="" id=""></span>
                         <span>添加歌单：<a href="javascript:;" class="iconfont">&#xe7a9;</a></span>
                         <span>删除：<a href="javascript:;" class="iconfont">&#xe62f;</a></span>
                     </div>
                     <ul class="playlist_body">
-
                     </ul>
                 </div>
             </span>
@@ -138,6 +143,8 @@
         <div href="javascript:;" class="addsong_new">新建歌单</div>
         <ol></ol>
     </aside>
+    <!-- 遮罩 -->
+    <aside class="cover"></aside>
     <!-- 登录 -->
     <aside class="login">
         <a href="javascript:;" class="login_close">×</a>

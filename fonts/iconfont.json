@@ -1,10 +1,24 @@
 {
-  "id": "",
-  "name": "",
+  "id": "2525500",
+  "name": "no name",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "2154820",
+      "name": "播放器-弹幕（关）_44",
+      "font_class": "bofangqi-danmuguan",
+      "unicode": "e696",
+      "unicode_decimal": 59030
+    },
+    {
+      "icon_id": "2154821",
+      "name": "播放器-弹幕（开）_44",
+      "font_class": "bofangqi-danmukai",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
     {
       "icon_id": "573575",
       "name": "暂停",
@@ -69,6 +83,13 @@
       "unicode_decimal": 58938
     },
     {
+      "icon_id": "9512566",
+      "name": "全屏",
+      "font_class": "fullscreen",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
       "icon_id": "11372666",
       "name": "分享",
       "font_class": "fenxiang",
@@ -83,11 +104,18 @@
       "unicode_decimal": 58895
     },
     {
+      "icon_id": "12735801",
+      "name": "批量选择",
+      "font_class": "piliangxuanze",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
       "icon_id": "13186579",
       "name": "MV",
       "font_class": "MV",
-      "unicode": "e51e",
-      "unicode_decimal": 58654
+      "unicode": "e600",
+      "unicode_decimal": 58880
     },
     {
       "icon_id": "16942377",
@@ -149,8 +177,8 @@
       "icon_id": "21269883",
       "name": "菜 单-2-线",
       "font_class": "caidan-2-xian",
-      "unicode": "e550",
-      "unicode_decimal": 58704
+      "unicode": "e601",
+      "unicode_decimal": 58881
     }
   ]
 }

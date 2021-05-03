@@ -77,6 +77,14 @@ a:hover {
 .lyric .lyric_singer {
     margin-right: 30px;
 }
+.lyric .lyric_singer,
+.lyric_album {
+    display: inline-block;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .lyric .lyric_singer a,
 .lyric_album a {
     color: #d42359;
@@ -146,6 +154,58 @@ a:hover {
     text-align: center;
     cursor: pointer;
 }
+/* 用户 */
+.aside .aside_wrapper>span:first-of-type {
+    position: relative;
+}
+.aside .aside_wrapper .logined:hover .aside_login_status {
+    max-height: 145px;
+}
+.aside .aside_login_status {
+    position: absolute;
+    left: 61px;
+    top: -19px;
+    width: 150px;
+    max-height: 0px;
+    border-radius: 10px;
+    background-image: linear-gradient(to right, #f1165a 0%, #d42359 100%);
+    transition: max-height .6s;
+    overflow: hidden;
+}
+.aside .aside_login_avatar {
+    width: 38px;
+    height: 38px;
+    margin-top: 8px;
+    border-radius: 50%;
+}
+.aside .aside_login_menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.aside .aside_login_menu span {
+    width: 100%;
+}
+.aside .aside_login_menu span:hover {
+    background-color: #df1a57;
+}
+
+.aside .aside_login_menu a {
+    display: inline-block;
+    width: 80px;
+    height: 41px;
+    border-bottom: 1px solid #000;
+    color: #000;
+    line-height: 40px;
+    text-align: center;
+}
+.aside .aside_login_menu span:last-child a {
+    border: 0;
+}
+
+
+
+
 
 /* 播放列表 */
 .playlist {
