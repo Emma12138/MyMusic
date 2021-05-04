@@ -76,28 +76,27 @@ function displayBackTop(obj, target = 0) {
 // 负责懒加载的加载图片的操作：当自定义属性的图片加载完成后，赋给 obj
 function loadImg(obj) {
     let img = new Image();
-    return function () {
 
-        let dataSrc = obj.getAttribute('data-src');
-        if (dataSrc) {
-            img.src = dataSrc;
-        } else {
-            return;
-        }
-        img.onload = function () {
-            obj.src = img.src;
-        }
+    let dataSrc = obj.getAttribute('data-src');
+    if (dataSrc) {
+        img.src = dataSrc;
+    } else {
+        return;
+    }
+    img.onload = function () {
+        obj.src = img.src;
     }
 }
 
 // 处理懒加载的逻辑
 function lazyLoad(imgArr) {
+    imgArr = [...imgArr];
     return function () {
         // 视口高度
         let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
         for (let i = 0; i < imgArr.length; i++) {
             if (imgArr[i].getBoundingClientRect().top - 300 <= clientHeight) {
-                loadImg(imgArr[i])();
+                loadImg(imgArr[i]);
                 imgArr.splice(i, 1);
                 i--;
             }

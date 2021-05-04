@@ -1218,3 +1218,97 @@ body .index_nav_current a {
     font-size: 26px;
     transform: translate(-50%,-50%);
 }
+
+
+/* 新建歌单 */
+.newList {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    width: 522px;
+    height: 245px;
+    padding-top: 10px;
+    background-color: #fff;
+    color: #000;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgb(0,0,0,.3);
+    transform: translate(-50%,-50%);
+}
+.newList .newList_title {
+    padding: 0 10px;
+    margin-bottom: 7px;
+    border-bottom: 1px solid #f2f2f2;
+    font-weight: 400;
+    color: #000;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+}
+.newList_close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.newList .newList_bd {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    width: 406px;
+    height: 38px;
+    color: #000;
+    transform: translateX(-50%);
+}
+.newList .newList_bd .newList_bd_input {
+    border: 1px solid #c9c9c9;
+}
+.newList .newList_bd .newList_bd_input input {
+    width: 290px;
+    height: 38px;
+    padding-left: 12px;
+}
+.newList .newList_bd .newList_bd_input .newList_bd_count {
+    position: absolute;
+    top: 7px;
+    right: 12px;
+    height: 100%;
+    color: #666;
+}
+.newList .newList_bd .newList_bd_input .newList_bd_count_overflow {
+    color: #f82323;
+}
+.newList .newList_btns {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+.newList .newList_btns a {
+    width: 122px;
+    height: 38px;
+    border: 1px solid #c9c9c9;
+    border-radius: 3px;
+    line-height: 38px;
+    text-align: center;
+}
+.newList .newList_btns .newList_no {
+    color: #000;
+}
+.newList .newList_btns .newList_no:hover {
+    background-color: #ededed;
+    color: #000;
+}
+.newList .newList_btns .newList_go {
+    background-color: #31c27c;
+    color: #fff;
+}
+.newList .newList_btns .newList_go:hover {
+    background-color: #2caf6f;
+    color: #fff;
+}

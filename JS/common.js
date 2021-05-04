@@ -269,15 +269,15 @@ window.addEventListener('load', function () {
     })
     displayBackTop(topButton, document.querySelector('.header').offsetHeight);
 
-    // 图片懒加载
-    let imgArr = document.querySelectorAll('img');
-    imgArr = [...imgArr];
-    window.addEventListener('scroll', function () {
-        throttle(lazyLoad(imgArr), 500)();
-    })
+    // // 图片懒加载
+    // let imgArr = document.querySelectorAll('img');
+    // imgArr = [...imgArr];
+    // window.addEventListener('scroll', function () {
+    //     throttle(lazyLoad(imgArr), 500)();
+    // })
 
-    let ev = new Event('scroll');
-    window.dispatchEvent(ev);
+    // let ev = new Event('scroll');
+    // window.dispatchEvent(ev);
 
 
     // 点击音乐馆跳转到首页

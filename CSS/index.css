@@ -208,7 +208,10 @@ ul[class$="slider_list"] li>a:hover::before {
 .main_song_slider_list .main_song_info .main_song_singer {
     color: #999;
 }
-.main_song_slider_list .main_song_info .main_song_singer:hover {
+.main_song_slider_list .main_song_info .main_song_singer a {
+    color: #999;
+}
+.main_song_slider_list .main_song_info .main_song_singer a:hover {
     color: #31c27c;
 }
 .main .main_song_slider_list .main_song_time {
@@ -238,6 +241,9 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 
 /* 新碟首发 */
+.main .main_album {
+    min-height: 768px;
+}
 .main .main_album h2 {
     background-position: 0 -144px;
 }
@@ -249,6 +255,7 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_album .main_nav .main_more {
     top: 0;
+    right: 50px;
 }
 /* 轮播图 */
 .main_album_slider {
@@ -257,7 +264,7 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_album_slider_list {
     display: grid;
-    grid-template-columns: repeat(5,1fr);
+    grid-template-columns: repeat(5,18%);
     grid-template-rows: repeat(2,1fr);
     grid-gap: 20px;
     width: 100%;
@@ -265,6 +272,16 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_album_slider_list li a {
     display: block;
+}
+.main_album_slider_list li .main_album_singer {
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.main_album_slider_list li .main_album_singer a {
+    display: inline;
 }
 .main_album_pic {
     width: 100%;
@@ -399,16 +416,21 @@ ul[class$="slider_list"] li>a:hover::before {
     flex-direction: column;
     gap: 26px;
     width: 100%;
-    padding-left: 20px;
+    padding: 0 20px;
 }
 .main_top_item_list_info {
+    width: 100%;
     display: grid;
-    grid-template-columns: 10% 1fr;
+    grid-template-columns: 10% 90%;
 }
 .main_top_item_list_info span,
 .main_top_item_list_content .main_top_item_content_name,
 .main_top_item_content_singer {
+    width: 100%;
     color: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .main_top_item_list_content {
     display: flex;
@@ -417,6 +439,9 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_top_item_list_content .main_top_item_content_name,
 .main_top_item_content_singer:hover {
+    color: #fff;
+}
+.main_top_item_content_singer a {
     color: #fff;
 }
 
@@ -435,7 +460,7 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_mv_slider_list {
     display: grid;
-    grid-template-columns: repeat(5,1fr);
+    grid-template-columns: repeat(5,19%);
     grid-template-rows: repeat(2,1fr);
     grid-gap: 20px;
     min-width: 100%;
@@ -453,6 +478,9 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_mv_title a {
     font-weight: 400;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .main_mv_singer a {
     color: #999;
