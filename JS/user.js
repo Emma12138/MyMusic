@@ -5,38 +5,17 @@ window.addEventListener('load', function () {
 
     // 如果本地存储中有用户信息
     let userData;
-    let userId
+    let userId;
     if (window.localStorage.user) {
         userData = JSON.parse(window.localStorage.getItem('user'));
         userId = userData.account.id;
-
         loadUser(userData.profile);
 
     }
 
-
-    // 获取用户信息，用户id
-    let param = window.location.search;
-    //  = parseInt(param.substr(param.indexOf('id=') + 3));
     let pid = {
         type: 2
     }
-
-    // 获取用户详细信息
-    // ajax({
-    //     // async: false,
-    //     url: 'http://localhost:3000/user/detail',
-    //     data: {
-    //         uid: userId
-    //     },
-    //     success: function (data) {
-    //         // 加载用户基本信息
-    //         loadUser(data.profile);
-
-    //         // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
-    //         getPlaylist();
-    //     }
-    // })
 
     // 加载用户基本信息
     function loadUser(data) {
@@ -59,16 +38,12 @@ window.addEventListener('load', function () {
         // "我创建的歌单"数目
         document.querySelector('.user_nav_mypl').innerHTML = `我创建的歌单 ${data.playlistCount}`;
 
-        // console.log(data);
-        // "我收藏的歌单"数目
-        // document.querySelector('.user_nav_mypl').innerHTML = `我创建的歌单 ${data.playlistCount}`;
-
     }
 
 
     // 获取歌单，包括我喜欢的音乐
     let playlistData;// 存放用户所有歌单的信息
-    function getPlaylist() {
+    function getPlaylist(bool = true) {
         ajax({
             url: 'http://localhost:3000/user/playlist',
             data: {
@@ -79,27 +54,49 @@ window.addEventListener('load', function () {
                 playlistData = data.playlist;// 数组
                 pid.id = playlistData[0].id;
 
-                // 渲染我喜欢的音乐
-                getMyLike()
+                if (bool) {
+                    getMyLike();
 
-                // 点击"我喜欢"查看我喜欢的音乐
-                userNav.querySelector('.user_nav_mylike').addEventListener('click', function () {
-                    // 样式
-                    userNav.querySelector('.user_nav_likepl').className = 'user_nav_likepl';
-                    userNav.querySelector('.user_nav_mypl').className = 'user_nav_mypl';
-                    userNav.querySelector('.user_nav_mylike').className = 'user_nav_mylike user_nav_current';
+                    // 点击"我喜欢"查看我喜欢的音乐
+                    userNav.querySelector('.user_nav_mylike').addEventListener('click', function () {
+                        // 样式
+                        userNav.querySelector('.user_nav_likepl').className = 'user_nav_likepl';
+                        userNav.querySelector('.user_nav_mypl').className = 'user_nav_mypl';
+                        userNav.querySelector('.user_nav_mylike').className = 'user_nav_mylike user_nav_current';
 
-                    // 隐藏我创建的歌单详情页面
-                    display(document.querySelector('.user_bd_playlist'), false);
-                    // 显示我喜欢的音乐及底部按钮
-                    display(document.querySelector('.user_bd_song'));
-                    display(document.querySelector('.user_bd_page'), 'flex');
+                        // 隐藏我创建的歌单详情页面
+                        display(document.querySelector('.user_bd_playlist'), false);
+                        // 显示我喜欢的音乐及底部按钮
+                        display(document.querySelector('.user_bd_song'));
+                        display(document.querySelector('.user_bd_page'), 'flex');
 
-                })
+                    })
 
+
+                    // 点击"我收藏的歌单"查看我收藏的歌单
+                    userNav.querySelector('.user_nav_likepl').addEventListener('click', function () {
+                        // 样式
+                        userNav.querySelector('.user_nav_mylike').className = 'user_nav_mylike';
+                        userNav.querySelector('.user_nav_mypl').className = 'user_nav_mypl';
+                        userNav.querySelector('.user_nav_likepl').className = 'user_nav_likepl user_nav_current';
+
+                        // 渲染我创建的歌单详情页面
+                        renderPlaylist(document.querySelector('.user_bd_playlist_content'), false, function () {
+
+                            // 隐藏我喜欢的音乐及底部按钮
+                            display(document.querySelector('.user_bd_song'), false);
+                            display(document.querySelector('.user_bd_page'), false);
+                            // 显示我的歌单详情页面
+                            display(document.querySelector('.user_bd_playlist'));
+                        });
+
+                    })
+
+                }
 
                 // 点击"我创建的歌单"查看我创建的歌单
                 userNav.querySelector('.user_nav_mypl').addEventListener('click', function () {
+
                     // 样式
                     userNav.querySelector('.user_nav_mylike').className = 'user_nav_mylike';
                     userNav.querySelector('.user_nav_likepl').className = 'user_nav_likepl';
@@ -116,26 +113,6 @@ window.addEventListener('load', function () {
                     });
 
                 })
-
-                // 点击"我收藏的歌单"查看我收藏的歌单
-                userNav.querySelector('.user_nav_likepl').addEventListener('click', function () {
-                    // 样式
-                    userNav.querySelector('.user_nav_mylike').className = 'user_nav_mylike';
-                    userNav.querySelector('.user_nav_mypl').className = 'user_nav_mypl';
-                    userNav.querySelector('.user_nav_likepl').className = 'user_nav_likepl user_nav_current';
-
-                    // 渲染我创建的歌单详情页面
-                    renderPlaylist(document.querySelector('.user_bd_playlist_content'), false, function () {
-
-                        // 隐藏我喜欢的音乐及底部按钮
-                        display(document.querySelector('.user_bd_song'), false);
-                        display(document.querySelector('.user_bd_page'), false);
-                        // 显示我的歌单详情页面
-                        display(document.querySelector('.user_bd_playlist'));
-                    });
-
-                })
-
 
             }
         })
@@ -164,6 +141,7 @@ window.addEventListener('load', function () {
     // 渲染我喜欢的音乐
     function renderMyLike(data) {// data 是数组
         if (data.length > 0) {
+            let frag = document.createDocumentFragment();
             for (let i = 30; i < data.length + 30; i += 30) {
                 let div = document.createElement('div');
                 div.className = 'user_bd_song_content';
@@ -176,7 +154,7 @@ window.addEventListener('load', function () {
                             <ul class="mod_list_menu">
                                 <li href="javascript:;" title="播放"></li>
                                 <li href="javascript:;" title="添加到歌单"></li>
-                                <li href="javascript:;" title="下载"></li>
+                                <li href="javascript:;" title="添加到播放队列"></li>
                                 <li href="javascript:;" title="删除"></li>
                             </ul>
                         </a>
@@ -195,22 +173,48 @@ window.addEventListener('load', function () {
                     }
                 }).join('');
 
-                myLikeBd.appendChild(div);
+                frag.appendChild(div);
 
             }
 
             // 去掉加载动画
             myLikeBd.removeChild(myLikeBd.children[0])
 
+            myLikeBd.appendChild(frag);
+
             // 展示第一页
             display(myLikeBd.children[0], 'grid');
+
+
+            // 点击跳转
+            let items = myLikeBd.querySelectorAll('.user_bd_song_content_row a[class^="user_bd_song_content"]');
+            for (let i = 0; i < items.length; i++) {
+                let node = items[i];
+                if (node.innerHTML.includes('mod_list_menu')) {
+                    node = node.children[0];
+                }
+                node.onclick = openSearch;
+            }
+            let singerItems = myLikeBd.querySelectorAll('.user_bd_song_content_singer a');
+            for (let i = 0; i < singerItems.length; i++) {
+                singerItems[i].onclick = openSearch;
+            }
+            function openSearch() {
+                let keyword = this.textContent;
+                keyword = keyword.replace(/^\s*|\s*$/g, '');
+                window.open(`search.html?keywords=${keyword}`, '_blank');
+            }
+
+
 
             // 为添加和删除按钮绑定事件
             let addBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');
             for (let i = 0; i < addBtns.length; i++) {
                 addBtns[i].onclick = function () {
 
-                    clickAdd(userId, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), pid.id, playlistData);
+                    clickAdd(userId, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), pid.id, playlistData, function () {
+                        getPlaylist(false);
+                    });
                 }
             }
 
@@ -223,6 +227,27 @@ window.addEventListener('load', function () {
                     });
                 }
             }
+
+
+            // 点击播放按钮
+            let playBtns = document.querySelectorAll('.mod_list_menu li:nth-child(1)');
+            for (let i = 0; i < playBtns.length; i++) {
+                playBtns[i].addEventListener('click', function () {
+                    let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                    clickPlay(id);
+                })
+            }
+
+            // 添加到播放队列按
+            let addPlayBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
+            for (let i = 0; i < addPlayBtns.length; i++) {
+                addPlayBtns[i].addEventListener('click', function () {
+                    let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                    clickAddPlay(id);
+                });
+            }
+
+
 
             // 创建分页按钮并绑定事件
             createPage(document.querySelector('.user_bd_page'), data.length, function () {
@@ -273,7 +298,7 @@ window.addEventListener('load', function () {
     let userNav = document.querySelector('.user_nav'); // "我喜欢"、"我创建的歌单"、"我收藏的歌单"按钮
 
 
-    // 渲染我创建的歌单页面
+    // 渲染我的歌单页面
     function renderPlaylist(wrapper, bool, callback) {
 
         // 加载动画
@@ -319,84 +344,19 @@ window.addEventListener('load', function () {
         let items = wrapper.children;
         for (let i = 0; i < items.length; i++) {
             items[i].onclick = function () {
-                window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${this.getAttribute('src-pid')}&type=2`;
+                window.location.href = `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${this.getAttribute('src-pid')}`;
             }
         }
     }
 
     // 新建歌单
     let createPl = document.querySelector('.user_bd_playlist_btn').children[0];
-    createPl.onclick = newPl;
+    createPl.onclick = function () {
+        newPl(userId, function () {
+            getPlaylist(false);
+        });
+    };
 
-    function newPl() {
-        let newList = document.querySelector('.newList');
-        display(newList);
-        // 关闭和取消按钮
-        let closeBtn = newList.querySelector('.newList_close');
-        closeBtn.addEventListener('click', function () {
-            display(newList, false);
-        })
-        let cancelBtn = newList.querySelector('.newList_no');
-        cancelBtn.onclick = function () {
-            display(newList, false);
-        }
 
-        // 输入时实时显示剩余数量
-        let input = newList.querySelector('input');
-        let count = newList.querySelector('.newList_bd_count');
-        input.oninput = function () {
-            let value = this.value;
-            count.innerHTML = 20 - value.length;
-            if (value.length >= 20) {
-                count.className = 'newList_bd_count newList_bd_count_overflow';
-            } else {
-                count.className = 'newList_bd_count';
-            }
-        }
-
-        // 确定按钮
-        let go = newList.querySelector('.newList_go');
-        go.onclick = function () {
-
-            if (count.className == 'newList_bd_count newList_bd_count_overflow') {
-                msgPop('字数超过20个了哦~~');
-            } else {
-                let value = input.value;
-                ajax({
-                    url: 'http://localhost:3000/playlist/create',
-                    data: {
-                        name: value
-                    },
-                    success: function (data) {
-                        if (data.code == 200) {
-                            input.value = '';
-                            msgPop('新建成功！');
-                            newList.querySelector('.newList_close').click();
-
-                            // 渲染该新歌单
-                            if (userNav.children[1].className == 'user_nav_mypl user_nav_current') {
-                                data = data.playlist;
-
-                                let li = document.createElement('li');
-                                li.className = 'user_bd_playlist_item';
-                                li.setAttribute('src-pid', data.id)
-                                li.innerHTML = `  <img src="${data.coverImgUrl}" alt="">
-                            <p class="user_bd_playlist_item_name">${data.name}</p>
-                            <p class="user_bd_playlist_item_user">${userData.profile.nickname}</p>`;
-
-                                let wrapper = document.querySelector('.user_bd_playlist_content');
-                                if (wrapper.children.length != 0) {
-                                    wrapper.insertBefore(li, wrapper.children[0]);
-                                } else {
-                                    wrapper.append(li);
-                                }
-                            }
-                        }
-
-                    }
-                })
-            }
-
-        }
-    }
+    updateAccount(userId);
 })

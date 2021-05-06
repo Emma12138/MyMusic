@@ -35,7 +35,7 @@
             </div>
             <div class="lyric">
                 <h1 class="lyric_song">————</h1>
-                <span class="lyric_singer">歌手:&nbsp;&nbsp;<a href="javascript:;">——</a></span>
+                <p class="lyric_singer_wrapper">歌手:&nbsp;&nbsp;<span class="lyric_singer"></span></p>
                 <span class="lyric_album">专辑:&nbsp;&nbsp;<a href="javascript:;">——</a></span>
                 <div class="lyric_wrapper">
                     <div class="lyric_content"></div>
@@ -117,7 +117,7 @@
                 <!-- 缓存条 -->
                 <div class="player_progress_buffer">
                 </div>
-                <audio src="https://music.163.com/song/media/outer/url?id=33894312.mp3" preload="auto"></audio>
+                <audio src="" preload="auto"></audio>
             </div>
             <span class="player_body_now">00:00</span>/
             <span class="player_body_all">00:00</span>
@@ -142,6 +142,22 @@
         <h5 class="addsong_playlist_title">添加到歌单</h5>
         <div href="javascript:;" class="addsong_new">新建歌单</div>
         <ol></ol>
+    </aside>
+    <!-- 新建歌单 -->
+    <aside class="newList">
+        <i class="newList_close">×</i>
+        <h5 class="newList_title">创建新歌单</h5>
+        <div class="newList_bd">
+            歌单名：&nbsp;&nbsp;
+            <div class="newList_bd_input">
+                <input type="text">
+                <span class="newList_bd_count">20</span>
+            </div>
+        </div>
+        <div class="newList_btns">
+            <a href="javascript:;" class="newList_no">取消</a>
+            <a href="javascript:;" class="newList_go">确定</a>
+        </div>
     </aside>
     <!-- 遮罩 -->
     <aside class="cover"></aside>

@@ -282,6 +282,7 @@ button {
     flex-direction: column;
 }
 .search_history_item {
+    position: relative;
     max-height: 36px;
     padding: 0 10px;
     color: #333;
@@ -296,11 +297,12 @@ button {
     color: #fff;
 }
 .search_history_item .search_history_item_close {
-    float: right;
+    position: absolute;
+    top: 30%;
+    right: 10px;
     content: "";
     width: 20px;
     height: 18px;
-    margin-top: 10px;
     background: url(https://y.gtimg.cn/mediastyle/yqq/img/icon_sprite.png?max_age=2592000&v=85678e8f28c7b4bcad5c209b21b7e3b3&v=85678e8f28c7b4bcad5c209b21b7e3b3) no-repeat -37px -200px;
 }
 

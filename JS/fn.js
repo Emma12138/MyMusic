@@ -220,8 +220,8 @@ function storHis(hisData, key) {
 
 // 删除搜索历史
 function closeHis(item, input, hisData) {
-    // 去掉空格换行符
-    let keywords = item.parentNode.textContent.replace(/[\n\r ]/g, '')
+    // 去掉换行符
+    let keywords = item.parentNode.textContent.replace(/^\s*|\s*$/g, '');
 
     item.parentNode.parentNode.removeChild(item.parentNode);
     hisData.splice(hisData.indexOf(keywords), 1);
@@ -235,11 +235,12 @@ function clickSearchResult(keywords, input, url) {
     let hisData = JSON.parse(window.localStorage.history);
 
     keywords = decodeURIComponent(keywords);
-    keywords = keywords.replace(/[\r\n ]/g, '');
+    keywords = keywords.replace(/^\s*|\s*$/g, '');
 
     // 保存关键词到搜索框中
     input.value = keywords;
 
+    // 默认 url
     if (!url) {
         url = `search.html?keywords=${keywords}`;
     }
@@ -247,12 +248,6 @@ function clickSearchResult(keywords, input, url) {
     storHis(hisData, keywords);
     // 跳转
     window.open(url, '_self');
-    // window.location.reload(true);
-    // if (bool) {
-
-    // }
-
-    // return false;
 
 }
 
@@ -323,11 +318,13 @@ function msgPop(text) {
 
 
 // 添加歌曲到歌单
-function clickAdd(userid, sid, pid, playlistData) {
-    // 显示弹窗
-    createPlaylist(userid, playlistData, pid, function () {
+function clickAdd(userid, sid, pid, playlistData, fn) {
+    // 参数 sid 是：要添加的歌曲的 id,可以是多个
+    // 参数 pid 是：如果该歌曲是从某个歌单上添加的，则pid 是该歌单的id
 
-        let pid = parseInt(this.getAttribute('pid'));// 要存放的歌单的id
+    // 显示弹窗
+    createPlaylist(userid, playlistData, pid, function (pid) {
+        // 发出添加到歌单的请求
         ajax({
             url: 'http://localhost:3000/playlist/tracks',
             data: {
@@ -335,28 +332,29 @@ function clickAdd(userid, sid, pid, playlistData) {
                 pid: pid,
                 tracks: sid
             },
-            success: function (data) {
-                // console.
+            success: function () {
+
                 msgPop('添加成功！');
-                // callback && callback();
+                updateAccount(userid);
+
                 // 关闭弹窗
                 document.querySelector('.addsong_playlist_close').click();
             },
-            error: function (data) {
-                console.log(data)
+            error: function () {
+                msgPop('出错啦！');
             }
         })
-    });
+    }, fn);
 }
 
 // 创建"收藏到我的歌单"弹窗
-function createPlaylist(userId, playlistData, pid, fn) {
+function createPlaylist(userId, playlistData, pid, fn, callback) {
     let addSong = document.querySelector('.addsong_playlist');
     let addSongOl = addSong.lastElementChild;
     let close = addSong.querySelector('.addsong_playlist_close');
     // 显示我创建的所有歌单
     playlistData.forEach(value => {
-        // let userId = param.substr(param.indexOf('id=') + 3);
+
         // 如果是该用户创建的而不是该用户收藏的歌单
         if (value.creator.userId === userId && value.id !== pid) {
 
@@ -364,17 +362,118 @@ function createPlaylist(userId, playlistData, pid, fn) {
             li.className = 'addsong_playlist_item';
             li.innerHTML = value.name;
             li.setAttribute('pid', value.id);
-            li.addEventListener('click', fn)
+            li.addEventListener('click', function () {
+                fn(value.id);
+            })
 
             addSongOl.appendChild(li);
         }
     })
+
     // 关闭按钮
     close.addEventListener('click', function () {
         display(addSong, false);
         addSongOl.innerHTML = '';
     })
+
+    // 新建歌单按钮
+    let newList = addSong.querySelector('.addsong_new');
+    newList.onclick = function () {
+        close.click();
+        newPl(userId, function () {
+
+            callback && callback(userId);
+        });
+    }
+
+
     display(addSong);
+}
+
+// 新建歌单
+function newPl(userId, callback) {
+    let newList = document.querySelector('.newList');
+    display(newList);
+    // 关闭和取消按钮
+    let closeBtn = newList.querySelector('.newList_close');
+    closeBtn.addEventListener('click', function () {
+        display(newList, false);
+    })
+    let cancelBtn = newList.querySelector('.newList_no');
+    cancelBtn.onclick = function () {
+        display(newList, false);
+    }
+
+    // 输入时实时显示剩余数量
+    let input = newList.querySelector('input');
+    let count = newList.querySelector('.newList_bd_count');
+    input.oninput = function () {
+        let value = this.value;
+        count.innerHTML = 20 - value.length;
+        if (value.length >= 20) {
+            count.className = 'newList_bd_count newList_bd_count_overflow';
+        } else {
+            count.className = 'newList_bd_count';
+        }
+    }
+
+    // 确定按钮
+    let go = newList.querySelector('.newList_go');
+    go.onclick = function () {
+
+        if (count.className == 'newList_bd_count newList_bd_count_overflow') {
+            msgPop('字数超过20个了哦~~');
+        } else {
+            let value = input.value;
+            ajax({
+                url: 'http://localhost:3000/playlist/create',
+                data: {
+                    name: value
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        input.value = '';
+                        msgPop('新建成功！');
+                        updateAccount(userId);
+
+                        callback && callback();
+
+
+                        // "我创建的歌单"后面的数字 +1
+                        let plBtn = document.querySelector('.user_nav a:nth-child(2)');
+                        if (plBtn) {
+                            let reg = /\d/g;
+                            let plCount = parseInt(plBtn.innerHTML.match(reg).join(''));
+                            plCount++;
+                            plBtn.innerHTML = '我创建的歌单 ' + plCount;
+                        }
+                        newList.querySelector('.newList_close').click();
+
+                        // 渲染该新歌单
+                        // if (plBtn.className == 'user_nav_mypl user_nav_current') {
+                        //     data = data.playlist;
+
+                        //     let li = document.createElement('li');
+                        //     li.className = 'user_bd_playlist_item';
+                        //     li.setAttribute('src-pid', data.id)
+                        //     li.innerHTML = `  <img src="${data.coverImgUrl}" alt="">
+                        // <p class="user_bd_playlist_item_name">${data.name}</p>
+                        // <p class="user_bd_playlist_item_user">${userName}</p>`;
+
+                        //     let wrapper = document.querySelector('.user_bd_playlist_content');
+                        //     if (wrapper.children.length != 0) {
+                        //         wrapper.insertBefore(li, wrapper.children[0]);
+                        //     } else {
+                        //         wrapper.append(li);
+                        //     }
+                        // }
+                    }
+
+                }
+            })
+        }
+
+    }
 }
 
 // 从歌单中删除歌曲
@@ -427,13 +526,145 @@ function loadAvatar(data) {
 // 将大于一万的数字转换为以万为单位
 function changeNum(num) {
     if (num < 10000) {
-        return;
+        return num;
     }
     return (num / 10000).toFixed(1) + '万';
 }
 
 
+// 更新用户账户信息
+function updateAccount(id) {
+    ajax({
+        url: 'http://localhost:3000/user/detail',
+        data: {
+            uid: id
+        },
+        success: function (data) {
+
+            let user = JSON.parse(window.localStorage.user);
+            user.profile = data.profile;
+
+            window.localStorage.user = JSON.stringify(user);
+        }
+    })
+}
 
 
-// 评论区
+// 点击播放按钮
+function clickPlay(id) {
+    let playlists;
+    if (window.localStorage.playlists) {
+        playlists = JSON.parse(window.localStorage.playlists);
+    } else {
+        playlists = {
+            playlist: [],
+            playNow: '',
+            type: false
+        }
+    }
+    let playlist = playlists.playlist;// 播放队列
+    let playNow = playlists.playNow;
+    let bool = false;// 表本地存储中不含该歌曲
 
+    // 判断音乐播放界面是否打开
+    let playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表已打开
+
+    // 如果该歌曲正在播放
+    if (playNow == id) {
+        // 如果音乐播放界面未打开
+        if (!playerTagFlag) {
+            window.open('player.html', '_blank');
+            return;
+        } else {
+            msgPop('这首歌已经在播放了哦！');
+            return;
+        }
+
+    }
+
+    playlist.forEach((value) => {
+        if (value == id) {
+            bool = true;
+        }
+    })
+
+    // 如果播放队列中不含该歌曲
+    if (!bool) {
+        playlist.unshift(id);
+
+        window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
+
+    } else {
+        window.localStorage.setItem('newNum', 0);// 新添加的歌曲的数量为 0
+    }
+
+    playlists.playNow = id;
+    playlists.type = true;
+    console.log(playlists);
+    console.log(JSON.stringify(playlists))
+    window.localStorage.playlists = JSON.stringify(playlists);
+
+
+    if (!playerTagFlag || !JSON.parse(playerTagFlag)) {
+        window.open('player.html', '_blank');
+    }
+}
+
+
+
+
+
+// 点击添加到播放队列按钮
+function clickAddPlay(id) {
+    let playlists;
+    if (window.localStorage.playlists) {
+        playlists = JSON.parse(window.localStorage.playlists)
+    } else {
+        playlists = {
+            playlist: [],// 播放队列
+            playNow: '', // 正在播放的歌曲的 id
+            type: false  // 更新该对象数据时是从外部网页还是从当前网页更新的，false表从当前网页更新的
+        }
+    }
+    let playlist = playlists.playlist;
+    let bool = false;// 表本地存储中不含该歌曲
+
+    playlist.forEach((value, index) => {
+        if (value == id) {
+            bool = true;
+            index = playlist.length;
+        }
+    })
+
+
+    // 判断音乐播放界面是否打开
+    let playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表已打开
+
+    // 如果播放队列中不含该歌曲
+    if (!bool) {
+        msgPop('已添加到播放列表！');
+        playlist.unshift(id);
+        playlists.type = true;
+
+        window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
+        window.localStorage.playlists = JSON.stringify(playlists);
+
+
+        // 如果音乐播放界面未打开 
+        if (!playerTagFlag || !JSON.parse(playerTagFlag)) {
+            window.open('player.html', '_blank');
+        }
+    } else {
+        // 如果音乐播放界面未打开
+        if (!playerTagFlag) {
+            window.open('player.html', '_blank');
+        } else {
+            msgPop('播放列表中已经有该歌曲了哦！');
+        }
+
+
+
+    }
+
+
+}

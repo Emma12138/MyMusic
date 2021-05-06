@@ -28,22 +28,19 @@ window.addEventListener('load', function () {
     // 如果当前在搜索结果页面
     if (window.location.href.includes('search.html')) {
         let searchKey = window.location.search.substr(10);
-        searchInput.value = decodeURIComponent(searchKey).replace(/[\n\r]/g, '');
+        searchInput.value = decodeURIComponent(searchKey).replace(/^\s*|\s*$/g, '');
     }
 
     searchInput.addEventListener('blur', function () {
         // 记录搜索框是否得到焦点，用于判断按下回车键是否发起搜索
         searchInput.isFocus = false;
 
-        searchResult.style.maxHeight = '0';
+        // searchResult.style.maxHeight = '0';
     })
     searchInput.addEventListener('focus', function () {
         // 记录搜索框是否得到焦点，用于判断按下回车键是否发起搜索
         searchInput.isFocus = true;
 
-        if (searchItems[0].style.display == 'block') {
-            searchResult.style.maxHeight = '800px';
-        }
     })
     searchInput.addEventListener('input', debounce(function () {
         let value = this.value;
@@ -53,11 +50,7 @@ window.addEventListener('load', function () {
         }
 
         ajax({
-            type: 'get',
             url: 'http://localhost:3000/search/suggest',
-            header: {
-                'xhrFields': '{ withCredentials: true }'
-            },
             data: {
                 keywords: value
             },
@@ -66,8 +59,7 @@ window.addEventListener('load', function () {
                 let singer = searchItems[1];
                 let album = searchItems[2];
                 let list = searchItems[3];
-
-                searchResult.style.maxHeight = '1000px';
+                let flag = false;
 
                 // 单曲
                 if (data.result.songs) {
@@ -89,6 +81,7 @@ window.addEventListener('load', function () {
                          </a>`
                     }).join('')}`;
                     display(song.parentNode, 'flex');
+                    flag = true;
                 } else {
                     display(song.parentNode, false);
                 }
@@ -109,6 +102,7 @@ window.addEventListener('load', function () {
                              </a>`
                     }).join('')}`;
                     display(singer.parentNode, 'flex');
+                    flag = true;
                 } else {
                     display(singer.parentNode, false);
                 }
@@ -134,6 +128,7 @@ window.addEventListener('load', function () {
                         }
                     }).join('')}`;
                     display(album.parentNode);
+                    flag = true;
                 } else {
                     display(album.parentNode, false);
                 }
@@ -154,10 +149,16 @@ window.addEventListener('load', function () {
                         }
                     }).join('')}`;
                     display(list.parentNode, 'flex');
+                    flag = true;
                 } else {
                     display(list.parentNode, false);
                 }
 
+                if (flag) {
+                    searchResult.style.maxHeight = '1000px';
+                } else {
+                    searchResult.style.maxHeight = '0';
+                }
 
                 // 跳转页面
                 // 点击歌单的搜索结果进入歌单详情页面
@@ -166,17 +167,22 @@ window.addEventListener('load', function () {
                     plItems[i].addEventListener('click', function () {
                         let id = this.getAttribute('src-id');
                         clickSearchResult(this.children[0].textContent,
-                            searchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${id}&type=2`);
+                            searchInput, `playlist.html?pid=${id}`);
                     })
                 }
 
                 let items = document.querySelectorAll('.search_result_item');
                 for (let i = 0; i < items.length; i++) {
-                    items[i].addEventListener('click', function () {
-                        clickSearchResult(this.children[0].textContent,
-                            searchInput);
-                    })
+                    // 如果不是歌单结果
+                    if (!items[i].parentNode.parentNode.className.includes('list')) {
+                        items[i].addEventListener('click', function () {
+                            clickSearchResult(this.children[0].textContent,
+                                searchInput);
+                        })
+                    }
+
                 }
+
 
             },
             error: function (data, xhr) {
@@ -242,7 +248,7 @@ window.addEventListener('load', function () {
     let searchBtn = document.querySelector('.header_search button');
     searchBtn.onclick = function () {
         // 请求默认搜索关键词
-        if (searchInput.value.replace(/[\n\r ]/g, '') === '') {
+        if (searchInput.value.replace(/^\s*|\s*$/g, '') === '') {
             ajax({
                 url: "http://localhost:3000/search/default",
                 success: function (data) {
@@ -268,16 +274,6 @@ window.addEventListener('load', function () {
         scroll();
     })
     displayBackTop(topButton, document.querySelector('.header').offsetHeight);
-
-    // // 图片懒加载
-    // let imgArr = document.querySelectorAll('img');
-    // imgArr = [...imgArr];
-    // window.addEventListener('scroll', function () {
-    //     throttle(lazyLoad(imgArr), 500)();
-    // })
-
-    // let ev = new Event('scroll');
-    // window.dispatchEvent(ev);
 
 
     // 点击音乐馆跳转到首页

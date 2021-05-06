@@ -32,6 +32,11 @@ window.addEventListener('load', function () {
         let singer = document.querySelector('.mv_info_singer');
         singer.innerHTML = mvData.artistName;
         singer.setAttribute('src-id', mvData.artistId);
+        singer.onclick = function () {
+            let keyword = this.innerHTML;
+            window.open(`search.html?keywords=${keyword}`, '_blank');
+        }
+
 
         // 播放量、评论数、时间
         let count = document.querySelector('.mv_info_count');
@@ -600,7 +605,15 @@ window.addEventListener('load', function () {
     // 点击发表按钮发表评论
     let post = commentInput.querySelector('.comment_post');
     post.onclick = function () {
-        if (textarea.value.replace(/[\n\r ]/g, '').length > 0) {
+        // 如果未登录
+        let user = window.localStorage.user;
+        if (!user) {
+            //唤起登录界面
+            displayLogin();
+            return;
+        }
+        let regValue = textarea.value.replace(/^\s*|\s*$/g, '');
+        if (regValue.length > 0 && regValue.length <= 300) {
             ajax({
                 url: 'http://localhost:3000/comment',
                 data: {
@@ -668,6 +681,8 @@ window.addEventListener('load', function () {
                     msgPop('出现未知错误，请稍后再试！');
                 }
             })
+        } else if (regValue.length > 300) {
+            msgPop('字数超出了哦！');
         } else {
             msgPop('客官请先输入内容哦！');
         }
@@ -801,7 +816,8 @@ window.addEventListener('load', function () {
     function commentPost(that) {
         let textarea = that.parentNode.children[0];
         let replyedContent = that.parentNode.parentNode.querySelector('.comment_bd_text').innerHTML;
-        if (textarea.value.replace(/[\n\r ]/g, '').length > 0) {
+        let regValue = textarea.value.replace(/^\s*|\s*$/g, '');
+        if (regValue.length > 0 && regValue.length <= 300) {
             ajax({
                 url: 'http://localhost:3000/comment',
                 data: {
@@ -863,6 +879,8 @@ window.addEventListener('load', function () {
                     msgPop('出现未知错误，请稍后再试！');
                 }
             })
+        } else if (regValue.length > 300) {
+            msgPop('字数超出了哦！');
         } else {
             msgPop('客官请先输入内容哦！');
         }
@@ -873,6 +891,13 @@ window.addEventListener('load', function () {
     }
     // 点赞/取消点赞
     function praiseFn(that) {
+        // 如果未登录
+        let user = window.localStorage.user;
+        if (!user) {
+            //唤起登录界面
+            displayLogin();
+            return;
+        }
         let t = parseInt(that.getAttribute('src-t'));
         ajax({
             url: 'http://localhost:3000/comment/like',
@@ -948,6 +973,13 @@ window.addEventListener('load', function () {
         let postItem = ul.querySelectorAll('.comment_post');
         for (let i = 0; i < postItem.length; i++) {
             postItem[i].onclick = function () {
+                // 如果未登录
+                let user = window.localStorage.user;
+                if (!user) {
+                    //唤起登录界面
+                    displayLogin();
+                    return;
+                }
                 commentPost(this);
             }
         }

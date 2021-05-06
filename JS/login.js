@@ -1,3 +1,128 @@
+// 登陆成功后加载用户数据
+function loadUserData(data) {
+    userData = data;
+
+    // 更新头像
+    let avatar = document.querySelector('.login_avatar');
+    if (!avatar) {
+        avatar = document.querySelector('.aside_login_avatar');
+        document.querySelector('.aside_wrapper span:first-of-type').className = 'logined';
+    } else {
+        display(avatar);
+        let loginBtn = document.querySelector('.header_login a');
+        display(loginBtn, false);
+        let loginStatus = document.querySelector('.login_status');
+        display(loginStatus);
+    }
+
+    avatar.src = data.profile.avatarUrl;
+
+
+    // 关闭登陆界面
+    let closeBtn = document.querySelector('.login_close');
+    closeBtn.click();
+    let loginPhone = document.querySelector('.login_body_content input[type="text"]');
+    let loginPsw = document.querySelector('.login_body_content input[type="password"]');
+    loginPhone.value = '';
+    loginPsw.value = '';
+
+    // 用户信息存储到 localstorage
+    window.localStorage.setItem('user', JSON.stringify(data))
+}
+
+
+// 获取二维码
+function qrLogin() {
+    // 获取二维码 key
+    let key;
+    ajax({
+        url: 'http://localhost:3000/login/qr/key',
+        data: {
+            timerstamp: +new Date()
+        },
+        success: function (data) {
+            key = data.data.unikey;
+            // 生成二维码图片
+            getQrUrl(key);
+        }
+    })
+
+    // 每隔一段时间检测扫码状态
+    let loginQr = document.querySelector('.login_body_qr');
+    let qrMsg = loginQr.children[0];
+    qrTimer = setInterval(function () {
+
+        ajax({
+            url: 'http://localhost:3000/login/qr/check',
+            data: {
+                key: key,
+                timerstamp: +new Date()
+            },
+            success: function (data) {
+                if (data.code == 801) {
+                    qrMsg.innerHTML = '使用手机扫描下方二维码';
+                } else if (data.code == 802) {
+                    qrMsg.innerHTML = '待确认...';
+                } else if (data.code == 800) {
+                    qrMsg.innerHTML = '二维码已过期';
+                } else if (data.code == 803) {
+                    // 登陆成功
+
+                    clearInterval(qrTimer);
+                    qrTimer = null;
+
+                    qrMsg.innerHTML = '授权登录成功！';
+
+                    // 获取用户信息
+                    ajax({
+                        url: 'http://localhost:3000/user/account',
+                        success: function (data) {
+                            // 加载用户信息
+                            loadUserData(data);
+                            window.location.reload();
+                        }
+                    })
+
+
+
+                }
+            }
+        })
+    }, 3000);
+
+}
+
+// 生成二维码图片
+function getQrUrl(key) {
+    ajax({
+        url: 'http://localhost:3000/login/qr/create',
+        data: {
+            key: key,
+            qrimg: true,
+            timerstamp: +new Date()
+        },
+        success: function (data) {
+            let loginQr = document.querySelector('.login_body_qr');
+            loginQr.children[1].src = data.data.qrimg;
+        }
+    })
+}
+
+// 唤起登陆界面
+function displayLogin() {
+    // 遮罩
+    let cover = document.querySelector('.cover');
+    display(cover);
+    // 登陆界面
+    let login = document.querySelector('.login');
+    display(login)
+    // 隐藏滚动条
+    document.body.style.overflowY = 'hidden';
+
+    // 获取二维码
+    qrLogin();
+}
+
 window.addEventListener('load', function () {
 
 
@@ -22,22 +147,22 @@ window.addEventListener('load', function () {
         loginBtn = document.querySelector('.user');
     }
 
+
+    let qrTimer;
     // 唤起登录界面
     loginBtn.addEventListener('click', function () {
-        // 遮罩
-        display(cover);
-        // 登陆界面
-        display(login)
-        // 隐藏滚动条
-        document.body.style.overflowY = 'hidden';
-
-        // 获取二维码
-        qrLogin();
-    })
+        if (!window.localStorage.user) {
+            displayLogin();
+        }
+    });
 
     // 关闭登录界面
     let closeBtn = document.querySelector('.login_close');
     closeBtn.onclick = function () {
+
+        loginPhone.value = '';
+        loginPsw.value = '';
+        loginMsg.innerHTML = '';
         // 关闭登录界面
         display(login, false);
         // 关闭遮罩
@@ -68,13 +193,13 @@ window.addEventListener('load', function () {
         display(loginQr, false);
     })
 
-    // 点击登录按钮发起 ajax请求
+    // 点击登录按钮发起请求
     goBtn.onclick = function () {
         console.log(loginPsw.value)
         let phoneReg = /^1[3-9][0-9]{9}$/;
 
-        let phone = loginPhone.value.replace(/[\n\r ]/g, '');
-        let psw = loginPsw.value.replace(/[\n\r ]/g, '');
+        let phone = loginPhone.value.replace(/^\s*|\s*$/g, '');
+        let psw = loginPsw.value.replace(/^\s*|\s*$/g, '');
         // 登录验证
         if (phone == '') {
             loginMsg.innerHTML = '请输入手机号';
@@ -91,10 +216,11 @@ window.addEventListener('load', function () {
             // 发送登录请求
             ajax({
                 type: 'post',
-                url: 'http://localhost:3000/login/cellphone',
+                url: `http://localhost:3000/login/cellphone?timerstamp=${+new Date()}`,
                 data: {
                     phone: phone,
-                    password: psw
+                    password: encodeURIComponent(psw)
+
                 },
                 header: {
                     'Content-Type': 'application/json'
@@ -104,9 +230,14 @@ window.addEventListener('load', function () {
                         loginMsg.innerHTML = '请输入正确的密码';
                         display(loginMsg);
                     } else {
+                        console.log(qrTimer);
+                        clearInterval(qrTimer);
+                        qrTimer = null;
 
                         // 登陆成功，加载用户数据
                         loadUserData(data);
+
+                        window.location.reload();
                     }
 
                 },
@@ -129,102 +260,7 @@ window.addEventListener('load', function () {
 
     })
 
-    function qrLogin() {
-        // 获取二维码 key
-        let key;
-        ajax({
-            url: 'http://localhost:3000/login/qr/key',
-            data: {
-                timerstamp: +new Date()
-            },
-            success: function (data) {
-                key = data.data.unikey;
-                // 生成二维码图片
-                getQrUrl(key);
-            }
-        })
 
-        // 每隔一段时间检测扫码状态
-        let qrMsg = loginQr.children[0];
-        let timer = setInterval(function () {
-
-            ajax({
-                url: 'http://localhost:3000/login/qr/check',
-                data: {
-                    key: key,
-                    timerstamp: +new Date()
-                },
-                success: function (data) {
-                    if (data.code == 801) {
-                        qrMsg.innerHTML = '使用手机扫描下方二维码';
-                    } else if (data.code == 802) {
-                        qrMsg.innerHTML = '待确认...';
-                    } else if (data.code == 800) {
-                        qrMsg.innerHTML = '二维码已过期';
-                    } else if (data.code == 803) {
-                        // 登陆成功
-
-                        clearInterval(timer);
-                        timer = null;
-
-                        qrMsg.innerHTML = '授权登录成功！';
-
-                        // 获取用户信息
-                        ajax({
-                            url: 'http://localhost:3000/user/account',
-                            success: function (data) {
-                                // 加载用户信息
-                                loadUserData(data);
-                            }
-                        })
-
-                    }
-                }
-            })
-        }, 3000);
-    }
-
-    // 生成二维码图片
-    function getQrUrl(key) {
-        ajax({
-            url: 'http://localhost:3000/login/qr/create',
-            data: {
-                key: key,
-                qrimg: true,
-                timerstamp: +new Date()
-            },
-            success: function (data) {
-                loginQr.children[1].src = data.data.qrimg;
-            }
-        })
-    }
-
-    // 登陆成功后加载用户数据
-    function loadUserData(data) {
-        userData = data;
-
-        // 更新头像
-        let avatar = document.querySelector('.login_avatar');
-        if (!avatar) {
-            avatar = document.querySelector('.aside_login_avatar');
-            document.querySelector('.aside_wrapper span:first-of-type').className = 'logined';
-        } else {
-            display(avatar);
-            display(loginBtn, false);
-            display(loginStatus);
-        }
-
-        avatar.src = data.profile.avatarUrl;
-
-
-        // 关闭登陆界面
-        closeBtn.click();
-        loginPhone.value = '';
-        loginPsw.value = '';
-
-        // 用户信息存储到 localstorage
-        window.localStorage.setItem('user', JSON.stringify(data))
-    }
 
     // 退出登录按钮
     let logoutBtn = document.querySelector('.login_menu_wrapper a:last-child');
@@ -252,6 +288,9 @@ window.addEventListener('load', function () {
 
                 // 删除本地存储中的用户信息
                 window.localStorage.user = '';
+
+                // 刷新页面
+                window.location.reload();
             }
         })
     })

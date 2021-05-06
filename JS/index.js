@@ -2,7 +2,7 @@
 const ProxySlider = function () {
     let buttonNum = 0;
     let sliderNum = 0;
-    let flag = true;
+    let flag = true;// 节流阀
     return function (obj, previous, next, button, target = 1) {
         let animateObj = new SliderObj(obj);
         let switchButton = new SliderButton(button);
@@ -13,6 +13,7 @@ const ProxySlider = function () {
             if (flag) {
                 // console.log(target)
                 flag = false;
+
                 buttonNum--;
                 sliderNum--;
                 buttonNum = buttonNum == -1 ? button.length - 1 : buttonNum;
@@ -30,6 +31,7 @@ const ProxySlider = function () {
         next.onclick = function () {
             if (flag) {
                 flag = false;
+
                 buttonNum++;
                 sliderNum++;
                 buttonNum = buttonNum == button.length ? 0 : buttonNum;
@@ -42,25 +44,45 @@ const ProxySlider = function () {
                 });
                 switchButton.switch(buttonNum);
             }
-
         }
+
+        return function () {
+            console.log(buttonNum)
+            buttonNum = 0;
+            sliderNum = 0;
+            flag = true;
+            obj.style.left = '0';
+            switchButton.switch(0);
+            animateObj.clone();
+        }
+        // {
+        //     init: function () {
+        //         console.log(buttonNum)
+        //         buttonNum = 0;
+        //         sliderNum = 0;
+        //         flag = true;
+        //         obj.style.left = '0';
+        //         switchButton.switch(0);
+        //     },
+        //     clone: obj.clone
+        // }
     }
 };
-
 
 window.onload = function () {
 
     // 歌单推荐
     let listArr = ['摇滚', '粤语', '轻音乐', '电子', '说唱'];
     let list = document.querySelector('.main_list_slider');
+    let listSlider;
     //
     getList(list, 0, true, function () {
         // 轮播
         let mainList = document.querySelector('.main_list');
-        ProxySlider()(
+        listSlider = ProxySlider()(
             list, mainList.children[1], mainList.lastElementChild,
             list.nextElementSibling.children,
-            (list.children[0].offsetWidth + parseInt(window.getComputedStyle(list.children[0], null).marginRight)) / list.offsetWidth
+            (list.children[0].offsetWidth + parseInt(window.getComputedStyle(list.children[0], null).marginRight)) / list.clientWidth
         );
 
 
@@ -86,18 +108,12 @@ window.onload = function () {
             getList(list, i, true, function () {
 
                 // 轮播
-                let mainList = document.querySelector('.main_list');
-                ProxySlider()(
-                    list, mainList.children[1], mainList.lastElementChild,
-                    list.nextElementSibling.children,
-                    (list.children[0].offsetWidth + parseInt(window.getComputedStyle(list.children[0], null).marginRight)) / list.offsetWidth
-                );
 
-
+                listSlider()
                 lazyLoad(list.querySelectorAll('img'))();
-
-
             });
+
+
         })
     }
     // 请求数据
@@ -139,6 +155,11 @@ window.onload = function () {
             <span class="main_list_info">播放量：${data[j].playCount >= 10000 ? changeNum(data[j].playCount) : data[j].playCount}</span>`;
 
                 ul.append(li);
+
+                li.onclick = function () {
+                    let id = this.getAttribute('src-id');
+                    window.open('playlist.html?pid=' + id, '_self');
+                }
             }
 
             frag.appendChild(ul);
@@ -155,11 +176,12 @@ window.onload = function () {
     // 新歌首发
     let songArr = ['0', '7', '96', '16', '8'];
     let song = document.querySelector('.main_song_slider');
+    let songSlider;
     //
     getSong(song, 0, true, function () {
         // 轮播
         let mainSong = document.querySelector('.main_song');
-        ProxySlider()(
+        songSlider = ProxySlider()(
             song, mainSong.children[1], mainSong.lastElementChild,
             song.nextElementSibling.children,
             (song.children[0].offsetWidth + parseInt(window.getComputedStyle(song.children[0], null).marginRight)) / song.offsetWidth
@@ -187,13 +209,7 @@ window.onload = function () {
             getSong(song, i - 1, true, function () {
 
                 // 轮播
-                let mainSong = document.querySelector('.main_song');
-                let songSlider = mainSong.querySelector('.main_song_slider');
-                ProxySlider()(
-                    songSlider, mainSong.children[1], mainSong.lastElementChild,
-                    songSlider.nextElementSibling.children,
-                    (songSlider.children[0].offsetWidth + parseInt(window.getComputedStyle(songSlider.children[0], null).marginRight)) / songSlider.offsetWidth
-                );
+                songSlider();
 
 
                 lazyLoad(song.querySelectorAll('img'))();
@@ -244,6 +260,24 @@ window.onload = function () {
                                 <div href="javascript:;" class="main_song_time">${getTime(data[j].duration)}</div>`;
 
                 ul.append(li);
+
+                li.children[0].onclick = function () {
+                    let id = this.parentNode.getAttribute('src-id');
+                    clickPlay(id);
+                }
+
+                li.querySelector('.main_song_title').onclick = function () {
+                    let id = this.parentNode.parentNode.getAttribute('src-id');
+                    clickPlay(id);
+                }
+
+                let singers = li.querySelectorAll('.main_song_singer a');
+                for (let i = 0; i < singers.length; i++) {
+                    singers[i].onclick = function () {
+                        let keyword = this.innerHTML;
+                        window.open(`search.html?keywords=${keyword}`, '_self');
+                    }
+                }
             }
 
             frag.appendChild(ul);
@@ -256,61 +290,55 @@ window.onload = function () {
 
 
     // 精彩推荐
-    let recItems = document.querySelectorAll('.main_rec_slider_wrapper');
-    for (let i = 0; i < recItems.length; i++) {
+    let rec = document.querySelector('.main_rec_slider');
 
-        getRec(recItems[i], 2 * i, true, function () {
+    getRec(rec, true, function () {
 
-            // 轮播
-            let mainRec = document.querySelector('.main_rec');
-            let recSlider = mainRec.querySelector('.main_rec_slider');
-            ProxySlider()(
-                recSlider, mainRec.children[1], mainRec.lastElementChild,
-                recSlider.nextElementSibling.children,
-                (recSlider.children[0].offsetWidth + parseInt(window.getComputedStyle(recSlider.children[0], null).marginRight)) / recSlider.offsetWidth
-            );
+        // 轮播
+        let mainRec = document.querySelector('.main_rec');
+        ProxySlider()(rec, mainRec.children[1], mainRec.lastElementChild, rec.nextElementSibling.children, 1220 / 1200);
 
-            // 懒加载
-            if (i == recItems.length - 1) {
+        // 懒加载
+        let lazyloadFn = lazyLoad(rec.querySelectorAll('img'));
+        window.addEventListener('scroll', function () {
+            throttle(lazyloadFn, 500)();
+        })
 
-                let lazyloadFn = lazyLoad(recItems[i].parentNode.querySelectorAll('img'));
-                window.addEventListener('scroll', function () {
-                    throttle(lazyloadFn, 500)();
-                })
-            }
-
-        });
-    }
+    });
     // 获取数据
-    function getRec(wrapper, index, lazyFlag, callback) {
+    function getRec(wrapper, lazyFlag, callback) {
         ajax({
             url: 'http://localhost:3000/banner',
             data: {
                 type: 0
             },
             success: function (data) {
-                renderRec(data.banners, index, 2, lazyFlag, wrapper);
+                renderRec(data.banners, lazyFlag, wrapper);
                 callback && callback();
+
             }
         })
     }
     // 渲染数据
-    function renderRec(data, index, num, lazyFlag, wrapper) {
-        let frag = document.createDocumentFragment();
+    function renderRec(data, lazyFlag, wrapper) {
 
-        for (let i = index; i < index + num; i++) {
-            let a = document.createElement('a');
-            a.href = 'javascript:;';
+        let items = wrapper.children
+        for (let i = 0; i < items.length; i++) {
+            let frag = document.createDocumentFragment();
+            for (let j = i * 2; j < i * 2 + 2; j++) {
+                let a = document.createElement('a');
+                a.href = 'javascript:;';
+                a.setAttribute('src-id', data[j].targetId);
 
-            a.innerHTML = `
-                ${lazyFlag ? `<img src="http://p1.music.126.net/MC02WAEJIgkzoeD1X2mrvQ==/109951165945638507.jpg" data-src=${data[i].imageUrl} alt="" class="main_rec_slider_pic">` : `<img src="${data[i].imageUrl}" data-id=${data[i].targetId} alt="" class="main_rec_slider_pic">`}`
+                a.innerHTML = `
+                    ${lazyFlag ? `<img src="http://p1.music.126.net/MC02WAEJIgkzoeD1X2mrvQ==/109951165945638507.jpg" data-src=${data[j].imageUrl} alt="" class="main_rec_slider_pic">` : `<img src="${data[i].imageUrl}" data-id=${data[i].targetId} alt="" class="main_rec_slider_pic">`}`
 
-            frag.appendChild(a);
+                frag.appendChild(a);
+            }
+
+            items[i].append(frag);
 
         }
-
-        wrapper.appendChild(frag);
-
     }
 
 
@@ -381,6 +409,19 @@ window.onload = function () {
                     </span>`;
 
                 frag.appendChild(li);
+
+                li.querySelector('.main_album_title a').onclick = function () {
+                    let keyword = this.innerHTML;
+                    window.open(`search.html?keywords=${keyword}`, '_self');
+                }
+
+                let singers = li.querySelectorAll('.main_album_singer a');
+                for (let i = 0; i < singers.length; i++) {
+                    singers[i].onclick = function () {
+                        let keyword = this.innerHTML;
+                        window.open(`search.html?keywords=${keyword}`, '_self');
+                    }
+                }
             }
         })
 
@@ -419,17 +460,30 @@ window.onload = function () {
             div.className = 'main_top_item_list_info';
 
             div.innerHTML = `<span>${i + 1}</span>
-            <div class="main_top_item_list_content" src-id=${data[i].id}>
-                <a href="javascript:;" class="main_top_item_content_name">${data[i].name}</a>
+            <div class="main_top_item_list_content">
+                <a href="javascript:;" class="main_top_item_content_name" src-id=${data[i].id}>${data[i].name}</a>
                 <span class="main_top_item_content_singer">
 
                 ${data[i].ar.map(value => {
                 return `<a href="javascript:;" src-id="${value.id}">${value.name}</a>`
-            }).join('/')}
+            }).join('&nbsp;/&nbsp;')}
                 </span>
             </div>`
 
             frag.appendChild(div);
+
+            div.querySelector('.main_top_item_content_name').onclick = function () {
+                let id = this.getAttribute('src-id');
+                clickPlay(id);
+            }
+
+            let singers = div.querySelectorAll('.main_top_item_content_singer a');
+            for (let i = 0; i < singers.length; i++) {
+                singers[i].onclick = function () {
+                    let keyword = this.innerHTML;
+                    window.open(`search.html?keywords=${keyword}`, '_self');
+                }
+            }
 
         }
 
@@ -443,11 +497,12 @@ window.onload = function () {
     // MV
     let mvArr = ['全部', '内地', '韩国', '港台', '欧美', '日本'];
     let mv = document.querySelector('.main_mv_slider');
+    let mvSlider;
     //
     getMV(mv, 0, true, function () {
         // 轮播
         let mainMV = document.querySelector('.main_mv');
-        ProxySlider()(
+        mvSlider = ProxySlider()(
             mv, mainMV.children[1], mainMV.lastElementChild,
             mv.nextElementSibling.children,
             (mv.children[0].offsetWidth + parseInt(window.getComputedStyle(mv.children[0], null).marginRight)) / mv.offsetWidth
@@ -474,12 +529,7 @@ window.onload = function () {
             getMV(mv, i, true, function () {
 
                 // 轮播
-                let mainMV = document.querySelector('.main_mv');
-                ProxySlider()(
-                    mv, mainMV.children[1], mainMV.lastElementChild,
-                    mv.nextElementSibling.children,
-                    (mv.children[0].offsetWidth + parseInt(window.getComputedStyle(mv.children[0], null).marginRight)) / mv.offsetWidth
-                );
+                mvSlider();
 
 
                 lazyLoad(mv.querySelectorAll('img'))();
@@ -504,7 +554,7 @@ window.onload = function () {
     }
     // 渲染数据
     function renderMV(data, num, lazyFlag, wrapper) {
-        console.log(data)
+
         let frag = document.createDocumentFragment();
         for (let i = 0; i < num; i++) {
             let ul = document.createElement('ul');
@@ -515,7 +565,6 @@ window.onload = function () {
                 li.setAttribute('src-id', data[j].id);
 
                 li.innerHTML = `
-                
                 <a href="javascript:;">
                 ${lazyFlag ? `<img src="https://y.gtimg.cn/mediastyle/global/img/album_300.png?max_age=31536000"
                 data-src=${data[j].cover} class="main_mv_pic">` : `<img src=${data[j].cover} class="main_mv_pic">`}
@@ -524,11 +573,25 @@ window.onload = function () {
             <span class="main_mv_singer">
             ${data[j].artists.map(value => {
                     return `<a href="javascript:;" src-id="${value.id}">${value.name}</a>`
-                }).join('/')}
+                }).join('&nbsp;/&nbsp;')}
             </span>
             <div class="main_mv_count">${data[j].playCount >= 10000 ? changeNum(data[j].playCount) : data[j].playCount}</div>`;
 
                 ul.append(li);
+
+
+                li.onclick = function () {
+                    let id = this.getAttribute('src-id');
+                    window.open(`mv.html?id=${id}`, '_blank');
+                }
+
+                let singers = li.querySelectorAll('.main_mv_singer a');
+                for (let i = 0; i < singers.length; i++) {
+                    singers[i].onclick = function () {
+                        let keyword = this.innerHTML;
+                        window.open(`search.html?keywords=${keyword}`, '_self');
+                    }
+                }
             }
 
             frag.appendChild(ul);
@@ -538,13 +601,6 @@ window.onload = function () {
         wrapper.appendChild(frag);
 
     }
-
-
-
-    // 图片懒加载
-
-    // let ev = new Event('scroll');
-    // window.dispatchEvent(ev);
 
 
 }

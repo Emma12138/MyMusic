@@ -176,7 +176,7 @@
     background-position: 0 -80px;
 }
 .user_bd_song_content_song .mod_list_menu li:nth-child(3) {
-    background-position: 0 -120px;
+    background-position: 0 -200px;
 }
 .user_bd_song_content_song .mod_list_menu li:nth-child(4) {
     background-position: 0 -160px;
@@ -237,7 +237,6 @@
 .user_bd_playlist_content .user_bd_playlist_item {
     display: flex;
     flex-direction: column;
-    height: 284px;
     cursor: pointer;
 }
 .user_bd_playlist_content .user_bd_playlist_item img {

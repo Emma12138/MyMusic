@@ -171,7 +171,7 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main .main_song_slider_list {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3,31%);
     grid-template-rows: repeat(3,1fr);
     grid-gap: 20px;
     min-width: 100%;
@@ -229,6 +229,7 @@ ul[class$="slider_list"] li>a:hover::before {
 .main_rec_slider {
     position: relative;
     display: flex;
+    height: 224px;
 }
 .main_rec_slider_wrapper {
     display: flex;
@@ -381,12 +382,12 @@ ul[class$="slider_list"] li>a:hover::before {
 /* 鼠标经过显示播放图标 */
 .main_top_item_wrapper::before {
     position: absolute;
-    top: 120px;
+    top: 125px;
     left: 50%;
     z-index: 1;
     content: "";
     width: 24%;
-    height: 40%;
+    height: 52px;
     background: url(https://y.gtimg.cn/mediastyle/yqq/img/cover_play.png?max_age=2592000&v=88abebcbc1242dbbbbc836cc3e04a006&v=88abebcbc1242dbbbbc836cc3e04a006) no-repeat;
     background-size: 100%;
     opacity: 0;
@@ -422,6 +423,9 @@ ul[class$="slider_list"] li>a:hover::before {
     width: 100%;
     display: grid;
     grid-template-columns: 10% 90%;
+}
+.main_top_item_list_info a:hover {
+    color: #31C27c;
 }
 .main_top_item_list_info span,
 .main_top_item_list_content .main_top_item_content_name,
@@ -460,13 +464,19 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_mv_slider_list {
     display: grid;
-    grid-template-columns: repeat(5,19%);
+    grid-template-columns: repeat(5,1fr);
     grid-template-rows: repeat(2,1fr);
     grid-gap: 20px;
     min-width: 100%;
-    margin-right: 20px;
+    padding: 0 20px;
 }
-.main_mv_slider_list li a:first-child {
+.main_mv_slider_list li {
+    max-height: 194px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.main_mv_slider_list li>a:first-child {
     display: block;
 }
 .main_mv_pic {
@@ -475,6 +485,9 @@ ul[class$="slider_list"] li>a:hover::before {
 }
 .main_mv_title {
     margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .main_mv_title a {
     font-weight: 400;

@@ -4,48 +4,36 @@ window.onload = function () {
 
     document.body.style.zoom = 1;
 
-    // 获取参数：关键词、用户id
-    let searchKey;
+
+    // 如果本地存储中有用户信息，获取用户数据
+    let userData;
     let userId;
-    let param = window.location.search;// #keywords=xxx  /  #userId=xxxxxx&keywords=xxx
-    function makeParams(param) {
-        if (param.includes('&')) {
-            userId = undefined;
-        } else {
-            userId = parseInt(param.substr(param.indexOf('userId=') + 7, param.indexOf('&keywords=')));
-        }
-        searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9)).replace(/[\n\r ]/g, '');
+    if (window.localStorage.user) {
+        userData = JSON.parse(window.localStorage.getItem('user'));
+        userId = userData.profile.userId;
+
     }
-    makeParams(param);
-    // 登录
-    if (userId) {
-        console.log(userId)
+
+
+    // 获取关键词
+    let param = window.location.search;// ?keywords=xxx
+    let searchKey = decodeURIComponent(param.substr(param.indexOf('keywords=') + 9)).replace(/^\s*|\s*$/g, '');
+
+
+    let playlistData = null;
+    function getPlaylist() {
         ajax({
-            // async: false,
-            url: 'http://localhost:3000/user/detail',
+            url: 'http://localhost:3000/user/playlist',
             data: {
                 uid: userId
             },
             success: function (data) {
-                // 加载用户基本信息
-                loadUser(data.profile);
+
+                playlistData = data.playlist;// 数组
             }
         })
-        function loadUser(data) {
-            // 更新头像
-            let headerAvatar = document.querySelector('.login_avatar');
-            let loginBtn = headerAvatar.previousElementSibling;
-            let userPic = document.querySelector('.user_pic img');
-            let avatarUrl = data.avatarUrl;
-            headerAvatar.src = avatarUrl;
-            userPic.src = avatarUrl;
-            display(headerAvatar);
-            display(loginBtn, false);
-
-        }
     }
-
-
+    getPlaylist();
 
     // 热门搜索
     ajax({
@@ -115,7 +103,7 @@ window.onload = function () {
         }
     })
     mainSearchInput.addEventListener('input', debounce(function () {
-        let value = this.value.replace(/[\n\r ]/g, '');
+        let value = this.value.replace(/^\s*|\s*$/g, '');
         // 如果内容为空则返回
         if (value === '') {
             mainSearchResult.style.maxHeight = '0';
@@ -124,11 +112,7 @@ window.onload = function () {
 
         // 实时搜索
         ajax({
-            type: 'get',
             url: 'http://localhost:3000/search/suggest',
-            header: {
-                'xhrFields': '{ withCredentials: true }'
-            },
             data: {
                 keywords: value
             },
@@ -238,24 +222,27 @@ window.onload = function () {
                 for (let i = 0; i < plItems.length; i++) {
                     plItems[i].addEventListener('click', function () {
                         let id = this.getAttribute('src-id');
-                        clickSearchResult(this.children[0].textContent.replace(/[\n\r ]/g, ''),
-                            mainSearchInput, `file:///C:/Users/Emma/Desktop/study/MyMusic/playlist.html?pid=${id}&type=2`);
+                        clickSearchResult(this.children[0].textContent.replace(/^\s*|\s*$/g, ''),
+                            mainSearchInput, `playlist.html?pid=${id}`);
                     })
                 }
                 let items = document.querySelectorAll('.main_search_result_item');
                 for (let i = 0; i < items.length; i++) {
-                    items[i].addEventListener('click', function () {
-                        if (!this.className.includes('search_result_list')) {
-                            let keywords = this.children[0].textContent;
-                            clickSearchResult(keywords,
-                                mainSearchInput);
-                        }
-                    })
+                    // 如果不是歌单结果
+                    if (!items[i].parentNode.parentNode.className.includes('list')) {
+                        items[i].addEventListener('click', function () {
+                            if (!this.className.includes('search_result_list')) {
+                                let keywords = this.children[0].textContent;
+                                clickSearchResult(keywords, mainSearchInput);
+                            }
+                        })
+                    }
+
                 }
 
             },
-            error: function (data, xhr) {
-                console.log(xhr.status)
+            error: function () {
+                msgPop('出错啦~~');
             }
         })
     })
@@ -263,7 +250,6 @@ window.onload = function () {
 
 
     // 搜索历史
-    // localstor.clear();
     // 如果 localstorage 中未设置存储搜索历史的数组，就设置
     if (!window.localStorage.history) {
         localstor.setItem('history', JSON.stringify([]));
@@ -316,10 +302,12 @@ window.onload = function () {
 
 
 
+
+
     // 点击搜索按钮进入搜索页，更新搜索历史
     let mainSearchBtn = document.querySelector('.search_input button')
     mainSearchBtn.onclick = function () {
-        if (mainSearchInput.value.replace(/[\n\r ]/g, '') === '') {
+        if (mainSearchInput.value.replace(/^\s*|\s*$/g, '') === '') {
             // 请求默认搜索关键词
             ajax({
                 url: "http://localhost:3000/search/default",
@@ -342,7 +330,7 @@ window.onload = function () {
 
 
 
-    // 搜索结果
+    // 搜索页结果
     let searchBd = document.querySelector('.search_bd_song_content');
 
     // 显示加载动画
@@ -449,6 +437,27 @@ window.onload = function () {
         </div>`
         }).join('');
 
+        let items = searchBd.querySelectorAll('.search_bd_song_content_row a[class^="search_bd_song_content"]');
+        for (let i = 0; i < items.length; i++) {
+            let node = items[i];
+            if (node.innerHTML.includes('mod_list_menu')) {
+                node = node.children[0];
+            }
+            node.onclick = openSearch;
+        }
+        let singerItems = searchBd.querySelectorAll('.search_bd_song_content_singer a');
+        for (let i = 0; i < singerItems.length; i++) {
+            singerItems[i].onclick = openSearch;
+        }
+        function openSearch() {
+            if (!this.innerHTML.includes('search_key')) {
+                let keyword = this.textContent;
+                keyword = keyword.replace(/^\s*|\s*$/g, '');
+                window.open(`search.html?keywords=${keyword}`, '_self');
+            }
+        }
+
+
         if (!window.localStorage.playlist) {
             window.localStorage.playlist = JSON.stringify([]);
         }
@@ -456,30 +465,27 @@ window.onload = function () {
             window.localStorage.playNow = JSON.stringify('');
         }
 
-        // 播放按钮
+        // 添加到歌单按钮
+        let addPlBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');
+        for (let i = 0; i < addPlBtns.length; i++) {
+            addPlBtns[i].onclick = function () {
+                let user = window.localStorage.user;
+                // 如果没登录，唤起登陆界面
+                if (!user) {
+                    displayLogin();
+                    return;
+                }
+                clickAdd(userId, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), undefined, playlistData);
+            }
+        }
+
+
+        // 点击播放按钮
         let playBtns = document.querySelectorAll('.mod_list_menu li:nth-child(1)');
         for (let i = 0; i < playBtns.length; i++) {
             playBtns[i].addEventListener('click', function () {
-
-                let playlists = JSON.parse(window.localStorage.playlists);
-                let playlist = playlists.playlist;
                 let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
-                let bool = false;// 表本地存储中不含该歌曲
-
-                playlist.forEach((value, index) => {
-                    if (value == id) {
-                        bool = true;
-                        index = playlist.length;
-                    }
-                })
-                if (!bool) {
-                    playlist.unshift(id);
-                    playlists.playNow = id;
-                    window.localStorage.playlists = JSON.stringify(playlists);
-                    window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
-                }
-
-                // window.localStorage.playNow = JSON.stringify(id);
+                clickPlay(id);
             })
         }
 
@@ -487,25 +493,9 @@ window.onload = function () {
         let addBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
         for (let i = 0; i < addBtns.length; i++) {
             addBtns[i].addEventListener('click', function () {
-
-                let playlists = JSON.parse(window.localStorage.playlists);
-                let playlist = playlists.playlist;
                 let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
-                let bool = false;// 表本地存储中不含该歌曲
-
-                playlist.forEach((value, index) => {
-                    if (value == id) {
-                        bool = true;
-                        index = playlist.length;
-                    }
-                })
-                if (!bool) {
-                    playlist.unshift(id);
-                    playlists.playNow = null;
-                    window.localStorage.playlists = JSON.stringify(playlists);
-                    window.localStorage.setItem('newNum', 1);// 新添加的歌曲的数量
-                }
-            })
+                clickAddPlay(id);
+            });
         }
     }
 

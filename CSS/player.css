@@ -1,22 +1,13 @@
 body {
-    /* background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%); */
-    /* background: url(http://p1.music.126.net/yFBypMXseGVYsNRFOibsyw==/109951164240566781.jpg) no-repeat fixed;
-    background-position: center;
-    background-size: cover;
-    color: #fff;
-    backdrop-filter: blur(10px); */
     display: flex;
-    /* justify-content: center; */
     align-items: center;
     height: 600px;
     background-color: #fafafa;
     color: #000;
-
 }
 
 a {
     color: #000;
-    transition: color 1s;
 }
 a:hover {
     color: #000;
@@ -33,7 +24,6 @@ a:hover {
 /* 主体 */
 .main {
     width: 100%;
-    /* height: 450px; */
 }
 
 .main .w {
@@ -44,7 +34,6 @@ a:hover {
 }
 
 .main .info {
-    /* width: 200px; */
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -69,15 +58,16 @@ a:hover {
 
 /* 歌词 */
 .lyric .lyric_song {
+    max-width: 303px;
     margin-bottom: 10px;
     font-weight: 400;
     font-size: 20px;
     text-align: center;
 }
-.lyric .lyric_singer {
+.lyric .lyric_singer_wrapper {
     margin-right: 30px;
 }
-.lyric .lyric_singer,
+.lyric .lyric_singer_wrapper,
 .lyric_album {
     display: inline-block;
     max-width: 140px;
@@ -100,7 +90,7 @@ a:hover {
     line-height: 40px;
     text-align: center;
     cursor: grab;
-    transition: top .6s;
+    transition: top .8s;
 }
 .lyric_wrapper p {
     color: #666;
@@ -216,15 +206,17 @@ a:hover {
     flex-direction: column;
     width: 350px;
     height: 500px;
-    padding-top: 30px;
+    max-height: 0;
     border-radius: 20px;
 	background-image: linear-gradient(to right, #f1165a 0%, #d42359 100%);
-    display: none;
+    /* display: none; */
     overflow: hidden;
+    transition: max-height .6s;
 }
 
 .playlist .playlist_now {
     position: relative;
+    margin-top: 30px;
     padding-left: 20px;
     font-size: 30px;
     line-height: 36px;
@@ -245,13 +237,13 @@ a:hover {
 }
 
 .playlist .playlist_body {
-    height: 500px;
+    /* height: 500px; */
     margin-top: 5px;
     overflow-y: auto;
 }
 
 .playlist_btns {
-    height: 31px;
+    height: 36px;
     padding-right: 20px;
 }
 .playlist_btns> * {
@@ -273,23 +265,36 @@ a:hover {
     padding-left: 20px;
     cursor: pointer;
 }
+.playlist .playlist_body .playlist_item img {
+    display: none;
+}
 .playlist .playlist_body li[class$="playlist_item_now"] {
     background-color: #df1a57;
 }
+.playlist .playlist_body li[class$="playlist_item_now"] .playlist_item_play {
+    display: none;
+}
+.playlist .playlist_body li[class$="playlist_item_now"] img {
+    display: block;
+}
 .playlist .playlist_body .playlist_item:hover {
     background-color: #df1a57;
+}
+.playlist .playlist_body .playlist_item input {
+    width: 14px;
+    height: 14px;
 }
 .playlist .playlist_body .playlist_item input ,
 .playlist_item img {
     display: none;
     position: absolute;
     left: 20px;
-    top: 18px;
+    top: 20px;
 }
 .playlist_item img {
     left: 21px;
 }
-.playlist .playlist_body .playlist_ite .playlist_item_play {
+.playlist .playlist_body .playlist_item .playlist_item_play {
     width: 13px;
     height: 13px;
 }
@@ -365,7 +370,6 @@ a:hover {
 }
 .player .player_body .player_progress {
     position: relative;
-    /* max-width: 470px; */
     width: 95%;
     height: 3px;
     background-color: #e6e6e8;
@@ -403,7 +407,10 @@ a:hover {
     height: 100%;
     background-color: #c2c2c4;
 }
-
+.player .player_body .player_body_now,
+.player_body_all {
+    cursor: default;
+}
 .player .player_menu {
     display: flex;
     align-items: center;

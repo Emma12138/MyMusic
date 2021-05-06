@@ -1,25 +1,20 @@
 
 window.addEventListener('load', function () {
 
-    // 如果本地存储中有用户信息，自动登录
+    // 如果本地存储中有用户信息，获取用户数据
     let userData;
     let userId;
     if (window.localStorage.user) {
         userData = JSON.parse(window.localStorage.getItem('user'));
-
-        // 更新头像
-        loadAvatar(userData.profile.avatarUrl);
-
         userId = userData.profile.userId;
+
     }
 
     // 获取参数：资源id、类型
     let pid = {};
-    let param = window.location.hash;// #pid=xxx&type=xxx
-    pid.id = parseInt(param.substr(param.indexOf('pid=') + 4, param.indexOf('&')));
-    pid.type = parseInt(param.substr(param.indexOf('type=') + 5));
-
-
+    let param = window.location.search;// ?pid=xxx&type=xxx
+    pid.id = parseInt(param.substr(param.indexOf('pid=') + 4));
+    pid.type = 2;
 
     // 渲染歌曲
     let plBd = document.querySelector('.playlist_bd_song_content_wrapper');
@@ -62,6 +57,7 @@ window.addEventListener('load', function () {
         let pic = info[0].children[0];
         pic.src = data.coverImgUrl;
         let info_right = info[1];
+        console.log(data)
         info_right.children[0].innerHTML = data.name;
         info_right.children[1].innerHTML = data.creator.nickname;
         info_right.children[2].innerHTML = `标签：${data.tags.length !== 0 ? data.tags.map(value => value) : '无'}`;
@@ -108,6 +104,8 @@ window.addEventListener('load', function () {
         data = data.tracks;
         // 如果该歌单下有歌曲
         if (data.length > 0) {
+            let frag = document.createDocumentFragment();
+
             for (let i = 30; i < data.length + 30; i += 30) {
                 let div = document.createElement('div');
                 div.className = 'playlist_bd_song_content';
@@ -139,9 +137,10 @@ window.addEventListener('load', function () {
                     }
                 }).join('');
 
-                wrapper.appendChild(div);
+                frag.appendChild(div);
 
             }
+            wrapper.appendChild(frag);
 
             // 设置整个区域最小高度
             if (data.length > 30) {
@@ -153,19 +152,64 @@ window.addEventListener('load', function () {
             // 展示第一页
             display(wrapper.children[0], 'grid');
 
+
+            // 点击跳转
+            let items = wrapper.querySelectorAll('.playlist_bd_song_content_row a[class^="playlist_bd_song_content"]');
+            for (let i = 0; i < items.length; i++) {
+                let node = items[i];
+                if (node.innerHTML.includes('mod_list_menu')) {
+                    node = node.children[0];
+                }
+                node.onclick = openSearch;
+            }
+            let singerItems = wrapper.querySelectorAll('.playlist_bd_song_content_singer a');
+            for (let i = 0; i < singerItems.length; i++) {
+
+                singerItems[i].onclick = openSearch;
+            }
+            function openSearch() {
+                let keyword = this.textContent;
+                keyword = keyword.replace(/^\s*|\s*$/g, '');
+                window.open(`search.html?keywords=${keyword}`, '_blank');
+            }
+
+
             // 为添加歌曲到歌单按钮绑定事件
             let addBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');
             for (let i = 0; i < addBtns.length; i++) {
                 addBtns[i].onclick = function () {
                     // 如果未登录
-                    if (!userId) {
+                    let user = window.localStorage.user;
+                    if (!user) {
                         //唤起登录界面
+                        displayLogin();
                         return;
                     }
 
                     clickAdd(userId, parseInt(this.parentNode.previousElementSibling.getAttribute('src-songid')), pid.id, playlistData);
                 }
             }
+
+            // 点击播放按钮
+            let playBtns = document.querySelectorAll('.mod_list_menu li:nth-child(1)');
+            for (let i = 0; i < playBtns.length; i++) {
+
+                playBtns[i].addEventListener('click', function () {
+                    let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                    clickPlay(id);
+                })
+            }
+
+            // 添加到播放队列按
+            let addPlayBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
+            for (let i = 0; i < addPlayBtns.length; i++) {
+                addPlayBtns[i].addEventListener('click', function () {
+                    let id = this.parentNode.previousElementSibling.getAttribute('src-songid');
+                    clickAddPlay(id);
+                });
+            }
+
+
             // 如果是用户本人的歌单，绑定删除事件
             if (self) {
                 let delBtns = document.querySelectorAll('.mod_list_menu_del');
@@ -221,61 +265,6 @@ window.addEventListener('load', function () {
 
     }
 
-    // 添加或删除歌曲到歌单
-    // 添加歌曲到歌单
-    // function clickAdd(sid, callback) {
-    //     // 显示弹窗
-
-    //     createPlaylist(user.id, function () {
-    //         let pid = parseInt(this.getAttribute('pid'));
-    //         ajax({
-    //             url: 'http://localhost:3000/playlist/tracks',
-    //             data: {
-    //                 op: 'add',
-    //                 pid: pid,
-    //                 tracks: sid
-    //             },
-    //             success: function () {
-    //                 msgPop('添加成功！');
-    //                 callback && callback();
-    //             },
-    //             error: function (data) {
-    //                 console.log(data)
-    //             }
-    //         })
-    //     });
-    // }
-
-
-
-    // // 创建"收藏到我的歌单"弹窗
-    // function createPlaylist(fn) {
-    //     let addSong = document.querySelector('.addsong_playlist');
-    //     let addSongOl = addSong.lastElementChild;
-    //     let close = addSong.querySelector('.addsong_playlist_close');
-    //     // 显示我创建的所有歌单
-    //     userId = user.id;
-    //     playlistData.forEach(value => {
-    //         // let userId = param.substr(param.indexOf('id=') + 3);
-    //         // 如果是该用户创建的而不是该用户收藏的歌单且不是当前歌单
-    //         if (value.creator.userId === userId && value.id !== pid.id) {
-
-    //             let li = document.createElement('li');
-    //             li.className = 'addsong_playlist_item';
-    //             li.innerHTML = value.name;
-    //             li.setAttribute('pid', value.id);
-    //             li.addEventListener('click', fn)
-
-    //             addSongOl.appendChild(li);
-    //         }
-    //     })
-    //     close.addEventListener('click', function () {
-    //         display(addSong, false);
-    //         addSongOl.innerHTML = '';
-    //     })
-    //     display(addSong);
-    // }
-
 
 
     // 评论区
@@ -291,7 +280,15 @@ window.addEventListener('load', function () {
     // 点击发表按钮发表评论
     let post = commentInput.querySelector('.comment_post');
     post.onclick = function () {
-        if (textarea.value.replace(/[\n\r ]/g, '').length > 0) {
+        // 如果未登录
+        let user = window.localStorage.user;
+        if (!user) {
+            //唤起登录界面
+            displayLogin();
+            return;
+        }
+        let regValue = textarea.value.replace(/^\s*|\s*$/g, '');
+        if (regValue.length > 0 && regValue.length <= 300) {
             ajax({
                 url: 'http://localhost:3000/comment',
                 data: {
@@ -359,6 +356,8 @@ window.addEventListener('load', function () {
                     msgPop('出现未知错误，请稍后再试！');
                 }
             })
+        } else if (regValue.length > 300) {
+            msgPop('字数超出了哦~~');
         } else {
             msgPop('客官请先输入内容哦！');
         }
@@ -377,6 +376,7 @@ window.addEventListener('load', function () {
                 offset: hotPage * 10
             },
             success: function (data) {
+                console.log(data)
                 loadHotComment(data, document.querySelector('.comment_bd_good_wrapper'));
 
                 hotPage++;
@@ -492,7 +492,8 @@ window.addEventListener('load', function () {
     function commentPost(that) {
         let textarea = that.parentNode.children[0];
         let replyedContent = that.parentNode.parentNode.querySelector('.comment_bd_text').innerHTML;
-        if (textarea.value.replace(/[\n\r ]/g, '').length > 0) {
+        let regValue = textarea.value.replace(/^\s*|\s*$/g, '');
+        if (regValue.length > 0 && regValue.length <= 300) {
             ajax({
                 url: 'http://localhost:3000/comment',
                 data: {
@@ -554,6 +555,8 @@ window.addEventListener('load', function () {
                     msgPop('出现未知错误，请稍后再试！');
                 }
             })
+        } else if (regValue.length > 300) {
+            msgPop('字数超出了哦！');
         } else {
             msgPop('客官请先输入内容哦！');
         }
@@ -564,6 +567,13 @@ window.addEventListener('load', function () {
     }
     // 点赞/取消点赞
     function praiseFn(that) {
+        // 如果未登录
+        let user = window.localStorage.user;
+        if (!user) {
+            //唤起登录界面
+            displayLogin();
+            return;
+        }
         let t = parseInt(that.getAttribute('src-t'));
         ajax({
             url: 'http://localhost:3000/comment/like',
@@ -639,6 +649,13 @@ window.addEventListener('load', function () {
         let postItem = ul.querySelectorAll('.comment_post');
         for (let i = 0; i < postItem.length; i++) {
             postItem[i].onclick = function () {
+                // 如果未登录
+                let user = window.localStorage.user;
+                if (!user) {
+                    //唤起登录界面
+                    displayLogin();
+                    return;
+                }
                 commentPost(this);
             }
         }
