@@ -111,7 +111,6 @@ body {
 .playlist_bd_song .playlist_bd_song_content_wrapper {
     display: grid;
     margin-bottom: 50px;
-    /* min-height: 400px; */
 }
 .playlist_bd_song .playlist_bd_song_content {
     padding: 0 20px 0 15px;
@@ -214,7 +213,6 @@ body {
 
 /* 加载动画 */
 .playlist_bd_song .search_loading {
-    /* margin: 0 auto; */
     text-align: center;
 }
 

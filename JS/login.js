@@ -82,9 +82,6 @@ function qrLogin() {
                             window.location.reload();
                         }
                     })
-
-
-
                 }
             }
         })
@@ -195,7 +192,6 @@ window.addEventListener('load', function () {
 
     // 点击登录按钮发起请求
     goBtn.onclick = function () {
-        console.log(loginPsw.value)
         let phoneReg = /^1[3-9][0-9]{9}$/;
 
         let phone = loginPhone.value.replace(/^\s*|\s*$/g, '');
@@ -230,7 +226,6 @@ window.addEventListener('load', function () {
                         loginMsg.innerHTML = '请输入正确的密码';
                         display(loginMsg);
                     } else {
-                        console.log(qrTimer);
                         clearInterval(qrTimer);
                         qrTimer = null;
 

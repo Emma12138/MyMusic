@@ -193,7 +193,6 @@ window.addEventListener('load', function () {
     )
 
     // 搜索历史
-    // localstor.clear();
     if (!window.localStorage) {
         localstor.setItem('history', JSON.stringify([]));
     }
@@ -202,7 +201,12 @@ window.addEventListener('load', function () {
     let his = document.querySelector('.search_history_item_wrapper');
 
     searchInput.addEventListener('focus', function () {
-        let hisData = JSON.parse(window.localStorage.history);
+        let hisData;
+        if (window.localStorage.history) {
+            hisData = JSON.parse(window.localStorage.history);
+        } else {
+            hisData = [];
+        }
 
         // 最多展示5条
         his.innerHTML = hisData.map((value, index) => {
@@ -261,9 +265,10 @@ window.addEventListener('load', function () {
         }
 
     }
+
     // 搜索框得到焦点状态下敲下回车也可以搜索
     window.addEventListener('keyup', function (e) {
-        if (e.keyCode === 13 && searchInput.isFocus) {
+        if (e.key == 'Enter' && searchInput.isFocus) {
             searchBtn.click();
         }
     })
@@ -271,9 +276,19 @@ window.addEventListener('load', function () {
     // 返回顶部
     let topButton = document.querySelector('.sidebar_top');
     topButton.addEventListener('click', function () {
-        scroll();
+        scroll(0, function () {
+            display(topButton, false);
+        });
     })
-    displayBackTop(topButton, document.querySelector('.header').offsetHeight);
+
+    // 顶部按钮
+    window.addEventListener('scroll', function () {
+        if (window.pageYOffset > 0) {
+            display(topButton);
+        } else {
+            display(topButton, false);
+        }
+    })
 
 
     // 点击音乐馆跳转到首页
@@ -282,6 +297,10 @@ window.addEventListener('load', function () {
         window.location.href = `index.html`;
     }
 
-
+    // 关闭"下载客户端"
+    let clientClose = document.querySelector('.download_client_close');
+    clientClose.onclick = function () {
+        display(this.parentNode, false);
+    }
 
 })

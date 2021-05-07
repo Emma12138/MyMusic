@@ -7,24 +7,23 @@ window.addEventListener('load', function () {
     if (window.localStorage.user) {
         userData = JSON.parse(window.localStorage.getItem('user'));
         userId = userData.profile.userId;
-
     }
 
     // 获取参数：资源id、类型
     let pid = {};
-    let param = window.location.search;// ?pid=xxx&type=xxx
+    let param = window.location.search;
     pid.id = parseInt(param.substr(param.indexOf('pid=') + 4));
     pid.type = 2;
 
-    // 渲染歌曲
-    let plBd = document.querySelector('.playlist_bd_song_content_wrapper');
 
+    let plBd = document.querySelector('.playlist_bd_song_content_wrapper');
     // 获取歌单下的所有歌曲的信息
     let playlistData;
     ajax({
         url: 'http://localhost:3000/playlist/detail',
         data: {
-            id: pid.id
+            id: pid.id,
+            timerstamp: +new Date()
         },
         success: function (data) {
             // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
@@ -37,13 +36,14 @@ window.addEventListener('load', function () {
             renderSongs(data.playlist, plBd);
         }
     })
+
     // 获取用户的所有歌单信息，用于将当前歌单下的歌曲添加到用户的歌单
-    // 获取用户的所有歌单的简略信息
     function getPlaylist(uid) {
         ajax({
             url: 'http://localhost:3000/user/playlist',
             data: {
-                uid: uid
+                uid: uid,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 playlistData = data.playlist;
@@ -51,13 +51,13 @@ window.addEventListener('load', function () {
         })
     }
 
+
     // 渲染歌单详情界面的基本信息
     function loadInfo(data) {
         let info = document.querySelector('.playlist_hd .w').children;
         let pic = info[0].children[0];
         pic.src = data.coverImgUrl;
         let info_right = info[1];
-        console.log(data)
         info_right.children[0].innerHTML = data.name;
         info_right.children[1].innerHTML = data.creator.nickname;
         info_right.children[2].innerHTML = `标签：${data.tags.length !== 0 ? data.tags.map(value => value) : '无'}`;
@@ -200,7 +200,7 @@ window.addEventListener('load', function () {
                 })
             }
 
-            // 添加到播放队列按
+            // 添加到播放队列按钮
             let addPlayBtns = document.querySelectorAll('.mod_list_menu li:nth-child(3)');
             for (let i = 0; i < addPlayBtns.length; i++) {
                 addPlayBtns[i].addEventListener('click', function () {
@@ -248,9 +248,9 @@ window.addEventListener('load', function () {
                     display(items[this.index], 'grid');
 
                     // 优化页面滚动效果
-                    this.parentNode.parentNode.previousElementSibling.style.minHeight = '1500px';
+                    this.parentNode.parentNode.previousElementSibling.style.maxHeight = '1500px';
                     scroll(document.querySelector('.playlist_bd_song_title').offsetTop, function () {
-                        document.querySelector('.playlist_bd .w').style.minHeight = '';
+                        document.querySelector('.playlist_bd .w').style.maxHeight = '';
                     });
                 }
             }, function () {
@@ -373,10 +373,11 @@ window.addEventListener('load', function () {
             data: {
                 id: pid.id,
                 type: pid.type,
-                offset: hotPage * 10
+                offset: hotPage * 10,
+                timerstamp: +new Date()
             },
             success: function (data) {
-                console.log(data)
+
                 loadHotComment(data, document.querySelector('.comment_bd_good_wrapper'));
 
                 hotPage++;
@@ -429,7 +430,8 @@ window.addEventListener('load', function () {
                 type: pid.type,
                 pageNo: newPage,
                 sortType: 3,
-                cursor: newCursor
+                cursor: newCursor,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 data = data.data;
@@ -664,7 +666,7 @@ window.addEventListener('load', function () {
         let load = ul.querySelector('.load_more');
         if (load) {
             load.onclick = function () {
-                fn();
+                fn(pid);
 
                 this.parentNode.removeChild(this);
             }
@@ -672,8 +674,6 @@ window.addEventListener('load', function () {
     }
 
 
-
-    // 评论区
     getHotComment(pid);
     getNewComment(pid);
 

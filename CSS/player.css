@@ -87,6 +87,7 @@ a:hover {
 }
 .lyric_content {
     position: absolute;
+    width: 100%;
     line-height: 40px;
     text-align: center;
     cursor: grab;
@@ -209,7 +210,6 @@ a:hover {
     max-height: 0;
     border-radius: 20px;
 	background-image: linear-gradient(to right, #f1165a 0%, #d42359 100%);
-    /* display: none; */
     overflow: hidden;
     transition: max-height .6s;
 }
@@ -237,7 +237,6 @@ a:hover {
 }
 
 .playlist .playlist_body {
-    /* height: 500px; */
     margin-top: 5px;
     overflow-y: auto;
 }
@@ -504,4 +503,21 @@ a:hover {
 }
 .comment .comment_bd_content .load_more:hover {
     color: #d42359;
+}
+.comment .comment_bd_item .comment_bd_praise i {
+    position: absolute;
+    top: 0px;
+    left: 5px;
+    content: "";
+    width: 20px;
+    height: 20px;
+    font-weight: 600;
+}
+.comment .highlight i {
+    color: #d42359;
+}
+.comment .comment_bd_item .comment_bd_praise::before {
+    width: 0;
+    height: 0;
+    background: 0;
 }

@@ -740,6 +740,12 @@ body .index_nav_current a {
     box-shadow: 0 3px 5px rgb(0,0,0,.1);
     background-color: #fff;
 }
+.download_client .download_client_close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}
 .download_client .download_logo {
     height: 100%;
 }
@@ -1021,7 +1027,6 @@ body .index_nav_current a {
     right: 92px;
     width: 20px;
     height: 20px;
-    background: url(https://y.gtimg.cn/mediastyle/yqq/img/comment.png?max_age=2592000&v=d415294b1d14d55fba81ab229ae3f88a);
 }
 .comment .comment_post {
     position: absolute;

@@ -33,6 +33,8 @@ function throttle(fn, delay = 500) {
     }
 }
 
+
+// 滚动函数
 function scroll(target = 0, callback) {
     let obj = document.documentElement || document.body;
     clearInterval(obj.timer);
@@ -44,6 +46,7 @@ function scroll(target = 0, callback) {
         if (scrollTop <= target + 1 && scrollTop >= target - 1) {
             clearInterval(obj.timer);
             obj.timer = null;
+
             callback && callback();
         }
     }, 10);
@@ -60,18 +63,6 @@ function scroll(target = 0, callback) {
     window.addEventListener('mousewheel', cancelSCroll);
 }
 
-
-function displayBackTop(obj, target = 0) {
-    obj.style.display = 'none';
-
-    window.addEventListener('scroll', function () {
-        if (window.pageYOffset > target) {
-            obj.style.display = 'block';
-        } else {
-            obj.style.display = 'none';
-        }
-    })
-}
 
 // 负责懒加载的加载图片的操作：当自定义属性的图片加载完成后，赋给 obj
 function loadImg(obj) {
@@ -95,7 +86,7 @@ function lazyLoad(imgArr) {
         // 视口高度
         let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
         for (let i = 0; i < imgArr.length; i++) {
-            if (imgArr[i].getBoundingClientRect().top - 300 <= clientHeight) {
+            if (imgArr[i].getBoundingClientRect().top - 500 <= clientHeight) {
                 loadImg(imgArr[i]);
                 imgArr.splice(i, 1);
                 i--;
@@ -104,21 +95,19 @@ function lazyLoad(imgArr) {
     }
 }
 
-
-function display(obj, Bool = true) {
-    if (Bool === true) {
+// 设置元素的 display 属性
+function display(obj, bool = true) {
+    if (bool === true) {
         obj.style.display = 'block';
-    } else if (Bool === false) {
+    } else if (bool === false) {
         obj.style.display = 'none';
     } else {
-        obj.style.display = Bool;
+        obj.style.display = bool;
     }
-}
-function setStyle(obj, className, value) {
-    obj.style[className] = value;
 }
 
 function ajax(obj) {
+    // 默认
     let defaults = {
         type: 'get',
         async: true,
@@ -133,6 +122,7 @@ function ajax(obj) {
     }
     defaults = Object.assign(defaults, obj);
 
+
     let param = '';
     for (let attr in defaults.data) {
         param += attr + '=' + defaults.data[attr] + '&';
@@ -140,7 +130,7 @@ function ajax(obj) {
     param = param.substr(0, param.length - 1);
 
     const xhr = new XMLHttpRequest();
-    //
+    // 
     xhr.withCredentials = true;
 
     if (defaults.type == 'get') {
@@ -174,9 +164,6 @@ function ajax(obj) {
     }
 }
 
-function highLight(text, keywords) {
-
-}
 
 // 将时间转化为 xx:xx 形式
 function getTime(num) {
@@ -188,6 +175,7 @@ function getTime(num) {
     let str = min + ':' + s;
     return str;
 }
+
 // 将时间转化为 年月日 形式
 function getYearTime(num) {
     let time = new Date(num);
@@ -232,7 +220,13 @@ function closeHis(item, input, hisData) {
 
 // 执行点击搜索框搜索结果后的流程
 function clickSearchResult(keywords, input, url) {
-    let hisData = JSON.parse(window.localStorage.history);
+    let hisData;
+    if (window.localStorage.history) {
+        hisData = JSON.parse(window.localStorage.history);
+    } else {
+        window.localStorage.history = JSON.stringify([]);
+    }
+
 
     keywords = decodeURIComponent(keywords);
     keywords = keywords.replace(/^\s*|\s*$/g, '');
@@ -303,18 +297,30 @@ function changePage(index, items) {
 }
 
 // 显示信息弹窗
+let timer;
+let displayTimer;
 function msgPop(text) {
     let msg = document.querySelector('.msgpop');
+    display(msg);
     msg.innerHTML = text;
-    msg.style.height = '50px';
     msg.style.opacity = '1';
-    let timer = setTimeout(function () {
+
+    if (timer) {
+        clearTimeout(timer);
+        clearTimeout(displayTimer);
+    }
+    timer = setTimeout(function () {
         msg.style.opacity = '0';
+        displayTimer = setTimeout(() => {
+            display(msg, false)
+            clearTimeout(displayTimer);
+            displayTimer = null;
+        }, 3000);
+
         clearTimeout(timer);
         timer = null;
     }, 1500);
 }
-
 
 
 // 添加歌曲到歌单
@@ -323,7 +329,7 @@ function clickAdd(userid, sid, pid, playlistData, fn) {
     // 参数 pid 是：如果该歌曲是从某个歌单上添加的，则pid 是该歌单的id
 
     // 显示弹窗
-    createPlaylist(userid, playlistData, pid, function (pid) {
+    createPlaylist(userid, playlistData, sid, pid, function (pid) {
         // 发出添加到歌单的请求
         ajax({
             url: 'http://localhost:3000/playlist/tracks',
@@ -348,11 +354,13 @@ function clickAdd(userid, sid, pid, playlistData, fn) {
 }
 
 // 创建"收藏到我的歌单"弹窗
-function createPlaylist(userId, playlistData, pid, fn, callback) {
+function createPlaylist(userId, playlistData, sid, pid, fn, callback) {
+    // 参数 pid 是：如果该歌曲是从某个歌单上添加的，则pid 是该歌单的id
     let addSong = document.querySelector('.addsong_playlist');
     let addSongOl = addSong.lastElementChild;
     let close = addSong.querySelector('.addsong_playlist_close');
     // 显示我创建的所有歌单
+    let frag = document.createDocumentFragment();
     playlistData.forEach(value => {
 
         // 如果是该用户创建的而不是该用户收藏的歌单
@@ -366,9 +374,10 @@ function createPlaylist(userId, playlistData, pid, fn, callback) {
                 fn(value.id);
             })
 
-            addSongOl.appendChild(li);
+            frag.append(li);
         }
     })
+    addSongOl.appendChild(frag);
 
     // 关闭按钮
     close.addEventListener('click', function () {
@@ -380,18 +389,37 @@ function createPlaylist(userId, playlistData, pid, fn, callback) {
     let newList = addSong.querySelector('.addsong_new');
     newList.onclick = function () {
         close.click();
-        newPl(userId, function () {
+        newPl(userId, true, function (pid) {
+            ajax({
+                url: 'http://localhost:3000/playlist/tracks',
+                data: {
+                    op: 'add',
+                    pid: pid,
+                    tracks: sid
+                },
+                success: function () {
+                    msgPop('已添加到新建歌单！');
+                    updateAccount(userId);
+
+                    // 关闭弹窗
+                    document.querySelector('.addsong_playlist_close').click();
+                },
+                error: function () {
+                    msgPop('出错啦！');
+                }
+            })
 
             callback && callback(userId);
         });
     }
 
-
     display(addSong);
 }
 
 // 新建歌单
-function newPl(userId, callback) {
+function newPl(userId, bool, callback) {
+    // bool：若新建歌单功能是由添加歌曲到歌单界面打开的，则为 true
+
     let newList = document.querySelector('.newList');
     display(newList);
     // 关闭和取消按钮
@@ -433,40 +461,13 @@ function newPl(userId, callback) {
                 success: function (data) {
                     if (data.code == 200) {
                         input.value = '';
-                        msgPop('新建成功！');
-                        updateAccount(userId);
-
-                        callback && callback();
-
-
-                        // "我创建的歌单"后面的数字 +1
-                        let plBtn = document.querySelector('.user_nav a:nth-child(2)');
-                        if (plBtn) {
-                            let reg = /\d/g;
-                            let plCount = parseInt(plBtn.innerHTML.match(reg).join(''));
-                            plCount++;
-                            plBtn.innerHTML = '我创建的歌单 ' + plCount;
+                        closeBtn.click();
+                        if (!bool) {
+                            msgPop('新建成功！');
                         }
-                        newList.querySelector('.newList_close').click();
 
-                        // 渲染该新歌单
-                        // if (plBtn.className == 'user_nav_mypl user_nav_current') {
-                        //     data = data.playlist;
+                        callback && callback(data.id);
 
-                        //     let li = document.createElement('li');
-                        //     li.className = 'user_bd_playlist_item';
-                        //     li.setAttribute('src-pid', data.id)
-                        //     li.innerHTML = `  <img src="${data.coverImgUrl}" alt="">
-                        // <p class="user_bd_playlist_item_name">${data.name}</p>
-                        // <p class="user_bd_playlist_item_user">${userName}</p>`;
-
-                        //     let wrapper = document.querySelector('.user_bd_playlist_content');
-                        //     if (wrapper.children.length != 0) {
-                        //         wrapper.insertBefore(li, wrapper.children[0]);
-                        //     } else {
-                        //         wrapper.append(li);
-                        //     }
-                        // }
                     }
 
                 }
@@ -533,11 +534,12 @@ function changeNum(num) {
 
 
 // 更新用户账户信息
-function updateAccount(id) {
+function updateAccount(id, callback) {
     ajax({
         url: 'http://localhost:3000/user/detail',
         data: {
-            uid: id
+            uid: id,
+            timerstamp: +new Date()
         },
         success: function (data) {
 
@@ -545,6 +547,7 @@ function updateAccount(id) {
             user.profile = data.profile;
 
             window.localStorage.user = JSON.stringify(user);
+            callback && callback();
         }
     })
 }
@@ -567,7 +570,14 @@ function clickPlay(id) {
     let bool = false;// 表本地存储中不含该歌曲
 
     // 判断音乐播放界面是否打开
-    let playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表已打开
+    let playerTagFlag;
+    if (window.localStorage.playerTag) {
+        playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表未打开
+    } else {
+        playerTagFlag = false;
+        window.localStorage.playerTag = false;
+    }
+
 
     // 如果该歌曲正在播放
     if (playNow == id) {
@@ -600,8 +610,6 @@ function clickPlay(id) {
 
     playlists.playNow = id;
     playlists.type = true;
-    console.log(playlists);
-    console.log(JSON.stringify(playlists))
     window.localStorage.playlists = JSON.stringify(playlists);
 
 
@@ -609,9 +617,6 @@ function clickPlay(id) {
         window.open('player.html', '_blank');
     }
 }
-
-
-
 
 
 // 点击添加到播放队列按钮
@@ -638,7 +643,14 @@ function clickAddPlay(id) {
 
 
     // 判断音乐播放界面是否打开
-    let playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表已打开
+    let playerTagFlag;
+    if (window.localStorage.playerTag) {
+        playerTagFlag = JSON.parse(window.localStorage.playerTag);// false表未打开
+    } else {
+        playerTagFlag = false;
+        window.localStorage.playerTag = false;
+    }
+
 
     // 如果播放队列中不含该歌曲
     if (!bool) {
@@ -661,10 +673,5 @@ function clickAddPlay(id) {
         } else {
             msgPop('播放列表中已经有该歌曲了哦！');
         }
-
-
-
     }
-
-
 }

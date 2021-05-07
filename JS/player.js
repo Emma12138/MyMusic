@@ -11,7 +11,6 @@ window.addEventListener('load', function () {
 
 
 
-
     // 获取用户id
     let userId = null;
     let userData = null;
@@ -23,7 +22,6 @@ window.addEventListener('load', function () {
 
     // 监听更新播放列表
     window.addEventListener('storage', function (e) {
-        // console.log('storageChanged：');
 
         if (e.key == 'playlists') {
             let oldId = playlist[index];
@@ -89,7 +87,8 @@ window.addEventListener('load', function () {
         ajax({
             url: 'http://localhost:3000/likelist',
             data: {
-                uid: userId
+                uid: userId,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 likelist = data.ids;
@@ -101,12 +100,25 @@ window.addEventListener('load', function () {
         getPlayData();
     }
 
+    // 如果用户退出登录，则清空 likelist
+    window.addEventListener('storage', function (e) {
+        if (e.key == 'user') {
+            if (window.localStorage.user == '') {
+                likelist = [];
+            }
+        }
+    })
+
+
+
+
     // 获取用户的歌单。用于将歌曲添加到歌单
     let playlistData;
     ajax({
         url: 'http://localhost:3000/user/playlist',
         data: {
-            uid: userId
+            uid: userId,
+            timerstamp: +new Date()
         },
         success: function (data) {
             playlistData = data.playlist;
@@ -254,6 +266,7 @@ window.addEventListener('load', function () {
             likeBtns.className = 'iconfont liked';
         } else {
             likeBtns.setAttribute('src-like', 1);// 未喜欢
+            likeBtns.className = 'iconfont';
         }
 
         // MV 按钮
@@ -511,7 +524,7 @@ window.addEventListener('load', function () {
             displayLogin();
             return;
         }
-        let bool;// 判断该歌曲用户是否已喜欢
+        let bool = false;// 判断该歌曲用户是否已喜欢
         if (this.getAttribute('src-like') == 1) {
             bool = true;
         }
@@ -571,7 +584,7 @@ window.addEventListener('load', function () {
         playlist.splice(index, 1);
         let playlists = JSON.parse(window.localStorage.playlists)
         playlists.playlist = playlist;
-        console.log(audioArr)
+
         if (audioArr.length == 0) {
             playlists.playNow = '';
         }
@@ -642,10 +655,14 @@ window.addEventListener('load', function () {
     // 点击歌曲的播放按钮播放该歌曲
     function clicktoPlay(that) {
         index = parseInt(that.parentNode.getAttribute('src-index'));
+        lyric.style.top = 0;
+        lineNow = 0;
+        progress.style.width = '0%';
         audio.src = audioArr[index];
         audio.play();
         // 渲染这首歌曲的数据
         renderData();
+
     }
 
 
@@ -664,6 +681,10 @@ window.addEventListener('load', function () {
             goBack();
 
         } else if (style === 'cycle') {// 单曲循环
+            lyric.style.top = 0;
+            lineNow = 0;
+            progress.style.width = '0%';
+
             audio.loop = true;
             audio.play();
 
@@ -719,7 +740,6 @@ window.addEventListener('load', function () {
         playlists.type = false;
         window.localStorage.playlists = JSON.stringify(playlists);
 
-        console.log("index:" + index);
     })
 
     // 改变播放按钮
@@ -794,22 +814,12 @@ window.addEventListener('load', function () {
 
         // 获得进度条当前的宽度
         let width = parseInt(progress.style.width);
-        // if (clickFlag = true) {
-        //     return;
-        // }
-
-
-        // console.log(dragFlag);
 
         // 到视口左端的距离
         let left = progress.getBoundingClientRect().left;
         let num = null;
         document.onmousemove = function (e) {
-            // if (clickFlag = true) {
-            //     return;
-            // }
-            // if (!dragFlag) {
-            console.log('drag');
+
             dragFlag = true;
             // 
             num = (e.clientX - left) / progressBar.offsetWidth;
@@ -824,23 +834,15 @@ window.addEventListener('load', function () {
 
             progress.style.width = num * 100 + "%";
 
-            // return false;
-            // }
+
             return false;
         };
 
         document.onmouseup = function () {
-            // if (dragFlag) {
 
             dragFlag = false;
             document.onmousemove = null;
             document.onmouseup = null;
-
-            // if (clickFlag) {
-            //     clickFlag = false;
-            //     return;
-            // }
-
 
             audio.currentTime = num * audio.duration;
 
@@ -848,25 +850,15 @@ window.addEventListener('load', function () {
             // 歌词位置跟着改变
             lyricChange(width - num * 100);
 
-            // }
         }
-
-
 
     };
 
-    // let clickFlag = false;
+
 
     // 点击进度条调节进度
     progressBar.addEventListener('click', function (e) {
-        // if (e.target == progress) {
-        //     clickFlag = true;
-        // }
-        // if (dragFlag) {
-        //     return;
-        // }
-        // console.log('now')
-        // clickFlag = true;
+
         let long = e.clientX - progress.getBoundingClientRect().left;
         let num = long / progressBar.offsetWidth;
 
@@ -876,8 +868,6 @@ window.addEventListener('load', function () {
         progress.style.width = num * 100 + '%';
         audio.currentTime = audio.duration * num;
 
-        console.log('click')
-        // clickFlag = false;
         // 歌词
         lyricChange(width - num * 100);
     })
@@ -931,7 +921,7 @@ window.addEventListener('load', function () {
         if (lyricFlag) {
             // 当前句距离歌词顶部的距离
             let long = items[lineNow].getBoundingClientRect().top - lyricTop;
-            if (long > 125 || long < -20) {
+            if (long > 125 || (long < -20 && lineNow > 0)) {
                 lyric.style.top = height - long + 120 + 'px';
             }
         }
@@ -989,6 +979,7 @@ window.addEventListener('load', function () {
     let current = player.querySelector('.player_body_now');
     audio.addEventListener('timeupdate', function () {
         console.log('lineNow:' + lineNow)
+
         current.innerHTML = getTime(audio.currentTime * 1000);
     })
 
@@ -1114,9 +1105,12 @@ window.addEventListener('load', function () {
             },
             success: function (data) {
                 // 渲染歌词到页面中
-                renderLrc(data, lyric, audio.addEventListener('timeupdate', lyricHighlight))
+                renderLrc(data, lyric, audio.addEventListener('timeupdate', function () {
+                    lyricHighlight();
+                }))
 
                 lyric.style.top = 0;
+                lineNow = 0;
             }
         })
     }
@@ -1179,13 +1173,15 @@ window.addEventListener('load', function () {
 
         }).join('');
 
-        obj.innerHTML = ps;
+        let node = document.createRange().createContextualFragment(ps);
+        obj.innerHTML = '';
+        obj.appendChild(node);
 
         callback && callback();
     }
 
     let lineNow = 0;// 当前歌词是第几行
-    let lyricTop = lyric.parentNode.getBoundingClientRect().top;
+    const lyricTop = lyric.parentNode.getBoundingClientRect().top;
 
     // 歌词实时高亮
     function lyricHighlight() {
@@ -1204,15 +1200,12 @@ window.addEventListener('load', function () {
             }
 
             lines[lineNow].className = 'lyric_highlight';
-
             // 歌词滚动
             let height = lyric.offsetTop;
             if (lyricFlag) {
-
                 // 当前句距离歌词顶部的距离
                 let long = lines[lineNow].getBoundingClientRect().top - lyricTop;
-                console.log('long: ' + long)
-                if (long > 125 || long < -20) {
+                if (long > 125 || (long < -20 && lineNow > 0)) {
                     lyric.style.top = height - long + 120 + 'px';
                 }
             }
@@ -1320,7 +1313,7 @@ window.addEventListener('load', function () {
                             <p class="comment_bd_text">${data.content}</p>
                             <p class="comment_reply"></p>
                             <i class="comment_bd_time">${getYearTime(data.time)}</i>
-                            <a href="javascript:;" class="comment_bd_praise" src-t=1>0</a>
+                            <a href="javascript:;" class="comment_bd_praise" src-t=1><i class="iconfont">${'&#xe613;'}</i>0</a>
                             <a href="javascript:;" class="comment_bd_commentHim"></a>
                         </div>
                         <div class="comment_input">
@@ -1355,12 +1348,20 @@ window.addEventListener('load', function () {
                         }
 
                     } else {
-                        msgPop('出现未知错误，请稍后再试！');
+                        if (data.code == 250 && data.dialog.subtitle) {
+                            msgPop(data.dialog.subtitle);
+                        } else {
+                            msgPop('出现错误，稍等一下再试试吧~');
+                        }
                     }
 
                 },
-                error: function () {
-                    msgPop('出现未知错误，请稍后再试！');
+                error: function (data) {
+                    if (data.code == 250 && data.dialog.subtitle) {
+                        msgPop(data.dialog.subtitle);
+                    } else {
+                        msgPop('出现错误，稍等一下再试试吧~');
+                    }
                 }
             })
         } else if (regValue.length > 300) {
@@ -1380,7 +1381,8 @@ window.addEventListener('load', function () {
             data: {
                 id: playlist[index],
                 type: pid.type,
-                offset: hotPage * 10
+                offset: hotPage * 10,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 loadHotComment(data, document.querySelector('.comment_bd_good_wrapper'));
@@ -1407,7 +1409,7 @@ window.addEventListener('load', function () {
         <p class="comment_bd_text">${value.beReplied.length !== 0 ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
         <p class="comment_reply">${value.beReplied.length !== 0 ? value.beReplied[0].content : ''}</p>
         <i class="comment_bd_time">${getYearTime(value.time)}</i>
-        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
+        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0><i class="iconfont">${'&#xe613;'}</i>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1><i class="iconfont">${'&#xe613;'}</i>${value.likedCount}</a>`}
         <a href="javascript:;" class="comment_bd_commentHim"></a>
         </div>
     <div class="comment_input">
@@ -1435,7 +1437,8 @@ window.addEventListener('load', function () {
                 type: pid.type,
                 pageNo: newPage,
                 sortType: 3,
-                cursor: newCursor
+                cursor: newCursor,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 data = data.data;
@@ -1465,7 +1468,7 @@ window.addEventListener('load', function () {
         <p class="comment_bd_text">${value.beReplied ? `回复 @<span class="highlight">${value.beReplied[0].user.nickname}</span>: ${value.content}` : value.content}</p>
         <p class="comment_reply">${value.beReplied ? value.beReplied[0].content : ''}</p>
         <i class="comment_bd_time">${getYearTime(value.time)}</i>
-        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1>${value.likedCount}</a>`}
+        ${value.liked ? `<a href="javascript:;" class="comment_bd_praise highlight" src-t=0><i class="iconfont">${'&#xe613;'}</i>${value.likedCount}</a>` : `<a href="javascript:;" class="comment_bd_praise" src-t=1><i class="iconfont">${'&#xe613;'}</i>${value.likedCount}</a>`}
         <a href="javascript:;" class="comment_bd_commentHim"></a>
         </div>
     <div class="comment_input">
@@ -1535,7 +1538,7 @@ window.addEventListener('load', function () {
                         let praise = li.querySelector('.comment_bd_praise');
                         praise.setAttribute('src-t', 1);
                         praise.className = 'comment_bd_praise';
-                        praise.innerHTML = 0;
+                        praise.innerHTML = `<i class="iconfont">${'&#xe613;'}</i>0`;
                         let time = li.querySelector('.comment_bd_time');
                         time.innerHTML = getYearTime(data.time);
 
@@ -1553,12 +1556,17 @@ window.addEventListener('load', function () {
 
 
                     } else {
-                        msgPop('出现未知错误，请稍后再试！');
+                        if (data.code == 250 && data.dialog.subtitle) {
+                            msgPop(data.dialog.subtitle);
+                        } else {
+                            msgPop('出现错误，稍等一下再试试吧~');
+                        }
+
                     }
 
                 },
                 error: function () {
-                    msgPop('出现未知错误，请稍后再试！');
+                    msgPop('出现错误，稍等一下再试试吧~');
                 }
             })
         } else if (regValue.length > 300) {
@@ -1593,23 +1601,31 @@ window.addEventListener('load', function () {
                 if (data.code == 200) {
                     if (t == 1) {
                         that.className = 'comment_bd_praise highlight';
-                        that.innerHTML = `${parseInt(that.innerHTML) + 1}`;
+                        that.innerHTML = `<i class="iconfont">${'&#xe613;'}</i>${parseInt(that.textContent.match(/\d/g).join('')) + 1}`;
                         that.setAttribute('src-t', 0)
 
                         msgPop('对方已经收到你的点赞啦！');
                     } else if (t === 0) {
                         that.className = 'comment_bd_praise';
-                        that.innerHTML = `${parseInt(that.innerHTML) - 1} `;
+                        that.innerHTML = `<i class="iconfont">${'&#xe613;'}</i>${parseInt(that.textContent.match(/\d/g).join('')) - 1}`;
                         that.setAttribute('src-t', 1)
 
                         msgPop('取消成功！');
                     }
                 } else {
-                    msgPop('出现未知错误，请稍后再试！');
+                    if (data.code == 250 && data.dialog.subtitle) {
+                        msgPop(data.dialog.subtitle);
+                    } else {
+                        msgPop('出现错误，稍等一下再试试吧~');
+                    }
                 }
             },
-            error: function () {
-                msgPop('出现未知错误，请稍后再试！');
+            error: function (data) {
+                if (data.code == 250 && data.dialog.subtitle) {
+                    msgPop(data.dialog.subtitle);
+                } else {
+                    msgPop('出现错误，稍等一下再试试吧~');
+                }
             }
         })
     }
@@ -1619,7 +1635,6 @@ window.addEventListener('load', function () {
         let commentItems = ul.querySelectorAll('.comment_bd_commentHim');
         for (let i = 0; i < commentItems.length; i++) {
             commentItems[i].onclick = function () {
-                // this.parentNode.parentNode.className = 'comment_bd_item comment_feedback';
                 commentReply(this);
             }
         }
@@ -1628,7 +1643,6 @@ window.addEventListener('load', function () {
         let cancelBtns = ul.querySelectorAll('.comment_cancel');
         for (let i = 0; i < cancelBtns.length; i++) {
             cancelBtns[i].onclick = function () {
-                // this.parentNode.parentNode.className = 'comment_bd_item';
                 cancelComment(this);
             }
         }
@@ -1637,7 +1651,6 @@ window.addEventListener('load', function () {
         let textItems = ul.querySelectorAll('textarea');
         for (let i = 0; i < textItems.length; i++) {
             textItems[i].oninput = function () {
-                // this.nextElementSibling.children[0].innerHTML = `${300 - this.value.length}`;
                 commentonInput(this);
             }
         }
@@ -1670,7 +1683,7 @@ window.addEventListener('load', function () {
         let load = ul.querySelector('.load_more');
         if (load) {
             load.onclick = function () {
-                fn();
+                fn(pid);
 
                 this.parentNode.removeChild(this);
             }

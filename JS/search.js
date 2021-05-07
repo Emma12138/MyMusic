@@ -2,8 +2,6 @@
 
 window.onload = function () {
 
-    document.body.style.zoom = 1;
-
 
     // 如果本地存储中有用户信息，获取用户数据
     let userData;
@@ -11,7 +9,6 @@ window.onload = function () {
     if (window.localStorage.user) {
         userData = JSON.parse(window.localStorage.getItem('user'));
         userId = userData.profile.userId;
-
     }
 
 
@@ -21,11 +18,13 @@ window.onload = function () {
 
 
     let playlistData = null;
+    // 获取用户歌单
     function getPlaylist() {
         ajax({
             url: 'http://localhost:3000/user/playlist',
             data: {
-                uid: userId
+                uid: userId,
+                timerstamp: +new Date()
             },
             success: function (data) {
 
@@ -252,7 +251,7 @@ window.onload = function () {
     // 搜索历史
     // 如果 localstorage 中未设置存储搜索历史的数组，就设置
     if (!window.localStorage.history) {
-        localstor.setItem('history', JSON.stringify([]));
+        window.localStorage.setItem('history', JSON.stringify([]));
     }
 
     // 展示搜索历史
@@ -301,9 +300,6 @@ window.onload = function () {
     }
 
 
-
-
-
     // 点击搜索按钮进入搜索页，更新搜索历史
     let mainSearchBtn = document.querySelector('.search_input button')
     mainSearchBtn.onclick = function () {
@@ -322,12 +318,11 @@ window.onload = function () {
     }
     // 搜索框得到焦点状态下敲下回车也可以搜索
     window.addEventListener('keyup', function (e) {
-        if (e.keyCode === 13 && mainSearchInput.isFocus) {
+        if (e.key == 'Enter' && mainSearchInput.isFocus) {
 
             mainSearchBtn.click();
         }
     })
-
 
 
     // 搜索页结果
@@ -342,11 +337,7 @@ window.onload = function () {
 
     // 加载第一页数据
     ajax({
-        type: 'get',
         url: 'http://localhost:3000/search',
-        header: {
-            'xhrFields': '{ withCredentials: true }'
-        },
         data: {
             keywords: searchKey,
             limit: 30,
@@ -374,11 +365,7 @@ window.onload = function () {
 
                     // 加载新的搜索结果
                     ajax({
-                        type: 'get',
                         url: 'http://localhost:3000/search',
-                        header: {
-                            'xhrFields': '{ withCredentials: true }'
-                        },
                         data: {
                             keywords: searchKey,
                             limit: 30,
@@ -390,9 +377,9 @@ window.onload = function () {
                     })
 
                     // 优化页面滚动效果
-                    document.querySelector('.search_bd_song_content').style.minHeight = '1500px';
+                    document.querySelector('.search_bd_song_content').style.maxHeight = '1500px';
                     scroll(document.querySelector('.search_bd_song_title').offsetTop - document.querySelector('.search_input_cover').offsetHeight, function () {
-                        document.querySelector('.search_bd_song_content').style.minHeight = '';
+                        document.querySelector('.search_bd_song_content').style.maxHeight = '';
                     });
                 }
 
@@ -401,10 +388,9 @@ window.onload = function () {
             })
         }
 
-
         data = data.result.songs;
 
-        searchBd.innerHTML = data.map(value => {
+        let nodeStr = data.map(value => {
             let reg = new RegExp(searchKey, 'gi');
             return `<div class="search_bd_song_content_row">
             <a href="javascript:;" class="search_bd_song_content_song">
@@ -437,6 +423,11 @@ window.onload = function () {
         </div>`
         }).join('');
 
+        let node = document.createRange().createContextualFragment(nodeStr);
+        searchBd.innerHTML = '';
+        searchBd.appendChild(node);
+
+
         let items = searchBd.querySelectorAll('.search_bd_song_content_row a[class^="search_bd_song_content"]');
         for (let i = 0; i < items.length; i++) {
             let node = items[i];
@@ -457,13 +448,6 @@ window.onload = function () {
             }
         }
 
-
-        if (!window.localStorage.playlist) {
-            window.localStorage.playlist = JSON.stringify([]);
-        }
-        if (!window.localStorage.playNow) {
-            window.localStorage.playNow = JSON.stringify('');
-        }
 
         // 添加到歌单按钮
         let addPlBtns = document.querySelectorAll('.mod_list_menu li[title="添加到歌单"]');

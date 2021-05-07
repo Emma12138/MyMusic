@@ -7,7 +7,6 @@ window.addEventListener('load', function () {
     }
 
 
-
     let mvData = null;
     // 获取 mv 信息
     ajax({
@@ -164,7 +163,7 @@ window.addEventListener('load', function () {
 
     // 按空格键也能控制播放暂停
     window.addEventListener('keyup', function (e) {
-        if (e.key === ' ') {
+        if (e.key == ' ') {
             playerBtn.click();
         }
     })
@@ -189,7 +188,6 @@ window.addEventListener('load', function () {
     let progressBar = progress.parentNode;
     let progressTime = player.querySelector('.player_progress_time');
     progressBar.addEventListener('mousemove', function (e) {
-        // console.log(1)
         let long = progressBar.getBoundingClientRect().left;
         let num = (e.clientX - long) / progressBar.offsetWidth;
         num = num < 0 ? 0 : num;
@@ -209,7 +207,7 @@ window.addEventListener('load', function () {
             let current = player.querySelector('.player_progress_time');
 
             dragFlag = true;
-            // 
+
             num = (e.clientX - left) / progressBar.offsetWidth;
             if (num > 1) {
                 num = 1;
@@ -225,17 +223,10 @@ window.addEventListener('load', function () {
         };
 
         document.onmouseup = function () {
-            // if (dragFlag) {
 
             dragFlag = false;
             document.onmousemove = null;
             document.onmouseup = null;
-
-            if (clickFlag) {
-                clickFlag = false;
-                return;
-            }
-
 
             video.currentTime = num * video.duration;
 
@@ -247,15 +238,8 @@ window.addEventListener('load', function () {
 
     };
 
-    let clickFlag = false;
     // 点击进度条调节进度
-    progressBar.addEventListener('mouseup', function (e) {
-        if (e.target === progress) {
-            clickFlag = true;
-        }
-        if (dragFlag) {
-            return;
-        }
+    progressBar.addEventListener('click', function (e) {
 
         let long = e.clientX - progress.getBoundingClientRect().left;
         let num = long / progressBar.offsetWidth;
@@ -339,8 +323,8 @@ window.addEventListener('load', function () {
 
     // 拖动音量条调节声音
     let voice = player.querySelector('.player_voice_progress');
-    voice.style.height = '46%';
-    voice.onmousedown = function (e) {
+    voice.style.height = '30%';
+    voice.onmousedown = function () {
 
         let long = voice.getBoundingClientRect().bottom;
 
@@ -352,7 +336,7 @@ window.addEventListener('load', function () {
             if (num < 0) {
                 num = 0;
             }
-            console.log(num)
+
             voice.style.height = num * 100 + "%";
 
             video.volume = num;
@@ -415,7 +399,8 @@ window.addEventListener('load', function () {
         }
 
     })
-    // 点击音量调调节音量
+
+    // 点击音量条调节音量
     let voiceBar = voice.parentNode;
     voiceBar.addEventListener('click', function (e) {
         let long = voice.getBoundingClientRect().bottom;
@@ -447,23 +432,6 @@ window.addEventListener('load', function () {
             display(outerProgress, false);
         }
     })
-
-
-    // 开启画中画
-    let desc = document.querySelector('.mv_desc');
-    let videoPicFlag = false;
-    // window.addEventListener('scroll', debounce(function () {
-
-    //     if (window.pageYOffset > desc.offsetTop) {
-
-    //         video.requestPictureInPicture();
-    //         videoPicFlag = true;
-    //     } else if (videoPicFlag) {
-
-    //         document.exitPictureInPicture();
-    //         videoPicFlag = false;
-    //     }
-    // }))
 
 
 
@@ -581,11 +549,9 @@ window.addEventListener('load', function () {
             if (long < BulletLong && long > BulletLong - 30) {
                 getBullet();
             }
-            // display(bullet, 'flex');
             bulletContent.style.left = -bulletNum + 'px';
             bulletNum += 20;
         } else {
-            // display(bullet, false);
         }
     })
 
@@ -698,7 +664,8 @@ window.addEventListener('load', function () {
             data: {
                 id: pid.id,
                 type: pid.type,
-                offset: hotPage * 10
+                offset: hotPage * 10,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 loadHotComment(data, document.querySelector('.comment_bd_good_wrapper'));
@@ -753,7 +720,8 @@ window.addEventListener('load', function () {
                 type: pid.type,
                 pageNo: newPage,
                 sortType: 3,
-                cursor: newCursor
+                cursor: newCursor,
+                timerstamp: +new Date()
             },
             success: function (data) {
                 data = data.data;
@@ -988,7 +956,7 @@ window.addEventListener('load', function () {
         let load = ul.querySelector('.load_more');
         if (load) {
             load.onclick = function () {
-                fn();
+                fn(pid);
 
                 this.parentNode.removeChild(this);
             }

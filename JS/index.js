@@ -11,7 +11,6 @@ const ProxySlider = function () {
 
         previous.onclick = function () {
             if (flag) {
-                // console.log(target)
                 flag = false;
 
                 buttonNum--;
@@ -47,7 +46,6 @@ const ProxySlider = function () {
         }
 
         return function () {
-            console.log(buttonNum)
             buttonNum = 0;
             sliderNum = 0;
             flag = true;
@@ -55,17 +53,6 @@ const ProxySlider = function () {
             switchButton.switch(0);
             animateObj.clone();
         }
-        // {
-        //     init: function () {
-        //         console.log(buttonNum)
-        //         buttonNum = 0;
-        //         sliderNum = 0;
-        //         flag = true;
-        //         obj.style.left = '0';
-        //         switchButton.switch(0);
-        //     },
-        //     clone: obj.clone
-        // }
     }
 };
 
@@ -90,8 +77,7 @@ window.onload = function () {
         window.addEventListener('scroll', function () {
             throttle(lazyloadFn, 500)();
         })
-        let ev = new Event('scroll');
-        window.dispatchEvent(ev);
+        window.dispatchEvent(new Event('scroll'));
 
     });
 
@@ -192,7 +178,7 @@ window.onload = function () {
         window.addEventListener('scroll', function () {
             throttle(lazyloadFn, 500)();
         })
-
+        window.dispatchEvent(new Event('scroll'));
 
     });
 
@@ -210,7 +196,6 @@ window.onload = function () {
 
                 // 轮播
                 songSlider();
-
 
                 lazyLoad(song.querySelectorAll('img'))();
 
@@ -289,6 +274,9 @@ window.onload = function () {
     }
 
 
+
+
+
     // 精彩推荐
     let rec = document.querySelector('.main_rec_slider');
 
@@ -340,6 +328,7 @@ window.onload = function () {
 
         }
     }
+
 
 
 
@@ -429,6 +418,7 @@ window.onload = function () {
         wrapper.appendChild(frag);
 
     }
+
 
 
 

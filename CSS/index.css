@@ -131,7 +131,6 @@ ul[class$="slider_list"] li>a:hover::before {
     margin-right: 20px;
     border-radius: 50%;
     background-color: rgba(0,0,0,.1);
-    cursor: pointer;
 }
 .main_slider_switch li[class="main_slider_switch_current"] {
     background-color: rgba(0,0,0,.3);
@@ -167,6 +166,7 @@ ul[class$="slider_list"] li>a:hover::before {
     position: relative;
     display: flex;
     width: 100%;
+    height: 356px;
     padding-top: 20px;
 }
 .main .main_song_slider_list {
